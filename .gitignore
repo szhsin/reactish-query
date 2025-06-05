@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# builds
+build/
+.next/
+_next/
+.docusaurus/
+examples/out/
+
+# tests
+coverage/
+**/__tests__/**/*.d.ts
+
+# logs
+logs
+*.log
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# misc
+.DS_Store
+.npm
+.env
+.eslintcache
+.vercel
