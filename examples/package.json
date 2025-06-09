@@ -1,0 +1,26 @@
+{
+  "name": "examples",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "reactish-query": "file:..",
+    "react": "file:../node_modules/react",
+    "react-dom": "file:../node_modules/react-dom",
+    "next": "15.3.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "@types/node": "file:../node_modules/@types/node",
+    "@types/react": "file:../node_modules/@types/react",
+    "@types/react-dom": "file:../node_modules/@types/react-dom",
+    "eslint": "^9.28.0",
+    "eslint-config-next": "15.3.3",
+    "@eslint/eslintrc": "^3.3.1"
+  }
+}
