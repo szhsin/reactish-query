@@ -1,0 +1,9 @@
+trailingComma: none
+singleQuote: true
+printWidth: 90
+overrides:
+  - files: '*.md'
+    options:
+      singleQuote: false
+      proseWrap: never
+      printWidth: 80
