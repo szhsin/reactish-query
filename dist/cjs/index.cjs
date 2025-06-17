@@ -1,5 +1,9 @@
+
+'use client';
 'use strict';
 
-const foo = 'bar';
+var useQuery = require('./useQuery.cjs');
 
-exports.foo = foo;
+
+
+exports.useQuery = useQuery.useQuery;

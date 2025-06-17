@@ -1,1 +1,1 @@
-export declare const foo = "bar";
+export { useQuery } from './useQuery';
