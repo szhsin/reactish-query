@@ -1,18 +1,20 @@
 // @ts-check
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { babel } from '@rollup/plugin-babel';
+import { addDirective } from 'rollup-plugin-add-directive';
 
 /**
  * @type {import('rollup').RollupOptions}
  */
 const config = {
-  external: ['react', 'react-dom', 'react/jsx-runtime'],
+  external: ['react', 'react-dom', 'react/jsx-runtime', 'reactish-state'],
   plugins: [
     nodeResolve({ extensions: ['.ts', '.tsx', '.js', '.jsx'] }),
     babel({
       babelHelpers: 'bundled',
       extensions: ['.ts', '.tsx', '.js', '.jsx']
-    })
+    }),
+    addDirective({ pattern: 'index' })
   ],
   treeshake: {
     moduleSideEffects: false,

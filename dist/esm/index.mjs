@@ -1,3 +1,3 @@
-const foo = 'bar';
 
-export { foo };
+'use client';
+export { useQuery } from './useQuery.mjs';
