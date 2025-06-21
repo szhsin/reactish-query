@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { state, useSnapshot, type State } from 'reactish-state';
 
-type QueryHookOptions<TData> = {
-  fetcher?: () => Promise<TData>;
+export type Fetcher<TData, TKey = unknown> = (key: TKey) => Promise<TData>;
+
+export type QueryHookOptions<TData, TKey = unknown> = {
+  fetcher?: Fetcher<TData, TKey>;
 };
 
-type QueryHookResult<TData> = {
+export type QueryHookResult<TData> = {
   isLoading: boolean;
   data?: TData;
   error?: Error;
@@ -16,7 +18,10 @@ type QueryState<TData> = State<QueryHookResult<TData>, unknown>;
 const defaultQueryResult = { isLoading: false };
 const queryMap = new Map<string, unknown>();
 
-const useQuery = <TData>(key: unknown, { fetcher }: QueryHookOptions<TData> = {}) => {
+const useQuery = <TData, TKey = unknown>(
+  key: TKey,
+  { fetcher }: QueryHookOptions<TData, TKey> = {}
+) => {
   const [queryState, setQueryState] = useState(
     state<QueryHookResult<TData>, unknown>(defaultQueryResult)
   );
@@ -33,7 +38,7 @@ const useQuery = <TData>(key: unknown, { fetcher }: QueryHookOptions<TData> = {}
     const { set: setQueryResult } = queryState;
     if (fetcher && !isLoading && data === undefined) {
       setQueryResult((prev) => ({ ...prev, isLoading: true }));
-      fetcher()
+      fetcher(key)
         .then((data) => setQueryResult({ data, isLoading: false }))
         .catch((error) => setQueryResult({ error: error as Error, isLoading: false }));
     }

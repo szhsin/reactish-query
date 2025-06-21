@@ -31,7 +31,7 @@ const useQuery = (key, {
         ...prev,
         isLoading: true
       }));
-      fetcher().then(data => setQueryResult({
+      fetcher(key).then(data => setQueryResult({
         data,
         isLoading: false
       })).catch(error => setQueryResult({
@@ -39,7 +39,6 @@ const useQuery = (key, {
         isLoading: false
       }));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stringKey]);
   return reactishState.useSnapshot(queryState);
 };
