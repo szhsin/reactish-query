@@ -78,7 +78,8 @@ export default tseslint.config(
   {
     files: ['examples/**/*'],
     rules: {
-      'no-console': 0
+      'no-console': 0,
+      'react/display-name': 0
     }
   }
 );
