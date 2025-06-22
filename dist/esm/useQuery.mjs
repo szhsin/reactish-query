@@ -1,44 +1,60 @@
-import { useState, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { state, useSnapshot } from 'reactish-state';
 
-const defaultQueryResult = {
+const defaultQueryState = {
   isLoading: false
 };
 const queryMap = new Map();
+
+/* eslint-disable react-hooks/exhaustive-deps */
+
 const useQuery = (key, {
   fetcher
 } = {}) => {
-  const [queryState, setQueryState] = useState(state(defaultQueryResult));
   const stringKey = JSON.stringify(key);
-  useEffect(() => {
-    let queryState = queryMap.get(stringKey);
-    if (!queryState) {
-      queryState = state(defaultQueryResult);
-      queryMap.set(stringKey, queryState);
-    }
-    setQueryState(queryState);
+  const [queryAtomForRender, setQueryAtomForRender] = useState(state(defaultQueryState));
+  const refetch = useCallback(() => {
+    const queryAtom = queryMap.get(stringKey);
+    if (!queryAtom) return Promise.resolve(defaultQueryState);
     const {
-      isLoading,
-      data
-    } = queryState.get();
-    const {
-      set: setQueryResult
-    } = queryState;
-    if (fetcher && !isLoading && data === undefined) {
-      setQueryResult(prev => ({
-        ...prev,
-        isLoading: true
-      }));
-      fetcher(key).then(data => setQueryResult({
+      get: getQueryState,
+      set: setQueryState
+    } = queryAtom;
+    let result = getQueryState();
+    if (!fetcher || result.isLoading) return Promise.resolve(result);
+    setQueryState(prev => ({
+      ...prev,
+      isLoading: true
+    }));
+    return fetcher(key).then(data => {
+      result = {
         data,
         isLoading: false
-      })).catch(error => setQueryResult({
+      };
+      setQueryState(result);
+      return result;
+    }).catch(error => {
+      result = {
         error: error,
         isLoading: false
-      }));
-    }
+      };
+      setQueryState(result);
+      return result;
+    });
   }, [stringKey]);
-  return useSnapshot(queryState);
+  useEffect(() => {
+    let queryAtom = queryMap.get(stringKey);
+    if (!queryAtom) {
+      queryAtom = state(defaultQueryState);
+      queryMap.set(stringKey, queryAtom);
+    }
+    setQueryAtomForRender(queryAtom);
+    if (queryAtom.get().data === undefined) refetch();
+  }, [refetch]);
+  return {
+    ...useSnapshot(queryAtomForRender),
+    refetch
+  };
 };
 
 export { useQuery };

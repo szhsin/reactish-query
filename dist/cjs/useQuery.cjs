@@ -3,44 +3,60 @@
 var react = require('react');
 var reactishState = require('reactish-state');
 
-const defaultQueryResult = {
+const defaultQueryState = {
   isLoading: false
 };
 const queryMap = new Map();
+
+/* eslint-disable react-hooks/exhaustive-deps */
+
 const useQuery = (key, {
   fetcher
 } = {}) => {
-  const [queryState, setQueryState] = react.useState(reactishState.state(defaultQueryResult));
   const stringKey = JSON.stringify(key);
-  react.useEffect(() => {
-    let queryState = queryMap.get(stringKey);
-    if (!queryState) {
-      queryState = reactishState.state(defaultQueryResult);
-      queryMap.set(stringKey, queryState);
-    }
-    setQueryState(queryState);
+  const [queryAtomForRender, setQueryAtomForRender] = react.useState(reactishState.state(defaultQueryState));
+  const refetch = react.useCallback(() => {
+    const queryAtom = queryMap.get(stringKey);
+    if (!queryAtom) return Promise.resolve(defaultQueryState);
     const {
-      isLoading,
-      data
-    } = queryState.get();
-    const {
-      set: setQueryResult
-    } = queryState;
-    if (fetcher && !isLoading && data === undefined) {
-      setQueryResult(prev => ({
-        ...prev,
-        isLoading: true
-      }));
-      fetcher(key).then(data => setQueryResult({
+      get: getQueryState,
+      set: setQueryState
+    } = queryAtom;
+    let result = getQueryState();
+    if (!fetcher || result.isLoading) return Promise.resolve(result);
+    setQueryState(prev => ({
+      ...prev,
+      isLoading: true
+    }));
+    return fetcher(key).then(data => {
+      result = {
         data,
         isLoading: false
-      })).catch(error => setQueryResult({
+      };
+      setQueryState(result);
+      return result;
+    }).catch(error => {
+      result = {
         error: error,
         isLoading: false
-      }));
-    }
+      };
+      setQueryState(result);
+      return result;
+    });
   }, [stringKey]);
-  return reactishState.useSnapshot(queryState);
+  react.useEffect(() => {
+    let queryAtom = queryMap.get(stringKey);
+    if (!queryAtom) {
+      queryAtom = reactishState.state(defaultQueryState);
+      queryMap.set(stringKey, queryAtom);
+    }
+    setQueryAtomForRender(queryAtom);
+    if (queryAtom.get().data === undefined) refetch();
+  }, [refetch]);
+  return {
+    ...reactishState.useSnapshot(queryAtomForRender),
+    refetch
+  };
 };
 
 exports.useQuery = useQuery;

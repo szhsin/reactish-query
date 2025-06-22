@@ -1,7 +1,7 @@
 {
   "name": "reactish-query",
-  "version": "0.1.0",
-  "description": "",
+  "version": "0.2.0",
+  "description": "Atomic state-powered, lightweight React query library",
   "author": "Zheng Song",
   "license": "MIT",
   "repository": {
