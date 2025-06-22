@@ -62,13 +62,11 @@ export default tseslint.config(
       'no-console': ['error', { allow: ['warn', 'error'] }],
       'react/prop-types': 0,
       'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': [
-        'error',
-        {
-          additionalHooks: 'useSelector'
-        }
-      ],
+      'react-hooks/exhaustive-deps': ['error', { additionalHooks: 'useSelector' }],
       '@typescript-eslint/ban-ts-comment': 0,
+      '@typescript-eslint/no-floating-promises': 0,
+      '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: false }],
+      '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^_\\d?$' }],
       '@typescript-eslint/no-unused-expressions': [
         'error',
         { allowShortCircuit: true, allowTernary: true }
