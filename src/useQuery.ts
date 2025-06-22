@@ -1,46 +1,67 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { state, useSnapshot, type State } from 'reactish-state';
 
-type QueryHookOptions<TData> = {
-  fetcher?: () => Promise<TData>;
+export type Fetcher<TData, TKey = unknown> = (key: TKey) => Promise<TData>;
+
+export type QueryHookOptions<TData, TKey = unknown> = {
+  fetcher?: Fetcher<TData, TKey>;
 };
 
-type QueryHookResult<TData> = {
+export type QueryState<TData> = {
   isLoading: boolean;
   data?: TData;
   error?: Error;
 };
 
-type QueryState<TData> = State<QueryHookResult<TData>, unknown>;
+type QueryAtom<TData> = State<QueryState<TData>, unknown>;
 
-const defaultQueryResult = { isLoading: false };
+const defaultQueryState = { isLoading: false };
 const queryMap = new Map<string, unknown>();
 
-const useQuery = <TData>(key: unknown, { fetcher }: QueryHookOptions<TData> = {}) => {
-  const [queryState, setQueryState] = useState(
-    state<QueryHookResult<TData>, unknown>(defaultQueryResult)
-  );
-  const stringKey = JSON.stringify(key);
+/* eslint-disable react-hooks/exhaustive-deps */
 
-  useEffect(() => {
-    let queryState = queryMap.get(stringKey) as QueryState<TData>;
-    if (!queryState) {
-      queryState = state<QueryHookResult<TData>, unknown>(defaultQueryResult);
-      queryMap.set(stringKey, queryState);
-    }
-    setQueryState(queryState);
-    const { isLoading, data } = queryState.get();
-    const { set: setQueryResult } = queryState;
-    if (fetcher && !isLoading && data === undefined) {
-      setQueryResult((prev) => ({ ...prev, isLoading: true }));
-      fetcher()
-        .then((data) => setQueryResult({ data, isLoading: false }))
-        .catch((error) => setQueryResult({ error: error as Error, isLoading: false }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+const useQuery = <TData, TKey = unknown>(
+  key: TKey,
+  { fetcher }: QueryHookOptions<TData, TKey> = {}
+) => {
+  const stringKey = JSON.stringify(key);
+  const [queryAtomForRender, setQueryAtomForRender] = useState(
+    state<QueryState<TData>, unknown>(defaultQueryState)
+  );
+
+  const refetch = useCallback((): Promise<QueryState<TData>> => {
+    const queryAtom = queryMap.get(stringKey) as QueryAtom<TData> | undefined;
+    if (!queryAtom) return Promise.resolve(defaultQueryState);
+
+    const { get: getQueryState, set: setQueryState } = queryAtom;
+    let result = getQueryState();
+    if (!fetcher || result.isLoading) return Promise.resolve(result);
+
+    setQueryState((prev) => ({ ...prev, isLoading: true }));
+    return fetcher(key)
+      .then((data) => {
+        result = { data, isLoading: false };
+        setQueryState(result);
+        return result;
+      })
+      .catch((error) => {
+        result = { error: error as Error, isLoading: false };
+        setQueryState(result);
+        return result;
+      });
   }, [stringKey]);
 
-  return useSnapshot(queryState);
+  useEffect(() => {
+    let queryAtom = queryMap.get(stringKey) as QueryAtom<TData> | undefined;
+    if (!queryAtom) {
+      queryAtom = state<QueryState<TData>, unknown>(defaultQueryState);
+      queryMap.set(stringKey, queryAtom);
+    }
+    setQueryAtomForRender(queryAtom);
+    if (queryAtom.get().data === undefined) refetch();
+  }, [refetch]);
+
+  return { ...useSnapshot(queryAtomForRender), refetch };
 };
 
 export { useQuery };
