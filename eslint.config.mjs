@@ -4,6 +4,7 @@ import globals from 'globals';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
+import vitest from '@vitest/eslint-plugin';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactHooksAddons from 'eslint-plugin-react-hooks-addons';
@@ -11,6 +12,7 @@ import reactHooksAddons from 'eslint-plugin-react-hooks-addons';
 export default tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
+  vitest.configs.recommended,
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
   reactHooksAddons.configs.recommended,
@@ -37,7 +39,7 @@ export default tseslint.config(
       sourceType: 'module',
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['*.?(c|m)js', 'examples/*.?(c|m)js']
+          allowDefaultProject: ['*.?(c|m)[jt]s', 'examples/*.?(c|m)js']
         },
         tsconfigRootDir: import.meta.dirname,
         ecmaFeatures: {
