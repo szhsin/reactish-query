@@ -1,6 +1,6 @@
 {
   "name": "reactish-query",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Atomic state-powered, lightweight React query library",
   "author": "Zheng Song",
   "license": "MIT",
@@ -36,6 +36,7 @@
     "pret": "prettier -c .",
     "pret:fix": "prettier -w .",
     "build": "run-s pret clean types lint bundle",
+    "test": "vitest run",
     "eg": "npm run dev --prefix examples"
   },
   "peerDependencies": {
@@ -45,30 +46,38 @@
     "reactish-state": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.4",
-    "@babel/preset-env": "^7.27.2",
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^16.0.1",
-    "@types/node": "^22.15.30",
-    "@types/react": "^19.1.6",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^24.0.10",
+    "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "@vitest/coverage-istanbul": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/eslint-plugin": "^1.3.4",
     "babel-plugin-pure-annotations": "^0.1.2",
     "deplift": "^1.0.1",
-    "eslint": "^9.28.0",
+    "eslint": "^9.30.1",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-hooks-addons": "^0.5.0",
-    "globals": "^16.2.0",
+    "globals": "^16.3.0",
+    "jsdom": "^26.1.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "rollup": "^4.42.0",
+    "rollup": "^4.44.2",
     "rollup-plugin-add-directive": "^1.0.0",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.33.1"
+    "typescript-eslint": "^8.36.0",
+    "vitest": "^3.2.4"
   }
 }

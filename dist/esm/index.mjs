@@ -1,3 +1,3 @@
 
 'use client';
-export { useQuery } from './useQuery.mjs';
+export { clearQueryCache, useQuery } from './useQuery.mjs';

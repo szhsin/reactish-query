@@ -5,6 +5,7 @@ const defaultQueryState = {
   isLoading: false
 };
 const queryMap = new Map();
+const clearQueryCache = () => queryMap.clear();
 
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -13,34 +14,30 @@ const useQuery = (key, {
 } = {}) => {
   const stringKey = JSON.stringify(key);
   const [queryAtomForRender, setQueryAtomForRender] = useState(state(defaultQueryState));
-  const refetch = useCallback(() => {
-    const queryAtom = queryMap.get(stringKey);
-    if (!queryAtom) return Promise.resolve(defaultQueryState);
+  const refetch = useCallback(async () => {
     const {
       get: getQueryState,
       set: setQueryState
-    } = queryAtom;
+    } = queryMap.get(stringKey);
     let result = getQueryState();
     if (!fetcher || result.isLoading) return Promise.resolve(result);
     setQueryState(prev => ({
       ...prev,
       isLoading: true
     }));
-    return fetcher(key).then(data => {
+    try {
       result = {
-        data,
+        data: await fetcher(key),
         isLoading: false
       };
-      setQueryState(result);
-      return result;
-    }).catch(error => {
+    } catch (error) {
       result = {
         error: error,
         isLoading: false
       };
-      setQueryState(result);
-      return result;
-    });
+    }
+    setQueryState(result);
+    return result;
   }, [stringKey]);
   useEffect(() => {
     let queryAtom = queryMap.get(stringKey);
@@ -57,4 +54,4 @@ const useQuery = (key, {
   };
 };
 
-export { useQuery };
+export { clearQueryCache, useQuery };
