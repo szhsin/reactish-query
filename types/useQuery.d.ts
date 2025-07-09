@@ -7,10 +7,11 @@ export type QueryState<TData> = {
     data?: TData;
     error?: Error;
 };
+declare const clearQueryCache: () => void;
 declare const useQuery: <TData, TKey = unknown>(key: TKey, { fetcher }?: QueryHookOptions<TData, TKey>) => {
     refetch: () => Promise<QueryState<TData>>;
     isLoading: boolean;
     data?: TData | undefined;
     error?: Error;
 };
-export { useQuery };
+export { useQuery, clearQueryCache };
