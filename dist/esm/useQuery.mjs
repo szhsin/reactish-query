@@ -1,11 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
 import { state, useSnapshot } from 'reactish-state';
+import { queryCache } from './queryCache.mjs';
 
 const defaultQueryState = {
   isLoading: false
 };
-const queryMap = new Map();
-const clearQueryCache = () => queryMap.clear();
 
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -18,7 +17,7 @@ const useQuery = (key, {
     const {
       get: getQueryState,
       set: setQueryState
-    } = queryMap.get(stringKey);
+    } = queryCache.get(stringKey);
     let result = getQueryState();
     if (!fetcher || result.isLoading) return Promise.resolve(result);
     setQueryState(prev => ({
@@ -40,10 +39,10 @@ const useQuery = (key, {
     return result;
   }, [stringKey]);
   useEffect(() => {
-    let queryAtom = queryMap.get(stringKey);
+    let queryAtom = queryCache.get(stringKey);
     if (!queryAtom) {
       queryAtom = state(defaultQueryState);
-      queryMap.set(stringKey, queryAtom);
+      queryCache.set(stringKey, queryAtom);
     }
     setQueryAtomForRender(queryAtom);
     if (queryAtom.get().data === undefined) refetch();
@@ -54,4 +53,4 @@ const useQuery = (key, {
   };
 };
 
-export { clearQueryCache, useQuery };
+export { useQuery };

@@ -61,7 +61,7 @@ export default tseslint.config(
       }
     },
     rules: {
-      'no-console': ['error', { allow: ['warn', 'error'] }],
+      'no-console': ['error', { allow: ['debug', 'warn', 'error'] }],
       'react/prop-types': 0,
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': ['error', { additionalHooks: 'useSelector' }],
