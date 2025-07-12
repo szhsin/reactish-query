@@ -9,18 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "reactish-query": "file:..",
+    "@tanstack/react-query": "^5.83.0",
+    "next": "^15.3.5",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
-    "next": "15.3.3"
+    "reactish-query": "file:..",
+    "swr": "^2.3.4"
   },
   "devDependencies": {
-    "typescript": "^5.8.3",
+    "@eslint/eslintrc": "^3.3.1",
     "@types/node": "file:../node_modules/@types/node",
     "@types/react": "file:../node_modules/@types/react",
     "@types/react-dom": "file:../node_modules/@types/react-dom",
-    "eslint": "^9.28.0",
-    "eslint-config-next": "15.3.3",
-    "@eslint/eslintrc": "^3.3.1"
+    "eslint": "^9.31.0",
+    "eslint-config-next": "^15.3.5",
+    "typescript": "^5.8.3"
   }
 }
