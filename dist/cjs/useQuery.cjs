@@ -2,12 +2,11 @@
 
 var react = require('react');
 var reactishState = require('reactish-state');
+var queryCache = require('./queryCache.cjs');
 
 const defaultQueryState = {
   isLoading: false
 };
-const queryMap = new Map();
-const clearQueryCache = () => queryMap.clear();
 
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -20,7 +19,7 @@ const useQuery = (key, {
     const {
       get: getQueryState,
       set: setQueryState
-    } = queryMap.get(stringKey);
+    } = queryCache.queryCache.get(stringKey);
     let result = getQueryState();
     if (!fetcher || result.isLoading) return Promise.resolve(result);
     setQueryState(prev => ({
@@ -42,10 +41,10 @@ const useQuery = (key, {
     return result;
   }, [stringKey]);
   react.useEffect(() => {
-    let queryAtom = queryMap.get(stringKey);
+    let queryAtom = queryCache.queryCache.get(stringKey);
     if (!queryAtom) {
       queryAtom = reactishState.state(defaultQueryState);
-      queryMap.set(stringKey, queryAtom);
+      queryCache.queryCache.set(stringKey, queryAtom);
     }
     setQueryAtomForRender(queryAtom);
     if (queryAtom.get().data === undefined) refetch();
@@ -56,5 +55,4 @@ const useQuery = (key, {
   };
 };
 
-exports.clearQueryCache = clearQueryCache;
 exports.useQuery = useQuery;

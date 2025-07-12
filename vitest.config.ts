@@ -5,7 +5,7 @@ export default defineConfig({
     globals: true,
     clearMocks: true,
     environment: 'jsdom',
-    include: ['src/__tests__/**/*.test.[jt]s?(x)'],
+    include: ['src/__tests__/**/*.test.?(c|m)[jt]s?(x)'],
     coverage: {
       enabled: true,
       provider: 'istanbul',

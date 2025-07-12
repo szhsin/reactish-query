@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { state, useSnapshot, type State } from 'reactish-state';
+import { queryCache } from './queryCache';
 
 export type Fetcher<TData, TKey = unknown> = (key: TKey) => Promise<TData>;
 
@@ -16,9 +17,6 @@ export type QueryState<TData> = {
 type QueryAtom<TData> = State<QueryState<TData>, unknown>;
 
 const defaultQueryState = { isLoading: false };
-const queryMap = new Map<string, unknown>();
-
-const clearQueryCache = () => queryMap.clear();
 
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -32,7 +30,7 @@ const useQuery = <TData, TKey = unknown>(
   );
 
   const refetch = useCallback(async (): Promise<QueryState<TData>> => {
-    const { get: getQueryState, set: setQueryState } = queryMap.get(
+    const { get: getQueryState, set: setQueryState } = queryCache.get(
       stringKey
     ) as QueryAtom<TData>;
     let result = getQueryState();
@@ -49,10 +47,10 @@ const useQuery = <TData, TKey = unknown>(
   }, [stringKey]);
 
   useEffect(() => {
-    let queryAtom = queryMap.get(stringKey) as QueryAtom<TData> | undefined;
+    let queryAtom = queryCache.get(stringKey) as QueryAtom<TData> | undefined;
     if (!queryAtom) {
       queryAtom = state<QueryState<TData>, unknown>(defaultQueryState);
-      queryMap.set(stringKey, queryAtom);
+      queryCache.set(stringKey, queryAtom);
     }
     setQueryAtomForRender(queryAtom);
     if (queryAtom.get().data === undefined) refetch();
@@ -61,4 +59,4 @@ const useQuery = <TData, TKey = unknown>(
   return { ...useSnapshot(queryAtomForRender), refetch };
 };
 
-export { useQuery, clearQueryCache };
+export { useQuery };
