@@ -9,16 +9,22 @@ const defaultQueryState = {
 };
 const useQuery = (key, {
   fetcher,
+  cacheMode,
   enabled = true
 } = {}) => {
   const stringKey = JSON.stringify(key);
   const [queryAtomForRender, setQueryAtomForRender] = react.useState(reactishState.state(defaultQueryState));
   const refetch = react.useCallback(async (params, fetchIfNoCache) => {
-    const queryKey = params !== undefined ? `${stringKey}|${JSON.stringify(params)}` : stringKey;
-    let queryAtom = queryCache.queryCache.get(queryKey);
-    if (!queryAtom) {
+    let queryAtom;
+    if (cacheMode !== 'off') {
+      const queryKey = params !== undefined ? `${stringKey}|${JSON.stringify(params)}` : stringKey;
+      queryAtom = queryCache.queryCache.get(queryKey);
+      if (!queryAtom) {
+        queryAtom = reactishState.state(defaultQueryState);
+        queryCache.queryCache.set(queryKey, queryAtom);
+      }
+    } else {
       queryAtom = reactishState.state(defaultQueryState);
-      queryCache.queryCache.set(queryKey, queryAtom);
     }
     setQueryAtomForRender(queryAtom);
     const {
@@ -45,7 +51,7 @@ const useQuery = (key, {
     setQueryState(result);
     return result;
   }, /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  [stringKey]);
+  [stringKey, cacheMode]);
   react.useEffect(() => {
     enabled && refetch(undefined, true);
   }, [enabled, refetch]);

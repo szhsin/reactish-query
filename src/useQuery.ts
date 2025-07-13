@@ -9,7 +9,7 @@ const defaultQueryState = { isLoading: false };
 
 const useQuery = <TData, TKey = unknown>(
   key: TKey,
-  { fetcher, enabled = true }: QueryHookOptions<TData, TKey> = {}
+  { fetcher, cacheMode, enabled = true }: QueryHookOptions<TData, TKey> = {}
 ) => {
   const stringKey = JSON.stringify(key);
   const [queryAtomForRender, setQueryAtomForRender] = useState(
@@ -18,12 +18,17 @@ const useQuery = <TData, TKey = unknown>(
 
   const refetch = useCallback(
     async (params: unknown, fetchIfNoCache: boolean): Promise<QueryState<TData>> => {
-      const queryKey =
-        params !== undefined ? `${stringKey}|${JSON.stringify(params)}` : stringKey;
-      let queryAtom = queryCache.get(queryKey) as QueryAtom<TData> | undefined;
-      if (!queryAtom) {
+      let queryAtom: QueryAtom<TData>;
+      if (cacheMode !== 'off') {
+        const queryKey =
+          params !== undefined ? `${stringKey}|${JSON.stringify(params)}` : stringKey;
+        queryAtom = queryCache.get(queryKey) as QueryAtom<TData>;
+        if (!queryAtom) {
+          queryAtom = state<QueryState<TData>, unknown>(defaultQueryState);
+          queryCache.set(queryKey, queryAtom);
+        }
+      } else {
         queryAtom = state<QueryState<TData>, unknown>(defaultQueryState);
-        queryCache.set(queryKey, queryAtom);
       }
       setQueryAtomForRender(queryAtom);
 
@@ -45,7 +50,7 @@ const useQuery = <TData, TKey = unknown>(
       return result;
     },
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [stringKey]
+    [stringKey, cacheMode]
   );
 
   useEffect(() => {

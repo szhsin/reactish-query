@@ -1,16 +1,19 @@
-export type QueryState<TData> = {
+export interface QueryState<TData> {
     isLoading: boolean;
     data?: TData;
     error?: Error;
-};
+}
 export type Fetcher<TData, TKey> = (key: TKey) => Promise<TData>;
 export type LazyFetcher<TData, TKey, TParams> = (key: TKey, params: TParams) => Promise<TData>;
 export type Refetch<TData> = () => Promise<QueryState<TData>>;
 export type LazyFetch<TData, TParams> = (params: TParams) => Promise<QueryState<TData>>;
-export type QueryHookOptions<TData, TKey> = {
+export interface BaseQueryHookOptions {
+    cacheMode?: 'auto' | 'persist' | 'off';
+}
+export interface QueryHookOptions<TData, TKey> extends BaseQueryHookOptions {
     fetcher?: Fetcher<TData, TKey>;
     enabled?: boolean;
-};
-export type LazyQueryHookOptions<TData, TKey, TParams> = {
+}
+export interface LazyQueryHookOptions<TData, TKey, TParams> extends BaseQueryHookOptions {
     fetcher: LazyFetcher<TData, TKey, TParams>;
-};
+}
