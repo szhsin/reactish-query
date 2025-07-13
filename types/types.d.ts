@@ -17,3 +17,4 @@ export interface QueryHookOptions<TData, TKey> extends BaseQueryHookOptions {
 export interface LazyQueryHookOptions<TData, TKey, TParams> extends BaseQueryHookOptions {
     fetcher: LazyFetcher<TData, TKey, TParams>;
 }
+export type MutationHookOptions<TData, TKey, TParams> = Omit<LazyQueryHookOptions<TData, TKey, TParams>, 'cacheMode'>;
