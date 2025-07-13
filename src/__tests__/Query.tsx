@@ -1,5 +1,6 @@
 import { type ReactNode, useState } from 'react';
-import { type QueryState, useQuery } from '../useQuery';
+import type { QueryState } from '../types';
+import { useQuery } from '../useQuery';
 import { fakeRequest } from './fakeRequest';
 
 const Query = ({
