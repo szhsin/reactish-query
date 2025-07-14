@@ -1,7 +1,7 @@
 import type { LazyFetch, LazyQueryHookOptions, QueryHookOptions } from './types';
 import { useQuery } from './useQuery';
 
-const useLazyQuery = <TData, TKey = unknown, TParams = unknown>(
+const useLazyQuery = <TData, TParams, TKey = unknown>(
   options: LazyQueryHookOptions<TData, TKey, TParams>
 ) => {
   const { refetch, ...rest } = useQuery<TData, TKey>({
