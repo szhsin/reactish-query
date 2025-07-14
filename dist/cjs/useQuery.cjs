@@ -7,28 +7,39 @@ var queryCache = require('./queryCache.cjs');
 const defaultQueryState = {
   isLoading: false
 };
-
-/* eslint-disable react-hooks/exhaustive-deps */
-
 const useQuery = (key, {
-  fetcher
+  fetcher,
+  cacheMode,
+  enabled = true
 } = {}) => {
   const stringKey = JSON.stringify(key);
   const [queryAtomForRender, setQueryAtomForRender] = react.useState(reactishState.state(defaultQueryState));
-  const refetch = react.useCallback(async () => {
+  const refetch = react.useCallback(async (params, fetchIfNoCache) => {
+    let queryAtom;
+    if (cacheMode !== 'off') {
+      const queryKey = params !== undefined ? `${stringKey}|${JSON.stringify(params)}` : stringKey;
+      queryAtom = queryCache.queryCache.get(queryKey);
+      if (!queryAtom) {
+        queryAtom = reactishState.state(defaultQueryState);
+        queryCache.queryCache.set(queryKey, queryAtom);
+      }
+    } else {
+      queryAtom = reactishState.state(defaultQueryState);
+    }
+    setQueryAtomForRender(queryAtom);
     const {
       get: getQueryState,
       set: setQueryState
-    } = queryCache.queryCache.get(stringKey);
+    } = queryAtom;
     let result = getQueryState();
-    if (!fetcher || result.isLoading) return Promise.resolve(result);
+    if (fetchIfNoCache && result.data !== undefined || !fetcher || result.isLoading) return Promise.resolve(result);
     setQueryState(prev => ({
       ...prev,
       isLoading: true
     }));
     try {
       result = {
-        data: await fetcher(key),
+        data: await fetcher(key, params),
         isLoading: false
       };
     } catch (error) {
@@ -39,19 +50,14 @@ const useQuery = (key, {
     }
     setQueryState(result);
     return result;
-  }, [stringKey]);
+  }, /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  [stringKey, cacheMode]);
   react.useEffect(() => {
-    let queryAtom = queryCache.queryCache.get(stringKey);
-    if (!queryAtom) {
-      queryAtom = reactishState.state(defaultQueryState);
-      queryCache.queryCache.set(stringKey, queryAtom);
-    }
-    setQueryAtomForRender(queryAtom);
-    if (queryAtom.get().data === undefined) refetch();
-  }, [refetch]);
+    enabled && refetch(undefined, true);
+  }, [enabled, refetch]);
   return {
     ...reactishState.useSnapshot(queryAtomForRender),
-    refetch
+    refetch: refetch
   };
 };
 
