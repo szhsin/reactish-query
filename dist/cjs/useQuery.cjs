@@ -7,11 +7,12 @@ var queryCache = require('./queryCache.cjs');
 const defaultQueryState = {
   isLoading: false
 };
-const useQuery = (key, {
+const useQuery = ({
+  key,
   fetcher,
   cacheMode,
   enabled = true
-} = {}) => {
+}) => {
   const stringKey = JSON.stringify(key);
   const [queryAtomForRender, setQueryAtomForRender] = react.useState(reactishState.state(defaultQueryState));
   const refetch = react.useCallback(async (params, fetchIfNoCache) => {
@@ -39,7 +40,10 @@ const useQuery = (key, {
     }));
     try {
       result = {
-        data: await fetcher(key, params),
+        data: await fetcher({
+          key,
+          params
+        }),
         isLoading: false
       };
     } catch (error) {

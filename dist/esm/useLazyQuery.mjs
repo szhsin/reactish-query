@@ -1,10 +1,10 @@
 import { useQuery } from './useQuery.mjs';
 
-const useLazyQuery = (key, options) => {
+const useLazyQuery = options => {
   const {
     refetch,
     ...rest
-  } = useQuery(key, {
+  } = useQuery({
     ...options,
     enabled: false
   });

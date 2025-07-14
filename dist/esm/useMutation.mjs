@@ -1,6 +1,6 @@
 import { useLazyQuery } from './useLazyQuery.mjs';
 
-const useMutation = (key, options) => useLazyQuery(key, {
+const useMutation = options => useLazyQuery({
   ...options,
   cacheMode: 'off'
 });

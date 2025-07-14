@@ -7,10 +7,12 @@ type QueryAtom<TData> = State<QueryState<TData>, unknown>;
 
 const defaultQueryState = { isLoading: false };
 
-const useQuery = <TData, TKey = unknown>(
-  key: TKey,
-  { fetcher, cacheMode, enabled = true }: QueryHookOptions<TData, TKey> = {}
-) => {
+const useQuery = <TData, TKey = unknown>({
+  key,
+  fetcher,
+  cacheMode,
+  enabled = true
+}: QueryHookOptions<TData, TKey>) => {
   const stringKey = JSON.stringify(key);
   const [queryAtomForRender, setQueryAtomForRender] = useState(
     state<QueryState<TData>, unknown>(defaultQueryState)
@@ -40,7 +42,7 @@ const useQuery = <TData, TKey = unknown>(
       setQueryState((prev) => ({ ...prev, isLoading: true }));
       try {
         result = {
-          data: await (fetcher as LazyFetcher<TData, TKey, unknown>)(key, params),
+          data: await (fetcher as LazyFetcher<TData, TKey, unknown>)({ key, params }),
           isLoading: false
         };
       } catch (error) {
