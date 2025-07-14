@@ -16,13 +16,14 @@ const Query = ({
 }) => {
   const [id, setId] = useState(defaultId);
   const [refetchResult, setRefetchResult] = useState<QueryState<{ result: number }>>();
-  const { isLoading, error, data, refetch } = useQuery(
-    { requestId: id },
-    !noFetcher
-      ? // ensure fetcher use both local and variables from the query key
-        { fetcher: ({ requestId }) => fakeRequest((requestId + id) / 2) }
-      : undefined
-  );
+  const { isLoading, error, data, refetch } = useQuery({
+    key: { requestId: id },
+    ...(!noFetcher && {
+      // ensure fetcher use both local and variables from the query key
+      fetcher: (arg: { key: { requestId: number } }) =>
+        fakeRequest((arg.key.requestId + id) / 2)
+    })
+  });
 
   return (
     <section>

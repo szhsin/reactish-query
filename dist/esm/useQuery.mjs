@@ -5,11 +5,12 @@ import { queryCache } from './queryCache.mjs';
 const defaultQueryState = {
   isLoading: false
 };
-const useQuery = (key, {
+const useQuery = ({
+  key,
   fetcher,
   cacheMode,
   enabled = true
-} = {}) => {
+}) => {
   const stringKey = JSON.stringify(key);
   const [queryAtomForRender, setQueryAtomForRender] = useState(state(defaultQueryState));
   const refetch = useCallback(async (params, fetchIfNoCache) => {
@@ -37,7 +38,10 @@ const useQuery = (key, {
     }));
     try {
       result = {
-        data: await fetcher(key, params),
+        data: await fetcher({
+          key,
+          params
+        }),
         isLoading: false
       };
     } catch (error) {

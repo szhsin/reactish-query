@@ -2,11 +2,11 @@
 
 var useQuery = require('./useQuery.cjs');
 
-const useLazyQuery = (key, options) => {
+const useLazyQuery = options => {
   const {
     refetch,
     ...rest
-  } = useQuery.useQuery(key, {
+  } = useQuery.useQuery({
     ...options,
     enabled: false
   });

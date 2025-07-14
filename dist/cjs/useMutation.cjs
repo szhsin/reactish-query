@@ -2,7 +2,7 @@
 
 var useLazyQuery = require('./useLazyQuery.cjs');
 
-const useMutation = (key, options) => useLazyQuery.useLazyQuery(key, {
+const useMutation = options => useLazyQuery.useLazyQuery({
   ...options,
   cacheMode: 'off'
 });
