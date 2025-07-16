@@ -1,6 +1,6 @@
 {
   "name": "reactish-query",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Atomic state-powered, lightweight React query library",
   "author": "Zheng Song",
   "license": "MIT",
@@ -55,7 +55,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
-    "@types/node": "^24.0.13",
+    "@types/node": "^24.0.14",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitest/coverage-istanbul": "^3.2.4",
@@ -74,10 +74,10 @@
     "prettier": "^3.6.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "rollup": "^4.45.0",
+    "rollup": "^4.45.1",
     "rollup-plugin-add-directive": "^1.0.0",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.36.0",
+    "typescript-eslint": "^8.37.0",
     "vitest": "^3.2.4"
   }
 }
