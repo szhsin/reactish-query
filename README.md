@@ -9,8 +9,9 @@
 ## ✨Highlights✨
 
 - Declarative data fetching for React
-- Atomic state-powered global cache
 - Automatic request deduplication
+- Atomic state-powered global cache
+- JavaScript engine-backed cache garbage collection
 - Lightweight
 
 ## Install
@@ -25,11 +26,10 @@ npm install reactish-query
 import { useQuery } from "reactish-query";
 
 const Profile = ({ userName }: { userName: string }) => {
-  const { isLoading, error, data } = useQuery(["users", userName], {
-    fetcher: ([, userName]) =>
-      fetch(`https://api.github.com/users/${userName}`).then((res) =>
-        res.json()
-      )
+  const { isLoading, error, data } = useQuery<{ name: string }>({
+    key: ['users', userName],
+    fetcher: () =>
+      fetch(`https://api.github.com/users/${userName}`).then((res) => res.json())
   });
 
   if (isLoading) return <div>Loading...</div>;
