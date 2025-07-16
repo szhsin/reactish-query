@@ -1,30 +1,31 @@
 import { type ReactNode, useState } from 'react';
 import type { QueryState, QueryHookOptions } from '../types';
-import { useQuery } from '../index';
+import { useMutation } from '../index';
 import { fakeRequest } from './fakeRequest';
 
-const Query = ({
+const Mutation = ({
   queryName,
   defaultId = 1,
-  noFetcher,
+  noKey,
   children,
   ...queryOptions
 }: {
   queryName: string;
   defaultId?: number;
-  noFetcher?: boolean;
+  noKey?: boolean;
   children?: ReactNode;
-} & Pick<QueryHookOptions<unknown, unknown>, 'cacheMode' | 'enabled'>) => {
+} & Pick<QueryHookOptions<unknown, unknown>, 'cacheMode'>) => {
   const [id, setId] = useState(defaultId);
   const [refetchResult, setRefetchResult] = useState<QueryState<{ result: number }>>();
-  const { isLoading, error, data, refetch } = useQuery({
+  const [trigger, { isLoading, error, data }] = useMutation<
+    { result: number },
+    { paramId: number },
+    { keyId: number }
+  >({
     ...queryOptions,
-    key: { requestId: id },
-    ...(!noFetcher && {
-      // testing fetcher use both local and variables from the query key
-      fetcher: (arg: { key: { requestId: number } }) =>
-        fakeRequest((arg.key.requestId + id) / 2)
-    })
+    ...(!noKey && { key: { keyId: id } }),
+    // testing fetcher use both local and variables from the arguments
+    fetcher: (arg) => fakeRequest(id + (arg.key?.keyId ?? 0) + arg.params.paramId)
   });
 
   return (
@@ -44,26 +45,17 @@ const Query = ({
         Minus
       </button>
       <button
-        data-testid={`refetch-${queryName}`}
+        data-testid={`trigger-${queryName}`}
         onClick={async () => {
-          const result = await refetch();
+          const result = await trigger({ paramId: id });
           setRefetchResult(result);
         }}
       >
-        Refetch
+        Trigger
       </button>
       {children}
     </section>
   );
 };
 
-const Queries = () => (
-  <Query queryName="1" defaultId={1}>
-    <Query queryName="2" defaultId={2} />
-    <Query queryName="3" defaultId={1}>
-      <Query queryName="4" defaultId={2} noFetcher />
-    </Query>
-  </Query>
-);
-
-export { Query, Queries };
+export { Mutation };
