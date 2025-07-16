@@ -1,14 +1,14 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import { queryCache } from '../queryCache';
 import { mockRequest, mockPromise } from './fakeRequest';
-import { Queries } from './Query';
+import { Queries, Query } from './Query';
 
 describe('useQuery', () => {
   afterEach(() => {
     queryCache.clear();
   });
 
-  it('request and load data', async () => {
+  it('requests and loads data', async () => {
     render(<Queries />);
 
     expect(screen.getByTestId('loading-1')).toHaveTextContent('Loading');
@@ -86,7 +86,7 @@ describe('useQuery', () => {
     expect(mockRequest).toHaveBeenNthCalledWith(4, 2);
   });
 
-  it('handle errors', async () => {
+  it('handles errors', async () => {
     mockPromise.mockImplementationOnce(() => {
       throw new Error('Network Error');
     });
@@ -155,10 +155,65 @@ describe('useQuery', () => {
       expect(screen.getByTestId('error-4')).toHaveTextContent('Refetch Error');
     });
   });
+
+  describe('enabled option', () => {
+    it('does not request data when not enabled', () => {
+      const { rerender } = render(<Query queryName="enabled" enabled={false} />);
+      expect(mockRequest).not.toHaveBeenCalled();
+      rerender(<Query queryName="enabled" enabled={true} />);
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('loading-enabled')).toHaveTextContent('Loading');
+    });
+
+    it('requests data when calling refetch', () => {
+      render(<Query queryName="enabled" enabled={false} />);
+      expect(mockRequest).not.toHaveBeenCalled();
+      fireEvent.click(screen.getByTestId('refetch-enabled'));
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('loading-enabled')).toHaveTextContent('Loading');
+    });
+  });
+
+  describe('cacheMode option', () => {
+    it('does not deduplicate requests when cacheMode is off', async () => {
+      render(
+        <div>
+          <Query queryName="cacheOn1" />
+          <Query queryName="cacheOff" cacheMode="off" />
+          <Query queryName="cacheOn2" />
+        </div>
+      );
+      expect(mockRequest).toHaveBeenCalledTimes(2);
+      await waitFor(() => {
+        expect(screen.getByTestId('data-cacheOn1')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-cacheOn2')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-cacheOff')).toHaveTextContent('1');
+      });
+
+      fireEvent.click(screen.getByTestId('refetch-cacheOff'));
+      expect(screen.getByTestId('data-cacheOff')).toBeEmptyDOMElement();
+      await waitFor(() => {
+        expect(screen.getByTestId('data-cacheOff')).toHaveTextContent('1');
+      });
+    });
+
+    it('respects prop update', async () => {
+      const { rerender } = render(<Query queryName="cacheOff" cacheMode="off" />);
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+      await waitFor(() => {
+        expect(screen.getByTestId('data-cacheOff')).toHaveTextContent('1');
+      });
+      rerender(<Query queryName="cacheOff" />);
+      expect(mockRequest).toHaveBeenCalledTimes(2);
+      await waitFor(() => {
+        expect(screen.getByTestId('data-cacheOff')).toHaveTextContent('1');
+      });
+    });
+  });
 });
 
 describe('Query cache', () => {
-  it('save data in cache', async () => {
+  it('saves data in cache', async () => {
     render(<Queries />);
 
     await waitFor(() => {
@@ -171,7 +226,7 @@ describe('Query cache', () => {
     expect(mockRequest).toHaveBeenCalledTimes(2);
   });
 
-  it('load data from cache', () => {
+  it('loads data from cache', () => {
     render(<Queries />);
 
     expect(screen.getByTestId('data-1')).toHaveTextContent('1');

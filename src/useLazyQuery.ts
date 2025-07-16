@@ -1,4 +1,4 @@
-import type { LazyFetch, LazyQueryHookOptions, QueryHookOptions } from './types';
+import type { FetchTrigger, LazyQueryHookOptions, QueryHookOptions } from './types';
 import { useQuery } from './useQuery';
 
 const useLazyQuery = <TData, TParams, TKey = unknown>(
@@ -9,7 +9,7 @@ const useLazyQuery = <TData, TParams, TKey = unknown>(
     enabled: false
   });
 
-  return [refetch as LazyFetch<TData, TParams>, rest] as const;
+  return [refetch as FetchTrigger<TData, TParams>, rest] as const;
 };
 
 export { useLazyQuery };
