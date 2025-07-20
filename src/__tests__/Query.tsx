@@ -17,7 +17,7 @@ const Query = ({
 } & Pick<QueryHookOptions<unknown, unknown>, 'cacheMode' | 'enabled'>) => {
   const [id, setId] = useState(defaultId);
   const [refetchResult, setRefetchResult] = useState<QueryState<{ result: number }>>();
-  const { isLoading, error, data, refetch } = useQuery({
+  const { isPending, isFetching, error, data, refetch } = useQuery({
     ...queryOptions,
     key: { requestId: id },
     ...(!noFetcher && {
@@ -27,12 +27,20 @@ const Query = ({
     })
   });
 
+  if (isPending) {
+    if (data !== undefined || error)
+      throw new Error('Data and error should not have value when pending');
+  } else {
+    if (data === undefined && !error)
+      throw new Error('Data or error should have value when not pending');
+  }
+
   return (
     <section>
       <div data-testid={`query-${queryName}`}>Query {queryName}</div>
-      <div data-testid={`loading-${queryName}`}>{isLoading ? 'Loading' : 'Loaded'}</div>
+      <div data-testid={`status-${queryName}`}>{isFetching ? 'fetching' : 'idle'}</div>
       <div data-testid={`error-${queryName}`}>{error?.message}</div>
-      <div data-testid={`data-${queryName}`}>{data?.result}</div>
+      <div data-testid={`data-${queryName}`}>{!isPending && !error && data.result}</div>
       <div data-testid={`refetch-data-${queryName}`}>{refetchResult?.data?.result}</div>
       <div data-testid={`refetch-error-${queryName}`}>
         {refetchResult?.error?.message}

@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { state, useSnapshot, type State } from 'reactish-state';
-import type { QueryHookOptions, QueryState, LazyFetcher, Refetch } from './types';
+import type { QueryHookOptions, QueryState, LazyFetcher, QueryHookResult } from './types';
 import { queryCache } from './queryCache';
 
 type QueryAtom<TData> = State<QueryState<TData>, unknown>;
 
-const defaultQueryState = { isLoading: false };
+const defaultQueryState = { isFetching: false };
 
 const useQuery = <TData, TKey = unknown>({
   key,
@@ -36,17 +36,17 @@ const useQuery = <TData, TKey = unknown>({
 
       const { get: getQueryState, set: setQueryState } = queryAtom;
       let result = getQueryState();
-      if ((fetchIfNoCache && result.data !== undefined) || !fetcher || result.isLoading)
+      if ((fetchIfNoCache && result.data !== undefined) || !fetcher || result.isFetching)
         return Promise.resolve(result);
 
-      setQueryState((prev) => ({ ...prev, isLoading: true }));
+      setQueryState((prev) => ({ ...prev, isFetching: true }));
       try {
         result = {
           data: await (fetcher as LazyFetcher<TData, TKey, unknown>)({ key, params }),
-          isLoading: false
+          isFetching: false
         };
       } catch (error) {
-        result = { error: error as Error, isLoading: false };
+        result = { error: error as Error, isFetching: false };
       }
       setQueryState(result);
       return result;
@@ -59,7 +59,13 @@ const useQuery = <TData, TKey = unknown>({
     enabled && refetch(undefined, true);
   }, [enabled, refetch]);
 
-  return { ...useSnapshot(queryAtomForRender), refetch: refetch as Refetch<TData> };
+  const queryState = useSnapshot(queryAtomForRender);
+
+  return {
+    ...queryState,
+    isPending: queryState.data === undefined && !queryState.error,
+    refetch
+  } as QueryHookResult<TData>;
 };
 
 export { useQuery };

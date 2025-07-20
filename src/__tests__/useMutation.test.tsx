@@ -17,28 +17,33 @@ describe('useMutation', () => {
     );
 
     expect(mockRequest).toHaveBeenCalledTimes(0);
-    expect(screen.getByTestId('loading-1')).toHaveTextContent('Loaded');
-    expect(screen.getByTestId('loading-2')).toHaveTextContent('Loaded');
+    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
     expect(screen.getByTestId('data-1')).toBeEmptyDOMElement();
     expect(screen.getByTestId('data-2')).toBeEmptyDOMElement();
 
     fireEvent.click(screen.getByTestId('trigger-1'));
     expect(mockRequest).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId('status-1')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
     await waitFor(() => {
       expect(screen.getByTestId('data-1')).toHaveTextContent('3');
     });
     expect(screen.getByTestId('data-2')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
     expect(screen.getByTestId('error-1')).toBeEmptyDOMElement();
     expect(screen.getByTestId('error-2')).toBeEmptyDOMElement();
 
     fireEvent.click(screen.getByTestId('trigger-2'));
     expect(mockRequest).toHaveBeenCalledTimes(2);
     expect(screen.getByTestId('data-1')).toHaveTextContent('3');
-    expect(screen.getByTestId('loading-2')).toHaveTextContent('Loading');
     expect(screen.getByTestId('data-2')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-2')).toHaveTextContent('fetching');
     await waitFor(() => {
-      expect(screen.getByTestId('loading-2')).toHaveTextContent('Loaded');
       expect(screen.getByTestId('data-2')).toHaveTextContent('3');
+      expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
     });
   });
 
@@ -46,14 +51,16 @@ describe('useMutation', () => {
     render(<Mutation queryName="1" noKey />);
 
     expect(mockRequest).toHaveBeenCalledTimes(0);
-    expect(screen.getByTestId('loading-1')).toHaveTextContent('Loaded');
+    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
     expect(screen.getByTestId('data-1')).toBeEmptyDOMElement();
 
     fireEvent.click(screen.getByTestId('trigger-1'));
     expect(mockRequest).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId('status-1')).toHaveTextContent('fetching');
     await waitFor(() => {
       expect(screen.getByTestId('data-1')).toHaveTextContent('2');
     });
+    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
     expect(screen.getByTestId('error-1')).toBeEmptyDOMElement();
   });
 });

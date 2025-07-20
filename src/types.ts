@@ -1,8 +1,30 @@
-export interface QueryState<TData> {
-  isLoading: boolean;
-  data?: TData;
-  error?: Error;
+export interface QueryStatePending {
+  isPending: true;
+  isFetching: boolean;
+  data?: undefined;
+  error?: undefined;
 }
+
+export interface QueryStateSuccess<TData> {
+  isPending: false;
+  isFetching: boolean;
+  data: TData;
+  error?: undefined;
+}
+
+export interface QueryStateError {
+  isPending: false;
+  isFetching: boolean;
+  data?: undefined;
+  error: Error;
+}
+
+export type QueryResult<TData> =
+  | QueryStatePending
+  | QueryStateSuccess<TData>
+  | QueryStateError;
+
+export type QueryState<TData> = Omit<QueryResult<TData>, 'isPending'>;
 
 export type Fetcher<TData, TKey> = (options: { key: TKey }) => Promise<TData>;
 export type LazyFetcher<TData, TKey, TParams> = (options: {
@@ -14,6 +36,10 @@ export type Refetch<TData> = () => Promise<QueryState<TData>>;
 export type FetchTrigger<TData, TParams> = (
   params: TParams
 ) => Promise<QueryState<TData>>;
+
+export type QueryHookResult<TData> = QueryResult<TData> & {
+  refetch: Refetch<TData>;
+};
 
 export interface BaseQueryHookOptions {
   cacheMode?: 'auto' | 'persist' | 'off';

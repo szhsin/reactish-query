@@ -3,7 +3,7 @@ import { state, useSnapshot } from 'reactish-state';
 import { queryCache } from './queryCache.mjs';
 
 const defaultQueryState = {
-  isLoading: false
+  isFetching: false
 };
 const useQuery = ({
   key,
@@ -31,10 +31,10 @@ const useQuery = ({
       set: setQueryState
     } = queryAtom;
     let result = getQueryState();
-    if (fetchIfNoCache && result.data !== undefined || !fetcher || result.isLoading) return Promise.resolve(result);
+    if (fetchIfNoCache && result.data !== undefined || !fetcher || result.isFetching) return Promise.resolve(result);
     setQueryState(prev => ({
       ...prev,
-      isLoading: true
+      isFetching: true
     }));
     try {
       result = {
@@ -42,12 +42,12 @@ const useQuery = ({
           key,
           params
         }),
-        isLoading: false
+        isFetching: false
       };
     } catch (error) {
       result = {
         error: error,
-        isLoading: false
+        isFetching: false
       };
     }
     setQueryState(result);
@@ -57,9 +57,11 @@ const useQuery = ({
   useEffect(() => {
     enabled && refetch(undefined, true);
   }, [enabled, refetch]);
+  const queryState = useSnapshot(queryAtomForRender);
   return {
-    ...useSnapshot(queryAtomForRender),
-    refetch: refetch
+    ...queryState,
+    isPending: queryState.data === undefined && !queryState.error,
+    refetch
   };
 };
 

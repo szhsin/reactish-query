@@ -26,16 +26,16 @@ npm install reactish-query
 import { useQuery } from "reactish-query";
 
 const Profile = ({ userName }: { userName: string }) => {
-  const { isLoading, error, data } = useQuery<{ name: string }>({
+  const { isPending, error, data } = useQuery<{ name: string }>({
     key: ['users', userName],
     fetcher: () =>
       fetch(`https://api.github.com/users/${userName}`).then((res) => res.json())
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isPending) return <div>Loading...</div>;
 
   if (error) return <div>Failed to load: {error.message}</div>;
 
-  return <h1>Hi, {data?.name}</h1>;
+  return <h1>Hi, {data.name}</h1>;
 };
 ```
