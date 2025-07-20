@@ -11,10 +11,10 @@ describe('useQuery', () => {
   it('requests and loads data', async () => {
     render(<Queries />);
 
-    expect(screen.getByTestId('loading-1')).toHaveTextContent('Loading');
-    expect(screen.getByTestId('loading-2')).toHaveTextContent('Loading');
-    expect(screen.getByTestId('loading-3')).toHaveTextContent('Loading');
-    expect(screen.getByTestId('loading-4')).toHaveTextContent('Loading');
+    expect(screen.getByTestId('status-1')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('status-2')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('status-3')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('status-4')).toHaveTextContent('fetching');
 
     expect(mockRequest).toHaveBeenCalledTimes(2);
     expect(mockRequest).toHaveBeenNthCalledWith(1, 2);
@@ -27,10 +27,10 @@ describe('useQuery', () => {
       expect(screen.getByTestId('data-4')).toHaveTextContent('2');
     });
 
-    expect(screen.getByTestId('loading-1')).toHaveTextContent('Loaded');
-    expect(screen.getByTestId('loading-2')).toHaveTextContent('Loaded');
-    expect(screen.getByTestId('loading-3')).toHaveTextContent('Loaded');
-    expect(screen.getByTestId('loading-4')).toHaveTextContent('Loaded');
+    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-3')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-4')).toHaveTextContent('idle');
 
     expect(screen.getByTestId('error-1')).toBeEmptyDOMElement();
     expect(screen.getByTestId('error-2')).toBeEmptyDOMElement();
@@ -39,26 +39,26 @@ describe('useQuery', () => {
 
     fireEvent.click(screen.getByTestId('plus-3'));
     expect(screen.getByTestId('data-3')).toHaveTextContent('2');
-    expect(screen.getByTestId('loading-3')).toHaveTextContent('Loaded');
+    expect(screen.getByTestId('status-3')).toHaveTextContent('idle');
     expect(screen.getByTestId('error-3')).toBeEmptyDOMElement();
     expect(mockRequest).toHaveBeenCalledTimes(2);
 
     fireEvent.click(screen.getByTestId('plus-3'));
     expect(screen.getByTestId('data-3')).toBeEmptyDOMElement();
-    expect(screen.getByTestId('loading-3')).toHaveTextContent('Loading');
+    expect(screen.getByTestId('status-3')).toHaveTextContent('fetching');
     await waitFor(() => {
       expect(screen.getByTestId('data-3')).toHaveTextContent('3');
     });
-    expect(screen.getByTestId('loading-3')).toHaveTextContent('Loaded');
+    expect(screen.getByTestId('status-3')).toHaveTextContent('idle');
     expect(screen.getByTestId('error-3')).toBeEmptyDOMElement();
     expect(mockRequest).toHaveBeenCalledTimes(3);
     expect(mockRequest).toHaveBeenNthCalledWith(3, 3);
 
     fireEvent.click(screen.getByTestId('refetch-2'));
-    expect(screen.getByTestId('loading-1')).toHaveTextContent('Loaded');
-    expect(screen.getByTestId('loading-2')).toHaveTextContent('Loading');
-    expect(screen.getByTestId('loading-3')).toHaveTextContent('Loaded');
-    expect(screen.getByTestId('loading-4')).toHaveTextContent('Loading');
+    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-2')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('status-3')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-4')).toHaveTextContent('fetching');
 
     expect(screen.getByTestId('data-1')).toHaveTextContent('1');
     expect(screen.getByTestId('data-2')).toHaveTextContent('2');
@@ -69,10 +69,10 @@ describe('useQuery', () => {
     expect(screen.getByTestId('refetch-data-4')).toBeEmptyDOMElement();
 
     await waitFor(() => {
-      expect(screen.getByTestId('loading-1')).toHaveTextContent('Loaded');
-      expect(screen.getByTestId('loading-2')).toHaveTextContent('Loaded');
-      expect(screen.getByTestId('loading-3')).toHaveTextContent('Loaded');
-      expect(screen.getByTestId('loading-4')).toHaveTextContent('Loaded');
+      expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
+      expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
+      expect(screen.getByTestId('status-3')).toHaveTextContent('idle');
+      expect(screen.getByTestId('status-4')).toHaveTextContent('idle');
 
       expect(screen.getByTestId('data-1')).toHaveTextContent('1');
       expect(screen.getByTestId('data-2')).toHaveTextContent('2');
@@ -93,10 +93,10 @@ describe('useQuery', () => {
 
     render(<Queries />);
 
-    expect(screen.getByTestId('loading-1')).toHaveTextContent('Loading');
-    expect(screen.getByTestId('loading-2')).toHaveTextContent('Loading');
-    expect(screen.getByTestId('loading-3')).toHaveTextContent('Loading');
-    expect(screen.getByTestId('loading-4')).toHaveTextContent('Loading');
+    expect(screen.getByTestId('status-1')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('status-2')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('status-3')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('status-4')).toHaveTextContent('fetching');
 
     expect(mockRequest).toHaveBeenCalledTimes(2);
 
@@ -112,19 +112,19 @@ describe('useQuery', () => {
       expect(screen.getByTestId('error-4')).toHaveTextContent('Network Error');
     });
 
-    expect(screen.getByTestId('loading-1')).toHaveTextContent('Loaded');
-    expect(screen.getByTestId('loading-2')).toHaveTextContent('Loaded');
-    expect(screen.getByTestId('loading-3')).toHaveTextContent('Loaded');
-    expect(screen.getByTestId('loading-4')).toHaveTextContent('Loaded');
+    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-3')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-4')).toHaveTextContent('idle');
 
     mockRequest.mockImplementationOnce(() => {
       throw new Error('Unknown Error');
     });
     fireEvent.click(screen.getByTestId('plus-1'));
-    expect(screen.getByTestId('loading-1')).toHaveTextContent('Loaded');
-    expect(screen.getByTestId('loading-2')).toHaveTextContent('Loaded');
-    expect(screen.getByTestId('loading-3')).toHaveTextContent('Loaded');
-    expect(screen.getByTestId('loading-4')).toHaveTextContent('Loaded');
+    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-3')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-4')).toHaveTextContent('idle');
 
     expect(screen.getByTestId('data-1')).toBeEmptyDOMElement();
     expect(screen.getByTestId('data-2')).toBeEmptyDOMElement();
@@ -160,17 +160,19 @@ describe('useQuery', () => {
     it('does not request data when not enabled', () => {
       const { rerender } = render(<Query queryName="enabled" enabled={false} />);
       expect(mockRequest).not.toHaveBeenCalled();
+      expect(screen.getByTestId('status-enabled')).toHaveTextContent('idle');
       rerender(<Query queryName="enabled" enabled={true} />);
       expect(mockRequest).toHaveBeenCalledTimes(1);
-      expect(screen.getByTestId('loading-enabled')).toHaveTextContent('Loading');
+      expect(screen.getByTestId('status-enabled')).toHaveTextContent('fetching');
     });
 
     it('requests data when calling refetch', () => {
       render(<Query queryName="enabled" enabled={false} />);
       expect(mockRequest).not.toHaveBeenCalled();
+      expect(screen.getByTestId('status-enabled')).toHaveTextContent('idle');
       fireEvent.click(screen.getByTestId('refetch-enabled'));
       expect(mockRequest).toHaveBeenCalledTimes(1);
-      expect(screen.getByTestId('loading-enabled')).toHaveTextContent('Loading');
+      expect(screen.getByTestId('status-enabled')).toHaveTextContent('fetching');
     });
   });
 

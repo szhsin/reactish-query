@@ -17,7 +17,7 @@ const Mutation = ({
 } & Pick<QueryHookOptions<unknown, unknown>, 'cacheMode'>) => {
   const [id, setId] = useState(defaultId);
   const [refetchResult, setRefetchResult] = useState<QueryState<{ result: number }>>();
-  const [trigger, { isLoading, error, data }] = useMutation<
+  const [trigger, { isFetching, error, data }] = useMutation<
     { result: number },
     { paramId: number },
     { keyId: number }
@@ -31,7 +31,7 @@ const Mutation = ({
   return (
     <section>
       <div data-testid={`query-${queryName}`}>Query {queryName}</div>
-      <div data-testid={`loading-${queryName}`}>{isLoading ? 'Loading' : 'Loaded'}</div>
+      <div data-testid={`status-${queryName}`}>{isFetching ? 'fetching' : 'idle'}</div>
       <div data-testid={`error-${queryName}`}>{error?.message}</div>
       <div data-testid={`data-${queryName}`}>{data?.result}</div>
       <div data-testid={`refetch-data-${queryName}`}>{refetchResult?.data?.result}</div>
