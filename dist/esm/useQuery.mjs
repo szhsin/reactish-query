@@ -2,9 +2,9 @@ import { useState, useCallback, useEffect } from 'react';
 import { state, useSnapshot } from 'reactish-state';
 import { queryCache } from './queryCache.mjs';
 
-const defaultQueryState = {
+const defaultQueryState = [{
   isFetching: false
-};
+}, {}];
 const useQuery = ({
   key,
   fetcher,
@@ -27,21 +27,22 @@ const useQuery = ({
     }
     setQueryAtomForRender(queryAtom);
     const {
-      get: getQueryState,
-      set: setQueryState
+      get: getQueryCache,
+      set: setQueryCache
     } = queryAtom;
-    let result = getQueryState();
+    let [result] = getQueryCache();
     if (fetchIfNoCache && result.data !== undefined || !fetcher || result.isFetching) return Promise.resolve(result);
-    setQueryState(prev => ({
-      ...prev,
+    const meta = {
+      key,
+      params
+    };
+    setQueryCache([{
+      ...result,
       isFetching: true
-    }));
+    }, meta]);
     try {
       result = {
-        data: await fetcher({
-          key,
-          params
-        }),
+        data: await fetcher(meta),
         isFetching: false
       };
     } catch (error) {
@@ -50,14 +51,14 @@ const useQuery = ({
         isFetching: false
       };
     }
-    setQueryState(result);
+    setQueryCache([result, meta]);
     return result;
   }, /* eslint-disable-next-line react-hooks/exhaustive-deps */
   [stringKey, cacheMode]);
   useEffect(() => {
     enabled && refetch(undefined, true);
   }, [enabled, refetch]);
-  const queryState = useSnapshot(queryAtomForRender);
+  const [queryState] = useSnapshot(queryAtomForRender);
   return {
     ...queryState,
     isPending: queryState.data === undefined && !queryState.error,
