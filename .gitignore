@@ -6,7 +6,6 @@ build/
 .next/
 _next/
 .docusaurus/
-examples/out/
 
 # tests
 coverage/
@@ -26,3 +25,4 @@ next-env.d.ts
 .env
 .eslintcache
 .vercel
+examples/

@@ -39,7 +39,7 @@ export default tseslint.config(
       sourceType: 'module',
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['*.?(c|m)[jt]s', 'examples/*.?(c|m)js']
+          allowDefaultProject: ['*.?(c|m)[jt]s', 'examples/*/*.?(c|m)js']
         },
         tsconfigRootDir: import.meta.dirname,
         ecmaFeatures: {

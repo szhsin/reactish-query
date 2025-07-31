@@ -1,11 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { state, useSnapshot, type State } from 'reactish-state';
-import type { QueryHookOptions, QueryState, LazyFetcher, QueryHookResult } from './types';
+import type {
+  QueryHookOptions,
+  QueryState,
+  QueryCache,
+  LazyFetcher,
+  QueryHookResult
+} from './types';
 import { queryCache } from './queryCache';
 
-type QueryAtom<TData> = State<QueryState<TData>, unknown>;
+type QueryAtom<TData, TKey> = State<QueryCache<TData, TKey, unknown>>;
 
-const defaultQueryState = { isFetching: false };
+const defaultQueryState = [{ isFetching: false }, {}] as const;
 
 const useQuery = <TData, TKey = unknown>({
   key,
@@ -15,40 +21,41 @@ const useQuery = <TData, TKey = unknown>({
 }: QueryHookOptions<TData, TKey>) => {
   const stringKey = JSON.stringify(key);
   const [queryAtomForRender, setQueryAtomForRender] = useState(
-    state<QueryState<TData>, unknown>(defaultQueryState)
+    state<QueryCache<TData, TKey, unknown>, unknown>(defaultQueryState)
   );
 
   const refetch = useCallback(
     async (params: unknown, fetchIfNoCache: boolean): Promise<QueryState<TData>> => {
-      let queryAtom: QueryAtom<TData>;
+      let queryAtom: QueryAtom<TData, TKey>;
       if (cacheMode !== 'off') {
         const queryKey =
           params !== undefined ? `${stringKey}|${JSON.stringify(params)}` : stringKey;
-        queryAtom = queryCache.get(queryKey) as QueryAtom<TData>;
+        queryAtom = queryCache.get(queryKey) as QueryAtom<TData, TKey>;
         if (!queryAtom) {
-          queryAtom = state<QueryState<TData>, unknown>(defaultQueryState);
+          queryAtom = state<QueryCache<TData, TKey, unknown>, unknown>(defaultQueryState);
           queryCache.set(queryKey, queryAtom);
         }
       } else {
-        queryAtom = state<QueryState<TData>, unknown>(defaultQueryState);
+        queryAtom = state<QueryCache<TData, TKey, unknown>, unknown>(defaultQueryState);
       }
       setQueryAtomForRender(queryAtom);
 
-      const { get: getQueryState, set: setQueryState } = queryAtom;
-      let result = getQueryState();
+      const { get: getQueryCache, set: setQueryCache } = queryAtom;
+      let [result] = getQueryCache();
       if ((fetchIfNoCache && result.data !== undefined) || !fetcher || result.isFetching)
         return Promise.resolve(result);
 
-      setQueryState((prev) => ({ ...prev, isFetching: true }));
+      const meta = { key, params };
+      setQueryCache([{ ...result, isFetching: true }, meta]);
       try {
         result = {
-          data: await (fetcher as LazyFetcher<TData, TKey, unknown>)({ key, params }),
+          data: await (fetcher as LazyFetcher<TData, TKey, unknown>)(meta),
           isFetching: false
         };
       } catch (error) {
         result = { error: error as Error, isFetching: false };
       }
-      setQueryState(result);
+      setQueryCache([result, meta]);
       return result;
     },
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
@@ -59,7 +66,7 @@ const useQuery = <TData, TKey = unknown>({
     enabled && refetch(undefined, true);
   }, [enabled, refetch]);
 
-  const queryState = useSnapshot(queryAtomForRender);
+  const [queryState] = useSnapshot(queryAtomForRender);
 
   return {
     ...queryState,

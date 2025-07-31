@@ -18,6 +18,13 @@ export interface QueryStateError {
 }
 export type QueryResult<TData> = QueryStatePending | QueryStateSuccess<TData> | QueryStateError;
 export type QueryState<TData> = Omit<QueryResult<TData>, 'isPending'>;
+export type QueryCache<TData, TKey, TParams> = readonly [
+    QueryState<TData>,
+    {
+        key?: TKey;
+        params?: TParams;
+    }
+];
 export type Fetcher<TData, TKey> = (options: {
     key: TKey;
 }) => Promise<TData>;
