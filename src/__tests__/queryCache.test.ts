@@ -1,4 +1,4 @@
-import { type QueryCache } from '../queryCache';
+import { type QueryCache, createQueryCache } from '../queryCache';
 
 const targets = new Map<string, object>();
 const weakRefs = new Map<object, WeakRef>();
@@ -37,12 +37,11 @@ const console = {
 describe('queryCache', () => {
   describe('WeakRef and FinalizationRegistry', () => {
     let queryCache: QueryCache;
-    beforeAll(async () => {
+    beforeAll(() => {
       vi.stubGlobal('WeakRef', WeakRef);
       vi.stubGlobal('FinalizationRegistry', FinalizationRegistry);
       vi.stubGlobal('console', console);
-      const { queryCache: _queryCache } = await import('../queryCache');
-      queryCache = _queryCache;
+      queryCache = createQueryCache();
     });
 
     afterAll(() => {
@@ -89,10 +88,9 @@ describe('queryCache', () => {
   });
 
   describe('Map as fallback', () => {
-    it('should use Map when WeakRef is not available', async () => {
+    it('should use Map when WeakRef is not available', () => {
       vi.stubGlobal('WeakRef', undefined);
-      const { queryCache } = await import('../queryCache');
-      expect(queryCache.constructor).toBe(Map);
+      expect(createQueryCache().constructor).toBe(Map);
       vi.unstubAllGlobals();
       vi.resetModules();
     });

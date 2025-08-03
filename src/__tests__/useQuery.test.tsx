@@ -1,11 +1,11 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
-import { queryCache } from '../queryCache';
+import { defaultQueryClient } from '../queryClient';
 import { mockRequest, mockPromise } from './fakeRequest';
 import { Queries, Query } from './Query';
 
 describe('useQuery', () => {
   afterEach(() => {
-    queryCache.clear();
+    defaultQueryClient.getCache().clear();
   });
 
   it('requests and loads data', async () => {

@@ -1,4 +1,7 @@
 export * from './types';
-export { useQuery } from './useQuery';
-export { useLazyQuery } from './useLazyQuery';
-export { useMutation } from './useMutation';
+export * from './queryClient';
+export * from './QueryProvider';
+export * from './useQueryClient';
+export * from './useQuery';
+export * from './useLazyQuery';
+export * from './useMutation';

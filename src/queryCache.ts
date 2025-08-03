@@ -28,7 +28,7 @@ const weakCache = (): QueryCache => {
   };
 };
 
-const queryCache: QueryCache =
+const createQueryCache = (): QueryCache =>
   typeof WeakRef === 'function' ? weakCache() : new Map<string, object>();
 
-export { queryCache, type QueryCache };
+export { createQueryCache, type QueryCache };
