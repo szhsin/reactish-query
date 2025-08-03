@@ -1,6 +1,6 @@
 {
   "name": "reactish-query",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Atomic state-powered, lightweight React query library",
   "author": "Zheng Song",
   "license": "MIT",
@@ -43,7 +43,7 @@
     "react": "^16.8 || ^17 || ^18 || ^19"
   },
   "dependencies": {
-    "reactish-state": "^1.1.0"
+    "reactish-state": "^1.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",

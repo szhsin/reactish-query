@@ -25,13 +25,11 @@ export type QueryResult<TData> =
   | QueryStateError;
 
 export type QueryState<TData> = Omit<QueryResult<TData>, 'isPending'>;
-export type QueryCache<TData, TKey, TParams> = readonly [
-  QueryState<TData>,
-  {
-    key?: TKey;
-    params?: TParams;
-  }
-];
+
+export interface QueryMeta<TKey, TParams> {
+  key?: TKey;
+  params?: TParams;
+}
 
 export type Fetcher<TData, TKey> = (options: { key: TKey }) => Promise<TData>;
 export type LazyFetcher<TData, TKey, TParams> = (options: {

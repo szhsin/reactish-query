@@ -1,13 +1,8 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
-import { queryCache } from '../queryCache';
 import { mockRequest } from './fakeRequest';
 import { Mutation } from './Mutation';
 
 describe('useMutation', () => {
-  afterEach(() => {
-    queryCache.clear();
-  });
-
   it('loads data when triggered', async () => {
     render(
       <>

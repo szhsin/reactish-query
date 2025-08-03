@@ -3,5 +3,5 @@ type QueryCache = {
     get: (key: string) => object | undefined;
     set: (key: string, value: object) => void;
 };
-declare const queryCache: QueryCache;
-export { queryCache, type QueryCache };
+declare const createQueryCache: () => QueryCache;
+export { createQueryCache, type QueryCache };

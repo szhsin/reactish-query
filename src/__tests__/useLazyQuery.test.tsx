@@ -1,19 +1,22 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
-import { queryCache } from '../queryCache';
+import { createQueryClient } from '../queryClient';
+import { QueryProvider } from '../QueryProvider';
 import { mockRequest } from './fakeRequest';
 import { LazyQuery } from './LazyQuery';
 
+const queryClient = createQueryClient();
+
 describe('useLazyQuery', () => {
   afterEach(() => {
-    queryCache.clear();
+    queryClient.getCache().clear();
   });
 
   it('loads data when triggered', async () => {
     render(
-      <>
+      <QueryProvider value={queryClient}>
         <LazyQuery queryName="1" defaultId={1} />
         <LazyQuery queryName="2" defaultId={1} />
-      </>
+      </QueryProvider>
     );
 
     expect(mockRequest).toHaveBeenCalledTimes(0);

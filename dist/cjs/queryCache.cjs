@@ -20,6 +20,6 @@ const weakCache = () => {
     }
   };
 };
-const queryCache = typeof WeakRef === 'function' ? weakCache() : new Map();
+const createQueryCache = () => typeof WeakRef === 'function' ? weakCache() : new Map();
 
-exports.queryCache = queryCache;
+exports.createQueryCache = createQueryCache;
