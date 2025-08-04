@@ -4,9 +4,9 @@ import { babel } from '@rollup/plugin-babel';
 import { addDirective } from 'rollup-plugin-add-directive';
 
 /**
- * @type {import('rollup').RollupOptions}
+ * @returns {import('rollup').RollupOptions}
  */
-const config = {
+const createBuild = ({ inPath = '', outPath = inPath, inFile = 'index.ts' } = {}) => ({
   external: ['react', 'react-dom', 'react/jsx-runtime', 'reactish-state'],
   plugins: [
     nodeResolve({ extensions: ['.ts', '.tsx', '.js', '.jsx'] }),
@@ -20,22 +20,27 @@ const config = {
     moduleSideEffects: false,
     propertyReadSideEffects: false
   },
-  input: ['src/index.ts'],
+  input: `src/${inPath}${inFile}`,
   output: [
     {
-      dir: 'dist/cjs',
+      dir: `dist/cjs/${outPath}`,
       format: 'cjs',
       interop: 'default',
       entryFileNames: '[name].cjs',
       preserveModules: true
     },
     {
-      dir: 'dist/esm',
+      dir: `dist/esm/${outPath}`,
       format: 'es',
       entryFileNames: '[name].mjs',
       preserveModules: true
     }
   ]
-};
+});
+
+/**
+ * @type {import('rollup').RollupOptions[]}
+ */
+const config = [createBuild(), createBuild({ inPath: 'middleware/' })];
 
 export default config;
