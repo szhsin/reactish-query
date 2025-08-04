@@ -18,7 +18,7 @@ export interface QueryStateError {
 }
 export type QueryResult<TData> = QueryStatePending | QueryStateSuccess<TData> | QueryStateError;
 export type QueryState<TData> = Omit<QueryResult<TData>, 'isPending'>;
-export interface QueryMeta<TKey, TParams> {
+export interface QueryMeta<TKey = unknown, TParams = unknown> {
     key?: TKey;
     params?: TParams;
 }

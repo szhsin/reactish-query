@@ -26,7 +26,7 @@ export type QueryResult<TData> =
 
 export type QueryState<TData> = Omit<QueryResult<TData>, 'isPending'>;
 
-export interface QueryMeta<TKey, TParams> {
+export interface QueryMeta<TKey = unknown, TParams = unknown> {
   key?: TKey;
   params?: TParams;
 }
