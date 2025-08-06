@@ -4,9 +4,11 @@ var react = require('react');
 var reactishState = require('reactish-state');
 var useQueryClient = require('./useQueryClient.cjs');
 
-const defaultQueryState = {
+const getDefaultQueryCacheEntry = stateBuilder => [stateBuilder({
   isFetching: false
-};
+}), {
+  i: 0
+}];
 const useQuery = ({
   key,
   fetcher,
@@ -20,37 +22,40 @@ const useQuery = ({
   const queryCache = getCache();
   const state = getState();
   const stringKey = JSON.stringify(key);
-  const [queryAtomForRender, setQueryAtomForRender] = react.useState(state(defaultQueryState));
-  const refetch = react.useCallback(async (params, fetchIfNoCache) => {
-    let queryAtom;
+  const [queryCacheEntry, setQueryCacheEntry] = react.useState(() => getDefaultQueryCacheEntry(reactishState.state));
+  const refetch = react.useCallback(async (params, declarative) => {
+    let cacheEntry;
     if (cacheMode !== 'off') {
       const queryKey = params !== undefined ? `${stringKey}|${JSON.stringify(params)}` : stringKey;
-      queryAtom = queryCache.get(queryKey);
-      if (!queryAtom) {
-        queryAtom = state(defaultQueryState);
-        queryCache.set(queryKey, queryAtom);
+      cacheEntry = queryCache.get(queryKey);
+      if (!cacheEntry) {
+        cacheEntry = getDefaultQueryCacheEntry(state);
+        queryCache.set(queryKey, cacheEntry);
       }
     } else {
-      queryAtom = state(defaultQueryState);
+      cacheEntry = getDefaultQueryCacheEntry(state);
     }
-    setQueryAtomForRender(queryAtom);
-    const {
+    setQueryCacheEntry(cacheEntry);
+    const [{
       get: getQueryCache,
       set: setQueryCache
-    } = queryAtom;
+    }, cacheMeta] = cacheEntry;
     let result = getQueryCache();
-    if (fetchIfNoCache && result.data !== undefined || !fetcher || result.isFetching) return Promise.resolve(result);
-    const meta = {
+    if (!fetcher || declarative && (result.data !== undefined || result.isFetching)) {
+      return Promise.resolve(result);
+    }
+    const queryMeta = {
       key,
       params
     };
     setQueryCache({
       ...result,
       isFetching: true
-    }, meta);
+    }, queryMeta);
+    const requestSeq = ++cacheMeta.i;
     try {
       result = {
-        data: await fetcher(meta),
+        data: await fetcher(queryMeta),
         isFetching: false
       };
     } catch (error) {
@@ -59,14 +64,14 @@ const useQuery = ({
         isFetching: false
       };
     }
-    setQueryCache(result, meta);
+    if (requestSeq === cacheMeta.i) setQueryCache(result, queryMeta);
     return result;
   }, /* eslint-disable-next-line react-hooks/exhaustive-deps */
   [stringKey, cacheMode]);
   react.useEffect(() => {
-    enabled && refetch(undefined, true);
+    if (enabled) refetch(undefined, true);
   }, [enabled, refetch]);
-  const queryState = reactishState.useSnapshot(queryAtomForRender);
+  const queryState = reactishState.useSnapshot(queryCacheEntry[0]);
   return {
     ...queryState,
     isPending: queryState.data === undefined && !queryState.error,

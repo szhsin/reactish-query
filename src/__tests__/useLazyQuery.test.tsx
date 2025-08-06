@@ -1,8 +1,8 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
-import { createQueryClient } from '../queryClient';
+import { createQueryClient, defaultQueryClient } from '../queryClient';
 import { QueryProvider } from '../QueryProvider';
 import { eventListener } from '../middleware';
-import { mockRequest, mockPromise } from './fakeRequest';
+import { mockRequest, mockPromise, delayFor } from './fakeRequest';
 import { LazyQuery } from './LazyQuery';
 
 const onSuccess = vi.fn();
@@ -19,6 +19,7 @@ const queryClient = createQueryClient({
 describe('useLazyQuery', () => {
   afterEach(() => {
     queryClient.getCache().clear();
+    defaultQueryClient.getCache().clear();
   });
 
   it('loads data when triggered', async () => {
@@ -148,5 +149,26 @@ describe('useLazyQuery', () => {
     expect(onError).toHaveBeenCalledTimes(1);
     expect(onSettled).toHaveBeenCalledTimes(1);
     expect(onSuccess).not.toHaveBeenCalled();
+  });
+
+  it('resolves only the most recent response', async () => {
+    render(
+      <>
+        <LazyQuery queryName="a" defaultId={1} requestVariation />
+        <LazyQuery queryName="b" defaultId={1} requestVariation />
+      </>
+    );
+    fireEvent.click(screen.getByTestId('trigger-a'));
+    fireEvent.click(screen.getByTestId('trigger-a'));
+    fireEvent.click(screen.getByTestId('trigger-b'));
+    fireEvent.click(screen.getByTestId('trigger-b'));
+    fireEvent.click(screen.getByTestId('trigger-b'));
+    expect(screen.getByTestId('status-a')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('status-b')).toHaveTextContent('fetching');
+    await delayFor(500);
+    expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
+    expect(screen.getByTestId('data-a')).toHaveTextContent(/^1.3$/);
+    expect(screen.getByTestId('data-b')).toHaveTextContent(/^1.3$/);
   });
 });
