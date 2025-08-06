@@ -46,7 +46,7 @@
     "eg": "npm run dev --prefix examples"
   },
   "peerDependencies": {
-    "react": "^16.8 || ^17 || ^18 || ^19"
+    "react": "^16.14 || ^17 || ^18 || ^19"
   },
   "dependencies": {
     "reactish-state": "^1.1.1"
