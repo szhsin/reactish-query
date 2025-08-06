@@ -1,3 +1,5 @@
+import { waitFor } from '@testing-library/react';
+
 const mockRequest = vi.fn();
 const mockPromise = vi.fn();
 
@@ -15,4 +17,7 @@ const fakeRequest = <T>(value: T, delay = 0) => {
   });
 };
 
-export { fakeRequest, mockRequest, mockPromise };
+const delayFor = (delay = 0) =>
+  waitFor(() => new Promise((resolve) => setTimeout(resolve, delay)));
+
+export { delayFor, fakeRequest, mockRequest, mockPromise };

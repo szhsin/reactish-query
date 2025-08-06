@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useState, useRef } from 'react';
 import type { QueryState, QueryHookOptions } from '../types';
 import { useLazyQuery } from '../index';
 import { fakeRequest } from './fakeRequest';
@@ -6,13 +6,16 @@ import { fakeRequest } from './fakeRequest';
 const LazyQuery = ({
   queryName,
   defaultId = 1,
+  requestVariation,
   children,
   ...queryOptions
 }: {
   queryName: string;
   defaultId?: number;
+  requestVariation?: boolean;
   children?: ReactNode;
 } & Pick<QueryHookOptions<unknown, unknown>, 'cacheMode'>) => {
+  const variation = useRef(0);
   const [id, setId] = useState(defaultId);
   const [refetchResult, setRefetchResult] = useState<QueryState<{ result: number }>>();
   const [trigger, { isFetching, error, data }] = useLazyQuery<
@@ -22,8 +25,14 @@ const LazyQuery = ({
   >({
     ...queryOptions,
     key: { keyId: id },
-    // testing fetcher use both local and variables from the arguments
-    fetcher: (arg) => fakeRequest((id + arg.key!.keyId + arg.params.paramId) / 3)
+    fetcher: (arg) => {
+      // testing fetcher use both local and variables from the arguments
+      let value = (id + arg.key!.keyId + arg.params.paramId) / 3;
+      // Normally, everything used in the fetcher should be included in the query key.
+      // Here, we deliberately leave some out to mimic variant fetch results using the same key.
+      if (requestVariation) value += variation.current * 0.1;
+      return fakeRequest(value, requestVariation ? (5 - variation.current) * 100 : 0);
+    }
   });
 
   return (
@@ -45,6 +54,7 @@ const LazyQuery = ({
       <button
         data-testid={`trigger-${queryName}`}
         onClick={async () => {
+          if (requestVariation) variation.current++;
           const result = await trigger({ paramId: id });
           setRefetchResult(result);
         }}
