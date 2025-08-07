@@ -4,7 +4,15 @@ import type { State, StateBuilder } from 'reactish-state';
 import type { QueryState, QueryHookOptions, QueryHookResult, LazyFetcher } from './types';
 import { useQueryClient } from './useQueryClient';
 
-type QueryCacheEntry<TData> = readonly [State<QueryState<TData>>, { i: number }];
+type QueryCacheEntry<TData> = readonly [
+  State<QueryState<TData>>,
+  {
+    /** @internal Request sequence number */
+    i: number;
+    /** @internal Timestamp of the response */
+    t?: number;
+  }
+];
 
 const getDefaultQueryCacheEntry = <TData>(
   stateBuilder: StateBuilder
@@ -17,7 +25,8 @@ const useQuery = <TData, TKey = unknown>({
   key,
   fetcher,
   cacheMode,
-  enabled = true
+  enabled = true,
+  staleTime = 0
 }: QueryHookOptions<TData, TKey>) => {
   const { getCache, getState } = useQueryClient();
   const queryCache = getCache();
@@ -45,7 +54,11 @@ const useQuery = <TData, TKey = unknown>({
 
       const [{ get: getQueryCache, set: setQueryCache }, cacheMeta] = cacheEntry;
       let result = getQueryCache();
-      if (!fetcher || (declarative && (result.data !== undefined || result.isFetching))) {
+
+      if (
+        !fetcher ||
+        (declarative && (result.isFetching || Date.now() - staleTime < cacheMeta.t!))
+      ) {
         return Promise.resolve(result);
       }
 
@@ -57,6 +70,7 @@ const useQuery = <TData, TKey = unknown>({
           data: await (fetcher as LazyFetcher<TData, TKey, unknown>)(queryMeta),
           isFetching: false
         };
+        cacheMeta.t = Date.now();
       } catch (error) {
         result = { error: error as Error, isFetching: false };
       }
@@ -64,7 +78,7 @@ const useQuery = <TData, TKey = unknown>({
       return result;
     },
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [stringKey, cacheMode]
+    [stringKey, cacheMode, staleTime]
   );
 
   useEffect(() => {

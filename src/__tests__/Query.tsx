@@ -14,7 +14,7 @@ const Query = ({
   defaultId?: number;
   noFetcher?: boolean;
   children?: ReactNode;
-} & Pick<QueryHookOptions<unknown, unknown>, 'cacheMode' | 'enabled'>) => {
+} & Pick<QueryHookOptions<unknown, unknown>, 'cacheMode' | 'enabled' | 'staleTime'>) => {
   const [id, setId] = useState(defaultId);
   const [refetchResult, setRefetchResult] = useState<QueryState<{ result: number }>>();
   const { isPending, isFetching, error, data, refetch } = useQuery({
@@ -65,11 +65,11 @@ const Query = ({
   );
 };
 
-const Queries = () => (
-  <Query queryName="1" defaultId={1}>
-    <Query queryName="2" defaultId={2} />
-    <Query queryName="3" defaultId={1}>
-      <Query queryName="4" defaultId={2} noFetcher />
+const Queries = ({ staleTime = Infinity }: { staleTime?: number }) => (
+  <Query queryName="a" defaultId={1} staleTime={staleTime}>
+    <Query queryName="b" defaultId={2} staleTime={staleTime} />
+    <Query queryName="c" defaultId={1} staleTime={staleTime}>
+      <Query queryName="d" defaultId={2} noFetcher staleTime={staleTime} />
     </Query>
   </Query>
 );
