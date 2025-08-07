@@ -54,6 +54,7 @@ export interface QueryHookOptions<TData, TKey> extends BaseQueryHookOptions {
   key: TKey;
   fetcher?: Fetcher<TData, TKey>;
   enabled?: boolean;
+  staleTime?: number;
 }
 
 export interface LazyQueryHookOptions<TData, TKey, TParams> extends BaseQueryHookOptions {

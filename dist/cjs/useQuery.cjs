@@ -13,7 +13,8 @@ const useQuery = ({
   key,
   fetcher,
   cacheMode,
-  enabled = true
+  enabled = true,
+  staleTime = 0
 }) => {
   const {
     getCache,
@@ -41,7 +42,7 @@ const useQuery = ({
       set: setQueryCache
     }, cacheMeta] = cacheEntry;
     let result = getQueryCache();
-    if (!fetcher || declarative && (result.data !== undefined || result.isFetching)) {
+    if (!fetcher || declarative && (result.isFetching || Date.now() - staleTime < cacheMeta.t)) {
       return Promise.resolve(result);
     }
     const queryMeta = {
@@ -58,6 +59,7 @@ const useQuery = ({
         data: await fetcher(queryMeta),
         isFetching: false
       };
+      cacheMeta.t = Date.now();
     } catch (error) {
       result = {
         error: error,
@@ -67,7 +69,7 @@ const useQuery = ({
     if (requestSeq === cacheMeta.i) setQueryCache(result, queryMeta);
     return result;
   }, /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  [stringKey, cacheMode]);
+  [stringKey, cacheMode, staleTime]);
   react.useEffect(() => {
     if (enabled) refetch(undefined, true);
   }, [enabled, refetch]);
