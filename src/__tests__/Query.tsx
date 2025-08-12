@@ -19,11 +19,11 @@ const Query = ({
   const [refetchResult, setRefetchResult] = useState<QueryState<{ result: number }>>();
   const { isPending, isFetching, error, data, refetch } = useQuery({
     ...queryOptions,
-    key: { requestId: id },
+    queryKey: { requestId: id },
     ...(!noFetcher && {
       // testing fetcher use both local and variables from the query key
-      fetcher: (arg: { key: { requestId: number } }) =>
-        fakeRequest((arg.key.requestId + id) / 2)
+      queryFn: (arg: { queryKey: { requestId: number } }) =>
+        fakeRequest((arg.queryKey.requestId + id) / 2)
     })
   });
 

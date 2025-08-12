@@ -1,5 +1,5 @@
-import type { FetchTrigger, LazyQueryHookOptions } from './types';
-declare const useLazyQuery: <TData, TParams, TKey = unknown>(options: LazyQueryHookOptions<TData, TKey, TParams>) => readonly [FetchTrigger<TData, TParams>, {
+import type { QueryTrigger, LazyQueryHookOptions } from './types';
+declare const useLazyQuery: <TData, TArgs, TKey = unknown>(options: LazyQueryHookOptions<TData, TKey, TArgs>) => readonly [QueryTrigger<TData, TArgs>, {
     isPending: true;
     isFetching: boolean;
     data?: undefined;

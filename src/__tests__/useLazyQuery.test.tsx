@@ -46,14 +46,14 @@ describe('useLazyQuery', () => {
         {
           result: 1
         },
-        { key: { keyId: 1 }, params: { paramId: 1 } }
+        { queryKey: { keyId: 1 }, args: { paramId: 1 } }
       );
       expect(onSettled).toHaveBeenLastCalledWith(
         {
           result: 1
         },
         undefined,
-        { key: { keyId: 1 }, params: { paramId: 1 } }
+        { queryKey: { keyId: 1 }, args: { paramId: 1 } }
       );
       expect(screen.getByTestId('data-1')).toHaveTextContent('1');
       expect(screen.getByTestId('refetch-data-1')).toHaveTextContent('1');
@@ -75,14 +75,14 @@ describe('useLazyQuery', () => {
         {
           result: 1
         },
-        { key: { keyId: 1 }, params: { paramId: 1 } }
+        { queryKey: { keyId: 1 }, args: { paramId: 1 } }
       );
       expect(onSettled).toHaveBeenLastCalledWith(
         {
           result: 1
         },
         undefined,
-        { key: { keyId: 1 }, params: { paramId: 1 } }
+        { queryKey: { keyId: 1 }, args: { paramId: 1 } }
       );
       expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
       expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
@@ -99,14 +99,14 @@ describe('useLazyQuery', () => {
         {
           result: 2
         },
-        { key: { keyId: 2 }, params: { paramId: 2 } }
+        { queryKey: { keyId: 2 }, args: { paramId: 2 } }
       );
       expect(onSettled).toHaveBeenLastCalledWith(
         {
           result: 2
         },
         undefined,
-        { key: { keyId: 2 }, params: { paramId: 2 } }
+        { queryKey: { keyId: 2 }, args: { paramId: 2 } }
       );
       expect(screen.getByTestId('data-1')).toHaveTextContent('2');
     });
@@ -135,12 +135,12 @@ describe('useLazyQuery', () => {
 
     await waitFor(() => {
       expect(onError).toHaveBeenLastCalledWith(networkError, {
-        key: { keyId: 1 },
-        params: { paramId: 1 }
+        queryKey: { keyId: 1 },
+        args: { paramId: 1 }
       });
       expect(onSettled).toHaveBeenLastCalledWith(undefined, networkError, {
-        key: { keyId: 1 },
-        params: { paramId: 1 }
+        queryKey: { keyId: 1 },
+        args: { paramId: 1 }
       });
       expect(screen.getByTestId('error-1')).toHaveTextContent('Network Error');
       expect(screen.getByTestId('refetch-error-1')).toHaveTextContent('Network Error');

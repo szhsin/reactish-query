@@ -23,9 +23,10 @@ const Mutation = ({
     { keyId: number }
   >({
     ...queryOptions,
-    ...(!noKey && { key: { keyId: id } }),
+    ...(!noKey && { queryKey: { keyId: id } }),
     // testing fetcher use both local and variables from the arguments
-    fetcher: (arg) => fakeRequest(id + (arg.key?.keyId ?? 0) + arg.params.paramId)
+    queryFn: ({ queryKey, args }) =>
+      fakeRequest(id + (queryKey?.keyId ?? 0) + args.paramId)
   });
 
   return (
