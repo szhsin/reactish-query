@@ -1,5 +1,5 @@
 import type { MutationHookOptions } from './types';
-declare const useMutation: <TData, TParams, TKey = unknown>(options: MutationHookOptions<TData, TKey, TParams>) => readonly [import("./types").FetchTrigger<TData, TParams>, {
+declare const useMutation: <TData, TArgs, TKey = unknown>(options: MutationHookOptions<TData, TKey, TArgs>) => readonly [import("./types").QueryTrigger<TData, TArgs>, {
     isPending: true;
     isFetching: boolean;
     data?: undefined;

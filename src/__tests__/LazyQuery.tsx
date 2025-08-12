@@ -24,10 +24,10 @@ const LazyQuery = ({
     { keyId: number }
   >({
     ...queryOptions,
-    key: { keyId: id },
-    fetcher: (arg) => {
+    queryKey: { keyId: id },
+    queryFn: (arg) => {
       // testing fetcher use both local and variables from the arguments
-      let value = (id + arg.key!.keyId + arg.params.paramId) / 3;
+      let value = (id + arg.queryKey!.keyId + arg.args.paramId) / 3;
       // Normally, everything used in the fetcher should be included in the query key.
       // Here, we deliberately leave some out to mimic variant fetch results using the same key.
       if (requestVariation) value += variation.current * 0.1;

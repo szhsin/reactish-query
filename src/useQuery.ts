@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { state as placeholderState, useSnapshot } from 'reactish-state';
 import type { State, StateBuilder } from 'reactish-state';
-import type { QueryState, QueryHookOptions, QueryHookResult, LazyFetcher } from './types';
+import type { QueryState, QueryHookOptions, QueryHookResult, LazyQueryFn } from './types';
 import { useQueryClient } from './useQueryClient';
 
 type QueryCacheEntry<TData> = readonly [
@@ -22,8 +22,8 @@ const getDefaultQueryCacheEntry = <TData>(
 ];
 
 const useQuery = <TData, TKey = unknown>({
-  key,
-  fetcher,
+  queryKey,
+  queryFn,
   cacheMode,
   enabled = true,
   staleTime = 0
@@ -31,21 +31,21 @@ const useQuery = <TData, TKey = unknown>({
   const { getCache, getState } = useQueryClient();
   const queryCache = getCache();
   const state = getState();
-  const stringKey = JSON.stringify(key);
+  const stringKey = JSON.stringify(queryKey);
   const [queryCacheEntry, setQueryCacheEntry] = useState<QueryCacheEntry<TData>>(() =>
     getDefaultQueryCacheEntry(placeholderState)
   );
 
   const refetch = useCallback(
-    async (params: unknown, declarative: boolean): Promise<QueryState<TData>> => {
+    async (args: unknown, declarative: boolean): Promise<QueryState<TData>> => {
       let cacheEntry: QueryCacheEntry<TData>;
       if (cacheMode !== 'off') {
-        const queryKey =
-          params !== undefined ? `${stringKey}|${JSON.stringify(params)}` : stringKey;
-        cacheEntry = queryCache.get(queryKey) as QueryCacheEntry<TData>;
+        const key =
+          args !== undefined ? `${stringKey}|${JSON.stringify(args)}` : stringKey;
+        cacheEntry = queryCache.get(key) as QueryCacheEntry<TData>;
         if (!cacheEntry) {
           cacheEntry = getDefaultQueryCacheEntry(state);
-          queryCache.set(queryKey, cacheEntry);
+          queryCache.set(key, cacheEntry);
         }
       } else {
         cacheEntry = getDefaultQueryCacheEntry(state);
@@ -56,18 +56,18 @@ const useQuery = <TData, TKey = unknown>({
       let result = getQueryCache();
 
       if (
-        !fetcher ||
+        !queryFn ||
         (declarative && (result.isFetching || Date.now() - staleTime < cacheMeta.t!))
       ) {
         return Promise.resolve(result);
       }
 
-      const queryMeta = { key, params };
+      const queryMeta = { queryKey, args };
       setQueryCache({ ...result, isFetching: true }, queryMeta);
       const requestSeq = ++cacheMeta.i;
       try {
         result = {
-          data: await (fetcher as LazyFetcher<TData, TKey, unknown>)(queryMeta),
+          data: await (queryFn as LazyQueryFn<TData, TKey, unknown>)(queryMeta),
           isFetching: false
         };
         cacheMeta.t = Date.now();

@@ -10,8 +10,8 @@ const getDefaultQueryCacheEntry = stateBuilder => [stateBuilder({
   i: 0
 }];
 const useQuery = ({
-  key,
-  fetcher,
+  queryKey,
+  queryFn,
   cacheMode,
   enabled = true,
   staleTime = 0
@@ -22,16 +22,16 @@ const useQuery = ({
   } = useQueryClient.useQueryClient();
   const queryCache = getCache();
   const state = getState();
-  const stringKey = JSON.stringify(key);
+  const stringKey = JSON.stringify(queryKey);
   const [queryCacheEntry, setQueryCacheEntry] = react.useState(() => getDefaultQueryCacheEntry(reactishState.state));
-  const refetch = react.useCallback(async (params, declarative) => {
+  const refetch = react.useCallback(async (args, declarative) => {
     let cacheEntry;
     if (cacheMode !== 'off') {
-      const queryKey = params !== undefined ? `${stringKey}|${JSON.stringify(params)}` : stringKey;
-      cacheEntry = queryCache.get(queryKey);
+      const key = args !== undefined ? `${stringKey}|${JSON.stringify(args)}` : stringKey;
+      cacheEntry = queryCache.get(key);
       if (!cacheEntry) {
         cacheEntry = getDefaultQueryCacheEntry(state);
-        queryCache.set(queryKey, cacheEntry);
+        queryCache.set(key, cacheEntry);
       }
     } else {
       cacheEntry = getDefaultQueryCacheEntry(state);
@@ -42,12 +42,12 @@ const useQuery = ({
       set: setQueryCache
     }, cacheMeta] = cacheEntry;
     let result = getQueryCache();
-    if (!fetcher || declarative && (result.isFetching || Date.now() - staleTime < cacheMeta.t)) {
+    if (!queryFn || declarative && (result.isFetching || Date.now() - staleTime < cacheMeta.t)) {
       return Promise.resolve(result);
     }
     const queryMeta = {
-      key,
-      params
+      queryKey,
+      args
     };
     setQueryCache({
       ...result,
@@ -56,7 +56,7 @@ const useQuery = ({
     const requestSeq = ++cacheMeta.i;
     try {
       result = {
-        data: await fetcher(queryMeta),
+        data: await queryFn(queryMeta),
         isFetching: false
       };
       cacheMeta.t = Date.now();
