@@ -1,5 +1,6 @@
 const weakCache = () => {
   const cacheMap = new Map();
+  const strongRefs = new Set();
   const registry = new FinalizationRegistry(heldValue => {
     const ref = cacheMap.get(heldValue);
     if (ref && !ref.deref()) {
@@ -10,11 +11,19 @@ const weakCache = () => {
     }
   });
   return {
-    clear: () => cacheMap.clear(),
-    get: key => cacheMap.get(key)?.deref(),
-    set: (key, value) => {
+    clear: () => {
+      cacheMap.clear();
+      strongRefs.clear();
+    },
+    get: (key, strong) => {
+      const value = cacheMap.get(key)?.deref();
+      if (strong && value) strongRefs.add(value);
+      return value;
+    },
+    set: (key, value, strong) => {
       cacheMap.set(key, new WeakRef(value));
       registry.register(value, key);
+      if (strong) strongRefs.add(value);
     }
   };
 };

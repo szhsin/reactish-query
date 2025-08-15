@@ -199,17 +199,42 @@ describe('useQuery', () => {
       });
     });
 
+    it('deduplicates requests when different cache modes use the same key', async () => {
+      render(
+        <div>
+          <Query queryName="a" cacheMode="persist" />
+          <Query queryName="b" cacheMode="auto" />
+          <Query queryName="c" cacheMode="persist" />
+          <Query queryName="d" />
+        </div>
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+      });
+
+      expect(screen.getByTestId('data-b')).toHaveTextContent('1');
+      expect(screen.getByTestId('data-c')).toHaveTextContent('1');
+      expect(screen.getByTestId('data-d')).toHaveTextContent('1');
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+    });
+
     it('respects prop update', async () => {
       const { rerender } = render(<Query queryName="a" cacheMode="off" />);
       expect(mockRequest).toHaveBeenCalledTimes(1);
       await waitFor(() => {
         expect(screen.getByTestId('data-a')).toHaveTextContent('1');
       });
+
       rerender(<Query queryName="a" />);
       expect(mockRequest).toHaveBeenCalledTimes(2);
+      expect(screen.getByTestId('data-a')).toBeEmptyDOMElement();
       await waitFor(() => {
         expect(screen.getByTestId('data-a')).toHaveTextContent('1');
       });
+
+      rerender(<Query queryName="a" cacheMode="persist" />);
+      expect(mockRequest).toHaveBeenCalledTimes(3);
+      expect(screen.getByTestId('data-a')).toHaveTextContent('1');
     });
   });
 

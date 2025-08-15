@@ -27,8 +27,8 @@ import { useQuery } from "reactish-query";
 
 const Profile = ({ userName }: { userName: string }) => {
   const { isPending, error, data } = useQuery<{ name: string }>({
-    key: ['users', userName],
-    fetcher: () =>
+    queryKey: ['users', userName],
+    queryFn: () =>
       fetch(`https://api.github.com/users/${userName}`).then((res) => res.json())
   });
 

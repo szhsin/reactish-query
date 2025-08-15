@@ -1,11 +1,12 @@
 type QueryCache = {
   clear: () => void;
-  get: (key: string) => object | undefined;
-  set: (key: string, value: object) => void;
+  get: (key: string, strong?: boolean) => object | undefined;
+  set: (key: string, value: object, strong?: boolean) => void;
 };
 
 const weakCache = (): QueryCache => {
   const cacheMap = new Map<string, WeakRef<object>>();
+  const strongRefs = new Set<object>();
   const registry = new FinalizationRegistry<string>((heldValue) => {
     const ref = cacheMap.get(heldValue);
     if (ref && !ref.deref()) {
@@ -17,13 +18,21 @@ const weakCache = (): QueryCache => {
   });
 
   return {
-    clear: () => cacheMap.clear(),
+    clear: () => {
+      cacheMap.clear();
+      strongRefs.clear();
+    },
 
-    get: (key) => cacheMap.get(key)?.deref(),
+    get: (key, strong) => {
+      const value = cacheMap.get(key)?.deref();
+      if (strong && value) strongRefs.add(value);
+      return value;
+    },
 
-    set: (key, value) => {
+    set: (key, value, strong) => {
       cacheMap.set(key, new WeakRef(value));
       registry.register(value, key);
+      if (strong) strongRefs.add(value);
     }
   };
 };

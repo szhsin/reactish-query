@@ -40,12 +40,13 @@ const useQuery = <TData, TKey = unknown>({
     async (args: unknown, declarative: boolean): Promise<QueryState<TData>> => {
       let cacheEntry: QueryCacheEntry<TData>;
       if (cacheMode !== 'off') {
+        const shouldPersist = cacheMode === 'persist';
         const key =
           args !== undefined ? `${stringKey}|${JSON.stringify(args)}` : stringKey;
-        cacheEntry = queryCache.get(key) as QueryCacheEntry<TData>;
+        cacheEntry = queryCache.get(key, shouldPersist) as QueryCacheEntry<TData>;
         if (!cacheEntry) {
           cacheEntry = getDefaultQueryCacheEntry(state);
-          queryCache.set(key, cacheEntry);
+          queryCache.set(key, cacheEntry, shouldPersist);
         }
       } else {
         cacheEntry = getDefaultQueryCacheEntry(state);

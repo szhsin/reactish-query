@@ -27,11 +27,12 @@ const useQuery = ({
   const refetch = react.useCallback(async (args, declarative) => {
     let cacheEntry;
     if (cacheMode !== 'off') {
+      const shouldPersist = cacheMode === 'persist';
       const key = args !== undefined ? `${stringKey}|${JSON.stringify(args)}` : stringKey;
-      cacheEntry = queryCache.get(key);
+      cacheEntry = queryCache.get(key, shouldPersist);
       if (!cacheEntry) {
         cacheEntry = getDefaultQueryCacheEntry(state);
-        queryCache.set(key, cacheEntry);
+        queryCache.set(key, cacheEntry, shouldPersist);
       }
     } else {
       cacheEntry = getDefaultQueryCacheEntry(state);
