@@ -1,6 +1,5 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
-import { createQueryClient, defaultQueryClient } from '../queryClient';
-import { QueryProvider } from '../QueryProvider';
+import { createQueryClient, defaultQueryClient, QueryProvider } from '../index';
 import { eventListener } from '../middleware';
 import { mockRequest, mockPromise, delayFor } from './fakeRequest';
 import { LazyQuery } from './LazyQuery';
@@ -24,23 +23,23 @@ describe('useLazyQuery', () => {
 
   it('loads data when triggered', async () => {
     render(
-      <QueryProvider value={queryClient}>
-        <LazyQuery queryName="1" defaultId={1} />
-        <LazyQuery queryName="2" defaultId={1} />
+      <QueryProvider client={queryClient}>
+        <LazyQuery queryName="a" defaultId={1} />
+        <LazyQuery queryName="b" defaultId={1} />
       </QueryProvider>
     );
 
     expect(mockRequest).toHaveBeenCalledTimes(0);
-    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
-    expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
-    expect(screen.getByTestId('data-1')).toBeEmptyDOMElement();
-    expect(screen.getByTestId('refetch-data-1')).toBeEmptyDOMElement();
-    expect(screen.getByTestId('data-2')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
+    expect(screen.getByTestId('data-a')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('refetch-data-a')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('data-b')).toBeEmptyDOMElement();
 
-    fireEvent.click(screen.getByTestId('trigger-1'));
+    fireEvent.click(screen.getByTestId('trigger-a'));
     expect(mockRequest).toHaveBeenCalledTimes(1);
-    expect(screen.getByTestId('status-1')).toHaveTextContent('fetching');
-    expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-a')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
     await waitFor(() => {
       expect(onSuccess).toHaveBeenLastCalledWith(
         {
@@ -55,21 +54,21 @@ describe('useLazyQuery', () => {
         undefined,
         { queryKey: { keyId: 1 }, args: { paramId: 1 } }
       );
-      expect(screen.getByTestId('data-1')).toHaveTextContent('1');
-      expect(screen.getByTestId('refetch-data-1')).toHaveTextContent('1');
+      expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+      expect(screen.getByTestId('refetch-data-a')).toHaveTextContent('1');
     });
-    expect(screen.getByTestId('data-2')).toBeEmptyDOMElement();
-    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
-    expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
-    expect(screen.getByTestId('error-1')).toBeEmptyDOMElement();
-    expect(screen.getByTestId('error-2')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('data-b')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
+    expect(screen.getByTestId('error-a')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('error-b')).toBeEmptyDOMElement();
 
-    fireEvent.click(screen.getByTestId('trigger-2'));
+    fireEvent.click(screen.getByTestId('trigger-b'));
     expect(mockRequest).toHaveBeenCalledTimes(2);
-    expect(screen.getByTestId('data-1')).toHaveTextContent('1');
-    expect(screen.getByTestId('data-2')).toHaveTextContent('1');
-    expect(screen.getByTestId('status-1')).toHaveTextContent('fetching');
-    expect(screen.getByTestId('status-2')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+    expect(screen.getByTestId('data-b')).toHaveTextContent('1');
+    expect(screen.getByTestId('status-a')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('status-b')).toHaveTextContent('fetching');
     await waitFor(() => {
       expect(onSuccess).toHaveBeenLastCalledWith(
         {
@@ -84,16 +83,16 @@ describe('useLazyQuery', () => {
         undefined,
         { queryKey: { keyId: 1 }, args: { paramId: 1 } }
       );
-      expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
-      expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
+      expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+      expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
     });
 
-    fireEvent.click(screen.getByTestId('plus-1'));
+    fireEvent.click(screen.getByTestId('plus-a'));
     expect(mockRequest).toHaveBeenCalledTimes(2);
-    expect(screen.getByTestId('data-1')).toHaveTextContent('1');
-    fireEvent.click(screen.getByTestId('trigger-1'));
+    expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+    fireEvent.click(screen.getByTestId('trigger-a'));
     expect(mockRequest).toHaveBeenCalledTimes(3);
-    expect(screen.getByTestId('data-1')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('data-a')).toBeEmptyDOMElement();
     await waitFor(() => {
       expect(onSuccess).toHaveBeenLastCalledWith(
         {
@@ -108,9 +107,9 @@ describe('useLazyQuery', () => {
         undefined,
         { queryKey: { keyId: 2 }, args: { paramId: 2 } }
       );
-      expect(screen.getByTestId('data-1')).toHaveTextContent('2');
+      expect(screen.getByTestId('data-a')).toHaveTextContent('2');
     });
-    expect(screen.getByTestId('data-2')).toHaveTextContent('1');
+    expect(screen.getByTestId('data-b')).toHaveTextContent('1');
     expect(onSuccess).toHaveBeenCalledTimes(3);
     expect(onSettled).toHaveBeenCalledTimes(3);
     expect(onError).not.toHaveBeenCalled();
@@ -118,8 +117,8 @@ describe('useLazyQuery', () => {
 
   it('handles errors', async () => {
     render(
-      <QueryProvider value={queryClient}>
-        <LazyQuery queryName="1" defaultId={1} />
+      <QueryProvider client={queryClient}>
+        <LazyQuery queryName="a" defaultId={1} />
       </QueryProvider>
     );
 
@@ -128,10 +127,10 @@ describe('useLazyQuery', () => {
       throw networkError;
     });
 
-    fireEvent.click(screen.getByTestId('trigger-1'));
-    expect(screen.getByTestId('data-1')).toBeEmptyDOMElement();
-    expect(screen.getByTestId('error-1')).toBeEmptyDOMElement();
-    expect(screen.getByTestId('refetch-error-1')).toBeEmptyDOMElement();
+    fireEvent.click(screen.getByTestId('trigger-a'));
+    expect(screen.getByTestId('data-a')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('error-a')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('refetch-error-a')).toBeEmptyDOMElement();
 
     await waitFor(() => {
       expect(onError).toHaveBeenLastCalledWith(networkError, {
@@ -142,8 +141,8 @@ describe('useLazyQuery', () => {
         queryKey: { keyId: 1 },
         args: { paramId: 1 }
       });
-      expect(screen.getByTestId('error-1')).toHaveTextContent('Network Error');
-      expect(screen.getByTestId('refetch-error-1')).toHaveTextContent('Network Error');
+      expect(screen.getByTestId('error-a')).toHaveTextContent('Network Error');
+      expect(screen.getByTestId('refetch-error-a')).toHaveTextContent('Network Error');
     });
 
     expect(onError).toHaveBeenCalledTimes(1);

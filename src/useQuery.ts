@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { state as placeholderState, useSnapshot } from 'reactish-state';
 import type { State, StateBuilder } from 'reactish-state';
 import type { QueryState, QueryHookOptions, QueryHookResult, LazyQueryFn } from './types';
-import { useQueryClient } from './useQueryClient';
+import { useQueryContext } from './useQueryContext';
+import { stringify } from './utils';
 
 type QueryCacheEntry<TData> = readonly [
   State<QueryState<TData>>,
@@ -24,14 +25,17 @@ const getDefaultQueryCacheEntry = <TData>(
 const useQuery = <TData, TKey = unknown>({
   queryKey,
   queryFn,
-  cacheMode,
   enabled = true,
-  staleTime = 0
+  ...options
 }: QueryHookOptions<TData, TKey>) => {
-  const { getCache, getState } = useQueryClient();
+  const {
+    client: { getCache, getState },
+    defaultOptions
+  } = useQueryContext();
+  const { cacheMode, staleTime = 0 } = { ...defaultOptions, ...options };
   const queryCache = getCache();
   const state = getState();
-  const stringKey = JSON.stringify(queryKey);
+  const stringKey = stringify(queryKey);
   const [queryCacheEntry, setQueryCacheEntry] = useState<QueryCacheEntry<TData>>(() =>
     getDefaultQueryCacheEntry(placeholderState)
   );
@@ -41,8 +45,7 @@ const useQuery = <TData, TKey = unknown>({
       let cacheEntry: QueryCacheEntry<TData>;
       if (cacheMode !== 'off') {
         const shouldPersist = cacheMode === 'persist';
-        const key =
-          args !== undefined ? `${stringKey}|${JSON.stringify(args)}` : stringKey;
+        const key = args !== undefined ? `${stringKey}|${stringify(args)}` : stringKey;
         cacheEntry = queryCache.get(key, shouldPersist) as QueryCacheEntry<TData>;
         if (!cacheEntry) {
           cacheEntry = getDefaultQueryCacheEntry(state);

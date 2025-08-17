@@ -48,3 +48,4 @@ export interface LazyQueryHookOptions<TData, TKey, TArgs> extends BaseQueryHookO
     queryFn: LazyQueryFn<TData, TKey, TArgs>;
 }
 export type MutationHookOptions<TData, TKey, TArgs> = Omit<LazyQueryHookOptions<TData, TKey, TArgs>, 'cacheMode'>;
+export type MergeableOptions = Pick<QueryHookOptions<unknown, unknown>, 'cacheMode' | 'staleTime'>;

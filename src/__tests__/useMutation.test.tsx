@@ -1,61 +1,63 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
+import { QueryProvider } from '../index';
 import { mockRequest } from './fakeRequest';
 import { Mutation } from './Mutation';
 
 describe('useMutation', () => {
   it('loads data when triggered', async () => {
     render(
-      <>
-        <Mutation queryName="1" defaultId={1} />
-        <Mutation queryName="2" defaultId={1} />
-      </>
+      // `cacheMode` should be ignored by useMutation
+      <QueryProvider defaultOptions={{ cacheMode: 'persist' }}>
+        <Mutation queryName="a" defaultId={1} />
+        <Mutation queryName="b" defaultId={1} />
+      </QueryProvider>
     );
 
     expect(mockRequest).toHaveBeenCalledTimes(0);
-    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
-    expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
-    expect(screen.getByTestId('data-1')).toBeEmptyDOMElement();
-    expect(screen.getByTestId('data-2')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
+    expect(screen.getByTestId('data-a')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('data-b')).toBeEmptyDOMElement();
 
-    fireEvent.click(screen.getByTestId('trigger-1'));
+    fireEvent.click(screen.getByTestId('trigger-a'));
     expect(mockRequest).toHaveBeenCalledTimes(1);
-    expect(screen.getByTestId('status-1')).toHaveTextContent('fetching');
-    expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-a')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
     await waitFor(() => {
-      expect(screen.getByTestId('data-1')).toHaveTextContent('3');
+      expect(screen.getByTestId('data-a')).toHaveTextContent('3');
     });
-    expect(screen.getByTestId('data-2')).toBeEmptyDOMElement();
-    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
-    expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
-    expect(screen.getByTestId('error-1')).toBeEmptyDOMElement();
-    expect(screen.getByTestId('error-2')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('data-b')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
+    expect(screen.getByTestId('error-a')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('error-b')).toBeEmptyDOMElement();
 
-    fireEvent.click(screen.getByTestId('trigger-2'));
+    fireEvent.click(screen.getByTestId('trigger-b'));
     expect(mockRequest).toHaveBeenCalledTimes(2);
-    expect(screen.getByTestId('data-1')).toHaveTextContent('3');
-    expect(screen.getByTestId('data-2')).toBeEmptyDOMElement();
-    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
-    expect(screen.getByTestId('status-2')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('data-a')).toHaveTextContent('3');
+    expect(screen.getByTestId('data-b')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+    expect(screen.getByTestId('status-b')).toHaveTextContent('fetching');
     await waitFor(() => {
-      expect(screen.getByTestId('data-2')).toHaveTextContent('3');
-      expect(screen.getByTestId('status-2')).toHaveTextContent('idle');
+      expect(screen.getByTestId('data-b')).toHaveTextContent('3');
+      expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
     });
   });
 
   it('works when key is optional', async () => {
-    render(<Mutation queryName="1" noKey />);
+    render(<Mutation queryName="a" noKey />);
 
     expect(mockRequest).toHaveBeenCalledTimes(0);
-    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
-    expect(screen.getByTestId('data-1')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+    expect(screen.getByTestId('data-a')).toBeEmptyDOMElement();
 
-    fireEvent.click(screen.getByTestId('trigger-1'));
+    fireEvent.click(screen.getByTestId('trigger-a'));
     expect(mockRequest).toHaveBeenCalledTimes(1);
-    expect(screen.getByTestId('status-1')).toHaveTextContent('fetching');
+    expect(screen.getByTestId('status-a')).toHaveTextContent('fetching');
     await waitFor(() => {
-      expect(screen.getByTestId('data-1')).toHaveTextContent('2');
+      expect(screen.getByTestId('data-a')).toHaveTextContent('2');
     });
-    expect(screen.getByTestId('status-1')).toHaveTextContent('idle');
-    expect(screen.getByTestId('error-1')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+    expect(screen.getByTestId('error-a')).toBeEmptyDOMElement();
   });
 });

@@ -1,5 +1,8 @@
-declare const QueryContext: import("react").Context<{
-    getCache: () => import("./queryCache").QueryCache;
-    getState: () => <T, A>(initialValue: T, actionBuilder?: import("reactish-state").ActionBuilder<T, A>, config?: import("reactish-state").Config) => import("reactish-state").StateWithAction<T, A>;
-}>;
-export { QueryContext };
+import type { MergeableOptions } from './types';
+import { type QueryClient } from './queryClient';
+interface QueryContextType {
+    client: QueryClient;
+    defaultOptions: MergeableOptions;
+}
+declare const QueryContext: import("react").Context<QueryContextType>;
+export { QueryContext, type QueryContextType };

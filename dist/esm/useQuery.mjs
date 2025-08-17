@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { state, useSnapshot } from 'reactish-state';
-import { useQueryClient } from './useQueryClient.mjs';
+import { useQueryContext } from './useQueryContext.mjs';
+import { stringify } from './utils.mjs';
 
 const getDefaultQueryCacheEntry = stateBuilder => [stateBuilder({
   isFetching: false
@@ -10,23 +11,32 @@ const getDefaultQueryCacheEntry = stateBuilder => [stateBuilder({
 const useQuery = ({
   queryKey,
   queryFn,
-  cacheMode,
   enabled = true,
-  staleTime = 0
+  ...options
 }) => {
   const {
-    getCache,
-    getState
-  } = useQueryClient();
+    client: {
+      getCache,
+      getState
+    },
+    defaultOptions
+  } = useQueryContext();
+  const {
+    cacheMode,
+    staleTime = 0
+  } = {
+    ...defaultOptions,
+    ...options
+  };
   const queryCache = getCache();
   const state$1 = getState();
-  const stringKey = JSON.stringify(queryKey);
+  const stringKey = stringify(queryKey);
   const [queryCacheEntry, setQueryCacheEntry] = useState(() => getDefaultQueryCacheEntry(state));
   const refetch = useCallback(async (args, declarative) => {
     let cacheEntry;
     if (cacheMode !== 'off') {
       const shouldPersist = cacheMode === 'persist';
-      const key = args !== undefined ? `${stringKey}|${JSON.stringify(args)}` : stringKey;
+      const key = args !== undefined ? `${stringKey}|${stringify(args)}` : stringKey;
       cacheEntry = queryCache.get(key, shouldPersist);
       if (!cacheEntry) {
         cacheEntry = getDefaultQueryCacheEntry(state$1);

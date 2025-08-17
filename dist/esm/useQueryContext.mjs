@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { QueryContext } from './QueryContext.mjs';
 
-const useQueryClient = () => useContext(QueryContext);
+const useQueryContext = () => useContext(QueryContext);
 
-export { useQueryClient };
+export { useQueryContext };
