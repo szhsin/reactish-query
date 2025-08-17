@@ -1,5 +1,5 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
-import { defaultQueryClient } from '../queryClient';
+import { QueryProvider, defaultQueryClient } from '../index';
 import { mockRequest, mockPromise, delayFor } from './fakeRequest';
 import { Queries, Query } from './Query';
 
@@ -236,6 +236,26 @@ describe('useQuery', () => {
       expect(mockRequest).toHaveBeenCalledTimes(3);
       expect(screen.getByTestId('data-a')).toHaveTextContent('1');
     });
+
+    it('uses value from defaultOptions', async () => {
+      render(
+        <QueryProvider defaultOptions={{ cacheMode: 'off' }}>
+          <Query queryName="a" />
+          <Query queryName="b" cacheMode="auto" />
+          <Query queryName="c" cacheMode="persist" />
+          <Query queryName="d" />
+        </QueryProvider>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-b')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-c')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-d')).toHaveTextContent('1');
+      });
+
+      expect(mockRequest).toHaveBeenCalledTimes(3);
+    });
   });
 
   describe('staleTime option', () => {
@@ -250,29 +270,6 @@ describe('useQuery', () => {
       });
 
       expect(mockRequest).toHaveBeenCalledTimes(2);
-    });
-
-    it('fetches data when staleTime has passed', async () => {
-      render(<Query queryName="a" />);
-      expect(mockRequest).toHaveBeenCalledTimes(1);
-
-      await delayFor(50);
-      expect(screen.getByTestId('data-a')).toHaveTextContent('1');
-      render(<Query queryName="b" staleTime={100} />);
-      expect(mockRequest).toHaveBeenCalledTimes(1);
-      expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
-      expect(screen.getByTestId('data-b')).toHaveTextContent('1');
-
-      await delayFor(100);
-      render(<Query queryName="c" staleTime={500} />);
-      expect(mockRequest).toHaveBeenCalledTimes(1);
-      expect(screen.getByTestId('status-c')).toHaveTextContent('idle');
-      expect(screen.getByTestId('data-c')).toHaveTextContent('1');
-
-      render(<Query queryName="d" staleTime={100} />);
-      expect(mockRequest).toHaveBeenCalledTimes(2);
-      expect(screen.getByTestId('status-d')).toHaveTextContent('fetching');
-      expect(screen.getByTestId('data-d')).toHaveTextContent('1');
     });
 
     it('respects prop update', async () => {
@@ -299,6 +296,64 @@ describe('useQuery', () => {
       expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
       expect(screen.getByTestId('data-a')).toHaveTextContent('1');
       expect(mockRequest).toHaveBeenCalledTimes(2);
+    });
+
+    it('fetches data when staleTime has passed', async () => {
+      render(<Query queryName="a" />);
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+
+      await delayFor(50);
+      expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+      render(<Query queryName="b" staleTime={100} />);
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
+      expect(screen.getByTestId('data-b')).toHaveTextContent('1');
+
+      await delayFor(100);
+      render(<Query queryName="c" staleTime={500} />);
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('status-c')).toHaveTextContent('idle');
+      expect(screen.getByTestId('data-c')).toHaveTextContent('1');
+
+      render(<Query queryName="d" staleTime={100} />);
+      expect(mockRequest).toHaveBeenCalledTimes(2);
+      expect(screen.getByTestId('status-d')).toHaveTextContent('fetching');
+      expect(screen.getByTestId('data-d')).toHaveTextContent('1');
+    });
+
+    it('uses value from defaultOptions', async () => {
+      render(<Query queryName="a" />);
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+
+      await delayFor(50);
+      expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+      render(
+        <QueryProvider defaultOptions={{ staleTime: 100 }}>
+          <Query queryName="b" />
+        </QueryProvider>
+      );
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
+      expect(screen.getByTestId('data-b')).toHaveTextContent('1');
+
+      await delayFor(100);
+      render(
+        <QueryProvider defaultOptions={{ staleTime: 50 }}>
+          <Query queryName="c" staleTime={500} />
+        </QueryProvider>
+      );
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('status-c')).toHaveTextContent('idle');
+      expect(screen.getByTestId('data-c')).toHaveTextContent('1');
+
+      render(
+        <QueryProvider>
+          <Query queryName="d" />
+        </QueryProvider>
+      );
+      expect(mockRequest).toHaveBeenCalledTimes(2);
+      expect(screen.getByTestId('status-d')).toHaveTextContent('fetching');
+      expect(screen.getByTestId('data-d')).toHaveTextContent('1');
     });
   });
 });

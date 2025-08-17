@@ -1,6 +1,6 @@
 {
   "name": "reactish-query",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Atomic state-powered, lightweight React query library",
   "author": "Zheng Song",
   "license": "MIT",
@@ -52,16 +52,16 @@
     "reactish-state": "^1.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.0",
-    "@babel/preset-env": "^7.28.0",
+    "@babel/core": "^7.28.3",
+    "@babel/preset-env": "^7.28.3",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^16.0.1",
-    "@testing-library/jest-dom": "^6.6.4",
+    "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
-    "@types/node": "^24.2.1",
+    "@types/node": "^24.3.0",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vitest/coverage-istanbul": "^3.2.4",
