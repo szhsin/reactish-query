@@ -9,6 +9,8 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "target": "esnext",
     "lib": ["esnext"],
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   },

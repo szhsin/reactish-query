@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useContext, useMemo, useState } from 'react';
-import type { MergeableOptions } from './types';
+import type { DefaultableOptions } from './types';
 import type { QueryClient } from './queryClient';
 import { QueryContext } from './QueryContext';
 import { stringify } from './utils';
@@ -11,7 +11,7 @@ const QueryProvider = ({
   defaultOptions
 }: {
   client?: QueryClient;
-  defaultOptions?: MergeableOptions;
+  defaultOptions?: DefaultableOptions;
   children: ReactNode;
 }) => {
   const { client: baseClient, defaultOptions: baseOptions } = useContext(QueryContext);

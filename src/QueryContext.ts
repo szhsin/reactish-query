@@ -1,10 +1,10 @@
 import { createContext } from 'react';
-import type { MergeableOptions } from './types';
+import type { DefaultableOptions } from './types';
 import { defaultQueryClient, type QueryClient } from './queryClient';
 
 interface QueryContextType {
   client: QueryClient;
-  defaultOptions: MergeableOptions;
+  defaultOptions: DefaultableOptions;
 }
 
 const QueryContext = createContext<QueryContextType>({

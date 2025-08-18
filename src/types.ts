@@ -65,7 +65,7 @@ export type MutationHookOptions<TData, TKey, TArgs> = Omit<
   'cacheMode'
 >;
 
-export type MergeableOptions = Pick<
+export type DefaultableOptions = Pick<
   QueryHookOptions<unknown, unknown>,
   'cacheMode' | 'staleTime'
 >;
