@@ -232,7 +232,13 @@ describe('useQuery', () => {
         expect(screen.getByTestId('data-a')).toHaveTextContent('1');
       });
 
+      // weak -> strong
       rerender(<Query queryName="a" cacheMode="persist" />);
+      expect(mockRequest).toHaveBeenCalledTimes(3);
+      expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+
+      // strong -> weak
+      rerender(<Query queryName="a" cacheMode="auto" />);
       expect(mockRequest).toHaveBeenCalledTimes(3);
       expect(screen.getByTestId('data-a')).toHaveTextContent('1');
     });

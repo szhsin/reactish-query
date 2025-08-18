@@ -28,6 +28,14 @@ class FinalizationRegistry {
   register(target: object, heldValue: string) {
     targets.set(heldValue, target);
   }
+  unregister(token: object) {
+    for (const [heldValue, target] of targets.entries()) {
+      if (target === token) {
+        targets.delete(heldValue);
+        break;
+      }
+    }
+  }
 }
 
 const console = {
@@ -51,9 +59,11 @@ describe('queryCache', () => {
 
     afterEach(() => {
       queryCache.clear();
+      targets.clear();
+      weakRefs.clear();
     });
 
-    it('delete cache key when target has been reclaimed', () => {
+    it('deletes cache key when target has been reclaimed', () => {
       queryCache.set('testKey1', { data: 'testData1' });
       expect(queryCache.get('testKey1')).toEqual({ data: 'testData1' });
       queryCache.set('testKey2', { data: 'testData2' });
@@ -65,15 +75,44 @@ describe('queryCache', () => {
       expect(console.debug).toHaveBeenCalledTimes(1);
       expect(console.debug).toHaveBeenCalledWith('Cleared cache for key: testKey1');
 
+      // Do not delete key when WeakRef still holds a value
       registryCallback('testKey2');
       expect(console.debug).toHaveBeenCalledTimes(1);
 
+      // Do not delete key when key has been removed
       queryCache.clear();
       registryCallback('testKey2');
       expect(console.debug).toHaveBeenCalledTimes(1);
+
+      // Do not delete key when the ref is strongly held
+      queryCache.set('testKey3', { data: 'testData3' }, true);
+      expect(queryCache.get('testKey3')).toEqual({ data: 'testData3' });
+      registryCallback('testKey3');
+      expect(console.debug).toHaveBeenCalledTimes(1);
     });
 
-    it('not log in production', () => {
+    it('converts between weak and strong references correctly', () => {
+      expect(queryCache.get('testKey1')).toBeUndefined();
+      expect(targets.get('testKey1')).toBeUndefined();
+
+      expect(queryCache.get('testKey1', true)).toBeUndefined();
+      expect(targets.get('testKey1')).toBeUndefined();
+
+      queryCache.set('testKey1', { data: 'testData1' });
+      expect(queryCache.get('testKey1')).toEqual({ data: 'testData1' });
+      expect(targets.get('testKey1')).toEqual({ data: 'testData1' });
+
+      expect(queryCache.get('testKey1', true)).toEqual({ data: 'testData1' });
+      expect(targets.get('testKey1')).toBeUndefined();
+      expect(queryCache.get('testKey1')).toEqual({ data: 'testData1' });
+
+      queryCache.set('testKey2', { data: 'testData2' }, true);
+      expect(queryCache.get('testKey2')).toEqual({ data: 'testData2' });
+      expect(queryCache.get('testKey2', true)).toEqual({ data: 'testData2' });
+      expect(targets.get('testKey2')).toBeUndefined();
+    });
+
+    it('does not log in production', () => {
       vi.stubEnv('NODE_ENV', 'production');
 
       queryCache.set('testKey1', { data: 'testData1' });
@@ -87,8 +126,8 @@ describe('queryCache', () => {
     });
   });
 
-  describe('Map as fallback', () => {
-    it('should use Map when WeakRef is not available', () => {
+  describe('Feature fallback', () => {
+    it('uses Map as fallback when WeakRef is not available', () => {
       vi.stubGlobal('WeakRef', undefined);
       expect(createQueryCache().constructor).toBe(Map);
       vi.unstubAllGlobals();
