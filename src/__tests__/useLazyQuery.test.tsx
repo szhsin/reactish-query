@@ -1,18 +1,13 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import { createQueryClient, defaultQueryClient, QueryProvider } from '../index';
-import { eventListener } from '../middleware';
+import { applyMiddleware, eventListener } from '../middleware';
 import { mockRequest, mockPromise, delayFor } from './fakeRequest';
 import { LazyQuery } from './LazyQuery';
 
 const onSuccess = vi.fn();
 const onError = vi.fn();
-const onSettled = vi.fn();
 const queryClient = createQueryClient({
-  middleware: eventListener({
-    onSuccess,
-    onError,
-    onSettled
-  })
+  middleware: applyMiddleware([eventListener({ onSuccess, onError })])
 });
 
 describe('useLazyQuery', () => {
@@ -45,14 +40,7 @@ describe('useLazyQuery', () => {
         {
           result: 1
         },
-        { queryKey: { keyId: 1 }, args: { paramId: 1 } }
-      );
-      expect(onSettled).toHaveBeenLastCalledWith(
-        {
-          result: 1
-        },
-        undefined,
-        { queryKey: { keyId: 1 }, args: { paramId: 1 } }
+        expect.objectContaining({ queryKey: { keyId: 1 }, args: { paramId: 1 } })
       );
       expect(screen.getByTestId('data-a')).toHaveTextContent('1');
       expect(screen.getByTestId('refetch-data-a')).toHaveTextContent('1');
@@ -74,14 +62,7 @@ describe('useLazyQuery', () => {
         {
           result: 1
         },
-        { queryKey: { keyId: 1 }, args: { paramId: 1 } }
-      );
-      expect(onSettled).toHaveBeenLastCalledWith(
-        {
-          result: 1
-        },
-        undefined,
-        { queryKey: { keyId: 1 }, args: { paramId: 1 } }
+        expect.objectContaining({ queryKey: { keyId: 1 }, args: { paramId: 1 } })
       );
       expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
       expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
@@ -98,20 +79,12 @@ describe('useLazyQuery', () => {
         {
           result: 2
         },
-        { queryKey: { keyId: 2 }, args: { paramId: 2 } }
-      );
-      expect(onSettled).toHaveBeenLastCalledWith(
-        {
-          result: 2
-        },
-        undefined,
-        { queryKey: { keyId: 2 }, args: { paramId: 2 } }
+        expect.objectContaining({ queryKey: { keyId: 2 }, args: { paramId: 2 } })
       );
       expect(screen.getByTestId('data-a')).toHaveTextContent('2');
     });
     expect(screen.getByTestId('data-b')).toHaveTextContent('1');
     expect(onSuccess).toHaveBeenCalledTimes(3);
-    expect(onSettled).toHaveBeenCalledTimes(3);
     expect(onError).not.toHaveBeenCalled();
   });
 
@@ -133,20 +106,18 @@ describe('useLazyQuery', () => {
     expect(screen.getByTestId('refetch-error-a')).toBeEmptyDOMElement();
 
     await waitFor(() => {
-      expect(onError).toHaveBeenLastCalledWith(networkError, {
-        queryKey: { keyId: 1 },
-        args: { paramId: 1 }
-      });
-      expect(onSettled).toHaveBeenLastCalledWith(undefined, networkError, {
-        queryKey: { keyId: 1 },
-        args: { paramId: 1 }
-      });
+      expect(onError).toHaveBeenLastCalledWith(
+        networkError,
+        expect.objectContaining({
+          queryKey: { keyId: 1 },
+          args: { paramId: 1 }
+        })
+      );
       expect(screen.getByTestId('error-a')).toHaveTextContent('Network Error');
       expect(screen.getByTestId('refetch-error-a')).toHaveTextContent('Network Error');
     });
 
     expect(onError).toHaveBeenCalledTimes(1);
-    expect(onSettled).toHaveBeenCalledTimes(1);
     expect(onSuccess).not.toHaveBeenCalled();
   });
 

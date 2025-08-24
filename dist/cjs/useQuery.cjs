@@ -1,94 +1,26 @@
 'use strict';
 
-var react = require('react');
 var reactishState = require('reactish-state');
-var useQueryContext = require('./useQueryContext.cjs');
 var utils = require('./utils.cjs');
+var useQuery$ = require('./useQuery_.cjs');
 
-const getDefaultQueryCacheEntry = stateBuilder => [stateBuilder({
-  isFetching: false
-}), {
-  i: 0
-}];
-const useQuery = ({
-  queryKey,
-  queryFn,
-  enabled = true,
-  ...options
-}) => {
+const useQuery = options => {
   const {
-    client: {
-      getCache,
-      getState
+    _: {
+      p: isFetching$,
+      d: data$,
+      e: error$
     },
-    defaultOptions
-  } = useQueryContext.useQueryContext();
-  const {
-    cacheMode,
-    staleTime = 0
-  } = {
-    ...defaultOptions,
-    ...options
-  };
-  const queryCache = getCache();
-  const state = getState();
-  const stringKey = utils.stringify(queryKey);
-  const [queryCacheEntry, setQueryCacheEntry] = react.useState(() => getDefaultQueryCacheEntry(reactishState.state));
-  const refetch = react.useCallback(async (args, declarative) => {
-    let cacheEntry;
-    if (cacheMode !== 'off') {
-      const shouldPersist = cacheMode === 'persist';
-      const key = args !== undefined ? `${stringKey}|${utils.stringify(args)}` : stringKey;
-      cacheEntry = queryCache.get(key, shouldPersist);
-      if (!cacheEntry) {
-        cacheEntry = getDefaultQueryCacheEntry(state);
-        queryCache.set(key, cacheEntry, shouldPersist);
-      }
-    } else {
-      cacheEntry = getDefaultQueryCacheEntry(state);
-    }
-    setQueryCacheEntry(cacheEntry);
-    const [{
-      get: getQueryCache,
-      set: setQueryCache
-    }, cacheMeta] = cacheEntry;
-    let result = getQueryCache();
-    if (!queryFn || declarative && (result.isFetching || Date.now() - staleTime < cacheMeta.t)) {
-      return Promise.resolve(result);
-    }
-    const queryMeta = {
-      queryKey,
-      args
-    };
-    setQueryCache({
-      ...result,
-      isFetching: true
-    }, queryMeta);
-    const requestSeq = ++cacheMeta.i;
-    try {
-      result = {
-        data: await queryFn(queryMeta),
-        isFetching: false
-      };
-      cacheMeta.t = Date.now();
-    } catch (error) {
-      result = {
-        error: error,
-        isFetching: false
-      };
-    }
-    if (requestSeq === cacheMeta.i) setQueryCache(result, queryMeta);
-    return result;
-  }, /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  [stringKey, cacheMode, staleTime]);
-  react.useEffect(() => {
-    if (enabled) refetch(undefined, true);
-  }, [enabled, refetch]);
-  const queryState = reactishState.useSnapshot(queryCacheEntry[0]);
+    ...rest
+  } = useQuery$.useQuery$(options);
+  const data = reactishState.useSnapshot(data$);
+  const error = reactishState.useSnapshot(error$);
   return {
-    ...queryState,
-    isPending: queryState.data === undefined && !queryState.error,
-    refetch
+    data,
+    error,
+    isFetching: reactishState.useSnapshot(isFetching$),
+    isPending: data === utils.UNDEFINED && !error,
+    ...rest
   };
 };
 

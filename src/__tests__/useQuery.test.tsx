@@ -362,6 +362,66 @@ describe('useQuery', () => {
       expect(screen.getByTestId('data-d')).toHaveTextContent('1');
     });
   });
+
+  describe('Render behaviour', () => {
+    const mockRender = vi.fn();
+    it('renders correct times in a single query', async () => {
+      render(<Query queryName="a" render={mockRender} noRefetchResult />);
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+      });
+      // Initial render; resolve cache entry/start fetching; fetch resolved
+      expect(mockRender).toHaveBeenCalledTimes(3);
+
+      fireEvent.click(screen.getByTestId('refetch-a'));
+      expect(screen.getByTestId('status-a')).toHaveTextContent('fetching');
+      await waitFor(() => {
+        expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+      });
+      // Start fetching; fetch resolved
+      expect(mockRender).toHaveBeenCalledTimes(5);
+
+      fireEvent.click(screen.getByTestId('plus-a'));
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('2');
+      });
+      // Update id; start fetching; fetch resolved
+      expect(mockRender).toHaveBeenCalledTimes(8);
+
+      mockPromise.mockImplementationOnce(() => {
+        throw new Error('Network Error');
+      });
+      fireEvent.click(screen.getByTestId('refetch-a'));
+      await waitFor(() => {
+        expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+      });
+      expect(screen.getByTestId('error-a')).toHaveTextContent('Network Error');
+      expect(screen.getByTestId('data-a')).toHaveTextContent('2');
+      // Start fetching; fetch rejected
+      expect(mockRender).toHaveBeenCalledTimes(10);
+    });
+
+    it('renders correct times in multiple queries', async () => {
+      render(
+        <QueryProvider defaultOptions={{ staleTime: Infinity }}>
+          <Query queryName="a" render={mockRender} noRefetchResult />
+          <Query queryName="b" render={mockRender} noRefetchResult />
+        </QueryProvider>
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-b')).toHaveTextContent('1');
+      });
+      expect(mockRender).toHaveBeenCalledTimes(6);
+
+      fireEvent.click(screen.getByTestId('refetch-a'));
+      expect(screen.getByTestId('status-a')).toHaveTextContent('fetching');
+      await waitFor(() => {
+        expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+      });
+      expect(mockRender).toHaveBeenCalledTimes(10);
+    });
+  });
 });
 
 describe('Query cache', () => {

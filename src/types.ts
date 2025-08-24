@@ -1,3 +1,5 @@
+import type { State, Setter } from 'reactish-state';
+
 export interface QueryStatePending {
   isPending: true;
   isFetching: boolean;
@@ -26,19 +28,18 @@ export type QueryResult<TData> =
 
 export type QueryState<TData> = Omit<QueryResult<TData>, 'isPending'>;
 
-export interface QueryMeta<TKey = unknown, TArgs = unknown> {
-  queryKey?: TKey;
-  args?: TArgs;
-}
-
 export type QueryFn<TData, TKey> = (options: { queryKey: TKey }) => Promise<TData>;
 export type LazyQueryFn<TData, TKey, TArgs> = (options: {
   queryKey?: TKey;
   args: TArgs;
 }) => Promise<TData>;
 
-export type Refetch<TData> = () => Promise<QueryState<TData>>;
-export type QueryTrigger<TData, TArgs> = (args: TArgs) => Promise<QueryState<TData>>;
+export interface FetchResult<TData> {
+  data?: TData;
+  error?: Error;
+}
+export type Refetch<TData> = () => Promise<FetchResult<TData>>;
+export type QueryTrigger<TData, TArgs> = (args: TArgs) => Promise<FetchResult<TData>>;
 
 export type QueryHookResult<TData> = QueryResult<TData> & {
   refetch: Refetch<TData>;
@@ -69,3 +70,20 @@ export type DefaultableOptions = Pick<
   QueryHookOptions<unknown, unknown>,
   'cacheMode' | 'staleTime'
 >;
+
+export type QueryStateKey = keyof QueryState<unknown>;
+
+export interface QueryStateMeta<TKey = unknown, TArgs = unknown> {
+  strKey: string;
+  queryKey?: TKey;
+  args?: TArgs;
+}
+
+export interface MiddlewareMeta<TKey = unknown, TArgs = unknown>
+  extends QueryStateMeta<TKey, TArgs> {
+  stateKey: QueryStateKey;
+}
+
+export interface QueryStateMiddleware {
+  <TValue>(state: State<TValue>, meta: MiddlewareMeta): Setter<TValue>;
+}

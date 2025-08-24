@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from 'react';
-import type { QueryState, QueryHookOptions } from '../types';
+import type { FetchResult, QueryHookOptions } from '../types';
 import { useMutation } from '../index';
 import { fakeRequest } from './fakeRequest';
 
@@ -16,7 +16,7 @@ const Mutation = ({
   children?: ReactNode;
 } & Pick<QueryHookOptions<unknown, unknown>, 'cacheMode'>) => {
   const [id, setId] = useState(defaultId);
-  const [refetchResult, setRefetchResult] = useState<QueryState<{ result: number }>>();
+  const [refetchResult, setRefetchResult] = useState<FetchResult<{ result: number }>>();
   const [trigger, { isFetching, error, data }] = useMutation<
     { result: number },
     { paramId: number },
