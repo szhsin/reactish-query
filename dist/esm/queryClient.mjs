@@ -1,9 +1,13 @@
 import { createState } from 'reactish-state';
 import { createQueryCache } from './queryCache.mjs';
 
-const createQueryClient = (options = {}) => {
+const createQueryClient = ({
+  middleware
+} = {}) => {
   const cache = createQueryCache();
-  const state = createState(options);
+  const state = createState({
+    middleware: middleware
+  });
   return {
     getCache: () => cache,
     getState: () => state

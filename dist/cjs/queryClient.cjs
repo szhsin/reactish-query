@@ -3,9 +3,13 @@
 var reactishState = require('reactish-state');
 var queryCache = require('./queryCache.cjs');
 
-const createQueryClient = (options = {}) => {
+const createQueryClient = ({
+  middleware
+} = {}) => {
   const cache = queryCache.createQueryCache();
-  const state = reactishState.createState(options);
+  const state = reactishState.createState({
+    middleware: middleware
+  });
   return {
     getCache: () => cache,
     getState: () => state

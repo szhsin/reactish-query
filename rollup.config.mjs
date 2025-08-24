@@ -7,7 +7,13 @@ import { addDirective } from 'rollup-plugin-add-directive';
  * @returns {import('rollup').RollupOptions}
  */
 const createBuild = ({ inPath = '', outPath = inPath, inFile = 'index.ts' } = {}) => ({
-  external: ['react', 'react-dom', 'react/jsx-runtime', 'reactish-state'],
+  external: [
+    'react',
+    'react-dom',
+    'react/jsx-runtime',
+    'reactish-state',
+    'reactish-state/middleware'
+  ],
   plugins: [
     nodeResolve({ extensions: ['.ts', '.tsx', '.js', '.jsx'] }),
     babel({

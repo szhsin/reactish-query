@@ -1,5 +1,5 @@
 import { type ReactNode, useState, useRef } from 'react';
-import type { QueryState, QueryHookOptions } from '../types';
+import type { FetchResult, QueryHookOptions } from '../types';
 import { useLazyQuery } from '../index';
 import { fakeRequest } from './fakeRequest';
 
@@ -17,7 +17,7 @@ const LazyQuery = ({
 } & Pick<QueryHookOptions<unknown, unknown>, 'cacheMode'>) => {
   const variation = useRef(0);
   const [id, setId] = useState(defaultId);
-  const [refetchResult, setRefetchResult] = useState<QueryState<{ result: number }>>();
+  const [refetchResult, setRefetchResult] = useState<FetchResult<{ result: number }>>();
   const [trigger, { isFetching, error, data }] = useLazyQuery<
     { result: number },
     { paramId: number },

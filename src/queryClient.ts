@@ -1,9 +1,15 @@
-import { createState, type Middleware } from 'reactish-state';
+import { createState } from 'reactish-state';
+import type { StateBuilder, Middleware } from 'reactish-state';
+import type { QueryStateMeta, QueryStateMiddleware, MiddlewareMeta } from './types';
 import { createQueryCache } from './queryCache';
 
-const createQueryClient = (options: { middleware?: Middleware } = {}) => {
+const createQueryClient = ({
+  middleware
+}: { middleware?: QueryStateMiddleware } = {}) => {
   const cache = createQueryCache();
-  const state = createState(options);
+  const state: StateBuilder<MiddlewareMeta> = createState({
+    middleware: middleware as Middleware<QueryStateMeta>
+  });
   return {
     getCache: () => cache,
     getState: () => state

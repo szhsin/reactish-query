@@ -1,8 +1,6 @@
-import type { Middleware } from 'reactish-state';
-import { QueryMeta } from '../types';
-declare const eventListener: ({ onSuccess, onError, onSettled }: {
-    onSuccess?: (data: unknown, queryMeta: QueryMeta) => void;
-    onError?: (error: Error, queryMeta: QueryMeta) => void;
-    onSettled?: (data: unknown, error: Error | undefined, queryMeta: QueryMeta) => void;
-}) => Middleware;
+import type { QueryStateMiddleware, QueryStateMeta } from '../types';
+declare const eventListener: ({ onSuccess, onError }: {
+    onSuccess?: (data: unknown, meta: QueryStateMeta) => void;
+    onError?: (error: Error, meta: QueryStateMeta) => void;
+}) => QueryStateMiddleware;
 export { eventListener };

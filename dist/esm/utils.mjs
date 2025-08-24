@@ -1,3 +1,4 @@
+const UNDEFINED = undefined;
 const stringify = JSON.stringify;
 
-export { stringify };
+export { UNDEFINED, stringify };
