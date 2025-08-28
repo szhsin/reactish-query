@@ -31,7 +31,10 @@ const LazyQuery = ({
       // Normally, everything used in the fetcher should be included in the query key.
       // Here, we deliberately leave some out to mimic variant fetch results using the same key.
       if (requestVariation) value += variation.current * 0.1;
-      return fakeRequest(value, requestVariation ? (5 - variation.current) * 100 : 0);
+      return fakeRequest(
+        { result: value },
+        requestVariation ? (5 - variation.current) * 100 : 0
+      );
     }
   });
 

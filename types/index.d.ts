@@ -3,6 +3,8 @@ export * from './queryClient';
 export * from './QueryProvider';
 export * from './useQueryContext';
 export * from './useQuery';
+export * from './useQuery$';
+export * from './useQueryData';
 export * from './useLazyQuery';
 export * from './useMutation';
 export { useData, useError, useIsFetching } from './useObservable';

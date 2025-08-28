@@ -17,8 +17,8 @@ describe('useQuery', () => {
     expect(screen.getByTestId('status-d')).toHaveTextContent('fetching');
 
     expect(mockRequest).toHaveBeenCalledTimes(2);
-    expect(mockRequest).toHaveBeenNthCalledWith(1, 2);
-    expect(mockRequest).toHaveBeenNthCalledWith(2, 1);
+    expect(mockRequest).toHaveBeenNthCalledWith(1, { result: 2 });
+    expect(mockRequest).toHaveBeenNthCalledWith(2, { result: 1 });
 
     await waitFor(() => {
       expect(screen.getByTestId('data-a')).toHaveTextContent('1');
@@ -52,7 +52,7 @@ describe('useQuery', () => {
     expect(screen.getByTestId('status-c')).toHaveTextContent('idle');
     expect(screen.getByTestId('error-c')).toBeEmptyDOMElement();
     expect(mockRequest).toHaveBeenCalledTimes(3);
-    expect(mockRequest).toHaveBeenNthCalledWith(3, 3);
+    expect(mockRequest).toHaveBeenNthCalledWith(3, { result: 3 });
 
     fireEvent.click(screen.getByTestId('refetch-b'));
     expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
@@ -83,7 +83,7 @@ describe('useQuery', () => {
       expect(screen.getByTestId('refetch-data-d')).toBeEmptyDOMElement();
     });
     expect(mockRequest).toHaveBeenCalledTimes(4);
-    expect(mockRequest).toHaveBeenNthCalledWith(4, 2);
+    expect(mockRequest).toHaveBeenNthCalledWith(4, { result: 2 });
   });
 
   it('handles errors', async () => {
