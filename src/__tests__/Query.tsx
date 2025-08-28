@@ -27,7 +27,7 @@ const Query = ({
     ...(!noFetcher && {
       // testing fetcher use both local and variables from the query key
       queryFn: (arg: { queryKey: { requestId: number } }) =>
-        fakeRequest((arg.queryKey.requestId + id) / 2)
+        fakeRequest({ result: (arg.queryKey.requestId + id) / 2 })
     })
   });
 

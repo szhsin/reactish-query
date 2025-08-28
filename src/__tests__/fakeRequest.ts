@@ -5,11 +5,11 @@ const mockPromise = vi.fn();
 
 const fakeRequest = <T>(value: T, delay = 0) => {
   mockRequest(value);
-  return new Promise<{ result: T }>((resolve, reject) => {
+  return new Promise<T>((resolve, reject) => {
     setTimeout(() => {
       try {
         mockPromise(value);
-        resolve({ result: value });
+        resolve(value);
       } catch (error) {
         reject(error as Error);
       }

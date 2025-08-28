@@ -4,6 +4,8 @@ export { createQueryClient, defaultQueryClient } from './queryClient.mjs';
 export { QueryProvider } from './QueryProvider.mjs';
 export { useQueryContext } from './useQueryContext.mjs';
 export { useQuery } from './useQuery.mjs';
+export { useQuery$ } from './useQuery_.mjs';
+export { useQueryData } from './useQueryData.mjs';
 export { useLazyQuery } from './useLazyQuery.mjs';
 export { useMutation } from './useMutation.mjs';
 export { useData, useError, useIsFetching } from './useObservable.mjs';
