@@ -6,3 +6,4 @@ export { useQueryContext } from './useQueryContext.mjs';
 export { useQuery } from './useQuery.mjs';
 export { useLazyQuery } from './useLazyQuery.mjs';
 export { useMutation } from './useMutation.mjs';
+export { useData, useError, useIsFetching } from './useObservable.mjs';
