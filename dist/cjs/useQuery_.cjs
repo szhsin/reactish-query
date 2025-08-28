@@ -5,14 +5,14 @@ var reactishState = require('reactish-state');
 var utils = require('./utils.cjs');
 var useQueryContext = require('./useQueryContext.cjs');
 
-const getMiddlewareMeta = (stateKey, queryStateMeta) => ({
-  ...queryStateMeta,
+const createInitialState = (state, meta, stateKey, initialValue) => state(initialValue, utils.UNDEFINED, {
+  ...meta,
   stateKey
 });
 const getDefaultQueryCacheEntry = (state, meta) => [{
-  d: state(utils.UNDEFINED, utils.UNDEFINED, getMiddlewareMeta('data', meta)),
-  e: state(utils.UNDEFINED, utils.UNDEFINED, getMiddlewareMeta('error', meta)),
-  p: state(false, utils.UNDEFINED, getMiddlewareMeta('isFetching', meta))
+  d: createInitialState(state, meta, utils.QueryStateMapper.d),
+  e: createInitialState(state, meta, utils.QueryStateMapper.e),
+  p: createInitialState(state, meta, utils.QueryStateMapper.p, false)
 }, {
   i: 0
 }];
@@ -103,7 +103,7 @@ const useQuery$ = ({
   return {
     /** @internal Observable query state */
     _: queryCacheEntry[0],
-    refetch
+    refetch: refetch
   };
 };
 

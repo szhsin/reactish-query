@@ -8,6 +8,7 @@ var useQueryContext = require('./useQueryContext.cjs');
 var useQuery = require('./useQuery.cjs');
 var useLazyQuery = require('./useLazyQuery.cjs');
 var useMutation = require('./useMutation.cjs');
+var useObservable = require('./useObservable.cjs');
 
 
 
@@ -18,3 +19,6 @@ exports.useQueryContext = useQueryContext.useQueryContext;
 exports.useQuery = useQuery.useQuery;
 exports.useLazyQuery = useLazyQuery.useLazyQuery;
 exports.useMutation = useMutation.useMutation;
+exports.useData = useObservable.useData;
+exports.useError = useObservable.useError;
+exports.useIsFetching = useObservable.useIsFetching;

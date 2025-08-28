@@ -1,47 +1,37 @@
 import { useState, useEffect, useCallback } from 'react';
 import { state as placeholderState } from 'reactish-state';
-import type { State, StateBuilder } from 'reactish-state';
+import type { StateBuilder } from 'reactish-state';
 import type {
+  Refetch,
   FetchResult,
   MiddlewareMeta,
   QueryStateKey,
   QueryStateMeta,
   QueryHookOptions
 } from './types';
-import { UNDEFINED, stringify } from './utils';
+import type { QueryCacheEntry } from './types-internal';
+import { UNDEFINED, stringify, QueryStateMapper } from './utils';
 import { useQueryContext } from './useQueryContext';
 
-type QueryCacheEntry<TData> = readonly [
-  {
-    /** @internal Observable query data */
-    d: State<TData | undefined>;
-    /** @internal Observable query error */
-    e: State<Error | undefined>;
-    /** @internal Observable for isFetching */
-    p: State<boolean>;
-  },
-  {
-    /** @internal Request sequence number */
-    i: number;
-    /** @internal Timestamp of the response */
-    t?: number;
-  }
-];
-
-const getMiddlewareMeta = (stateKey: QueryStateKey, queryStateMeta?: QueryStateMeta) =>
-  ({ ...queryStateMeta, stateKey }) as MiddlewareMeta;
+const createInitialState = <TValue>(
+  state: StateBuilder<MiddlewareMeta>,
+  meta: QueryStateMeta | undefined,
+  stateKey: QueryStateKey,
+  initialValue?: TValue
+) => state(initialValue, UNDEFINED, { ...meta, stateKey } as MiddlewareMeta);
 
 const getDefaultQueryCacheEntry = <TData>(
   state: StateBuilder<MiddlewareMeta>,
   meta?: QueryStateMeta
-): QueryCacheEntry<TData> => [
-  {
-    d: state<TData | undefined>(UNDEFINED, UNDEFINED, getMiddlewareMeta('data', meta)),
-    e: state<Error | undefined>(UNDEFINED, UNDEFINED, getMiddlewareMeta('error', meta)),
-    p: state(false, UNDEFINED, getMiddlewareMeta('isFetching', meta))
-  },
-  { i: 0 }
-];
+) =>
+  [
+    {
+      d: createInitialState(state, meta, QueryStateMapper.d),
+      e: createInitialState(state, meta, QueryStateMapper.e),
+      p: createInitialState(state, meta, QueryStateMapper.p, false)
+    },
+    { i: 0 }
+  ] as QueryCacheEntry<TData>;
 
 const useQuery$ = <TData, TKey = unknown>({
   queryKey,
@@ -132,7 +122,7 @@ const useQuery$ = <TData, TKey = unknown>({
     /** @internal Observable query state */
     _: queryCacheEntry[0],
 
-    refetch
+    refetch: refetch as Refetch<TData>
   };
 };
 

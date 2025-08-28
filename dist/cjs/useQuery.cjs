@@ -1,26 +1,14 @@
 'use strict';
 
-var reactishState = require('reactish-state');
 var utils = require('./utils.cjs');
 var useQuery$ = require('./useQuery_.cjs');
+var useObservable = require('./useObservable.cjs');
 
 const useQuery = options => {
-  const {
-    _: {
-      p: isFetching$,
-      d: data$,
-      e: error$
-    },
-    ...rest
-  } = useQuery$.useQuery$(options);
-  const data = reactishState.useSnapshot(data$);
-  const error = reactishState.useSnapshot(error$);
+  const result = useObservable.useObservable(useQuery$.useQuery$(options));
   return {
-    data,
-    error,
-    isFetching: reactishState.useSnapshot(isFetching$),
-    isPending: data === utils.UNDEFINED && !error,
-    ...rest
+    ...result,
+    isPending: result.data === utils.UNDEFINED && !result.error
   };
 };
 

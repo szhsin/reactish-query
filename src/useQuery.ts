@@ -1,23 +1,14 @@
-import { useSnapshot } from 'reactish-state';
 import type { QueryHookOptions, QueryHookResult } from './types';
 import { UNDEFINED } from './utils';
 import { useQuery$ } from './useQuery$';
+import { useObservable } from './useObservable';
 
 const useQuery = <TData, TKey = unknown>(options: QueryHookOptions<TData, TKey>) => {
-  const {
-    _: { p: isFetching$, d: data$, e: error$ },
-    ...rest
-  } = useQuery$(options);
-
-  const data = useSnapshot(data$);
-  const error = useSnapshot(error$);
+  const result = useObservable(useQuery$(options));
 
   return {
-    data,
-    error,
-    isFetching: useSnapshot(isFetching$),
-    isPending: data === UNDEFINED && !error,
-    ...rest
+    ...result,
+    isPending: result.data === UNDEFINED && !result.error
   } as QueryHookResult<TData>;
 };
 

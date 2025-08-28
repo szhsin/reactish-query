@@ -1,16 +1,16 @@
 import { useState, useCallback, useEffect } from 'react';
 import { state } from 'reactish-state';
-import { stringify, UNDEFINED } from './utils.mjs';
+import { stringify, UNDEFINED, QueryStateMapper } from './utils.mjs';
 import { useQueryContext } from './useQueryContext.mjs';
 
-const getMiddlewareMeta = (stateKey, queryStateMeta) => ({
-  ...queryStateMeta,
+const createInitialState = (state, meta, stateKey, initialValue) => state(initialValue, UNDEFINED, {
+  ...meta,
   stateKey
 });
 const getDefaultQueryCacheEntry = (state, meta) => [{
-  d: state(UNDEFINED, UNDEFINED, getMiddlewareMeta('data', meta)),
-  e: state(UNDEFINED, UNDEFINED, getMiddlewareMeta('error', meta)),
-  p: state(false, UNDEFINED, getMiddlewareMeta('isFetching', meta))
+  d: createInitialState(state, meta, QueryStateMapper.d),
+  e: createInitialState(state, meta, QueryStateMapper.e),
+  p: createInitialState(state, meta, QueryStateMapper.p, false)
 }, {
   i: 0
 }];
@@ -101,7 +101,7 @@ const useQuery$ = ({
   return {
     /** @internal Observable query state */
     _: queryCacheEntry[0],
-    refetch
+    refetch: refetch
   };
 };
 
