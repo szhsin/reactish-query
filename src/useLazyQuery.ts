@@ -9,7 +9,7 @@ const useLazyQuery = <TData, TArgs, TKey = unknown>(
     enabled: false
   });
 
-  return [refetch as QueryTrigger<TData, TArgs>, rest] as const;
+  return { ...rest, trigger: refetch as QueryTrigger<TData, TArgs> };
 };
 
 export { useLazyQuery };

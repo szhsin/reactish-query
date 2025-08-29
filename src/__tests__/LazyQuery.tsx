@@ -18,7 +18,7 @@ const LazyQuery = ({
   const variation = useRef(0);
   const [id, setId] = useState(defaultId);
   const [refetchResult, setRefetchResult] = useState<FetchResult<{ result: number }>>();
-  const [trigger, { isFetching, error, data }] = useLazyQuery<
+  const { isFetching, error, data, trigger } = useLazyQuery<
     { result: number },
     { paramId: number },
     { keyId: number }
