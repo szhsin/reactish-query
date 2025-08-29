@@ -10,7 +10,10 @@ const useLazyQuery = options => {
     ...options,
     enabled: false
   });
-  return [refetch, rest];
+  return {
+    ...rest,
+    trigger: refetch
+  };
 };
 
 exports.useLazyQuery = useLazyQuery;

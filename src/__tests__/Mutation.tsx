@@ -17,7 +17,7 @@ const Mutation = ({
 } & Pick<QueryHookOptions<unknown, unknown>, 'cacheMode'>) => {
   const [id, setId] = useState(defaultId);
   const [refetchResult, setRefetchResult] = useState<FetchResult<{ result: number }>>();
-  const [trigger, { isFetching, error, data }] = useMutation<
+  const { isFetching, error, data, trigger } = useMutation<
     { result: number },
     { paramId: number },
     { keyId: number }

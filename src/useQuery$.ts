@@ -93,7 +93,6 @@ const useQuery$ = <TData, TKey = unknown>({
         data = await (queryFn as (mata: QueryStateMeta) => Promise<TData>)(
           queryStateMeta
         );
-        cacheMeta.t = Date.now();
       } catch (err) {
         error = err as Error;
       }

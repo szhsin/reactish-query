@@ -75,7 +75,6 @@ const useQuery$ = ({
     let data, error;
     try {
       data = await queryFn(queryStateMeta);
-      cacheMeta.t = Date.now();
     } catch (err) {
       error = err;
     }
