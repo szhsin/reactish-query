@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { state } from 'reactish-state';
+import { state, useSnapshot } from 'reactish-state';
 import { stringify, UNDEFINED } from './utils.mjs';
 import { useQueryContext } from './useQueryContext.mjs';
 
@@ -38,7 +38,7 @@ const useQuery$ = ({
   const queryCache = getCache();
   const state$1 = getState();
   const stringKey = stringify(queryKey) || '';
-  const [queryCacheEntry, setQueryCacheEntry] = useState(() => getDefaultQueryCacheEntry(state));
+  const [queryCacheEntry] = useState(() => state(getDefaultQueryCacheEntry(state)));
   const refetch = useCallback(async (args, declarative) => {
     let cacheEntry;
     const strKey = args !== UNDEFINED ? `${stringKey}|${stringify(args)}` : stringKey;
@@ -57,7 +57,7 @@ const useQuery$ = ({
     } else {
       cacheEntry = getDefaultQueryCacheEntry(state$1, queryStateMeta);
     }
-    setQueryCacheEntry(cacheEntry);
+    queryCacheEntry.set(cacheEntry);
     const [{
       d: data$,
       p: isPending$,
@@ -102,7 +102,7 @@ const useQuery$ = ({
   }, [enabled, refetch]);
   return {
     /** @internal [INTERNAL ONLY – DO NOT USE] Observable query state */
-    _: queryCacheEntry[0],
+    _: useSnapshot(queryCacheEntry)[0],
     refetch: refetch
   };
 };

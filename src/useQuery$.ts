@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { state as placeholderState } from 'reactish-state';
+import { state as vanillaState, useSnapshot } from 'reactish-state';
 import type { StateBuilder } from 'reactish-state';
 import type {
   Refetch,
@@ -48,8 +48,8 @@ const useQuery$ = <TData, TKey = unknown>({
   const queryCache = getCache();
   const state = getState();
   const stringKey = stringify(queryKey) || '';
-  const [queryCacheEntry, setQueryCacheEntry] = useState<QueryCacheEntry<TData>>(() =>
-    getDefaultQueryCacheEntry(placeholderState)
+  const [queryCacheEntry] = useState(() =>
+    vanillaState(getDefaultQueryCacheEntry<TData>(vanillaState))
   );
 
   const refetch = useCallback(
@@ -68,7 +68,7 @@ const useQuery$ = <TData, TKey = unknown>({
       } else {
         cacheEntry = getDefaultQueryCacheEntry(state, queryStateMeta);
       }
-      setQueryCacheEntry(cacheEntry);
+      queryCacheEntry.set(cacheEntry);
 
       const [
         {
@@ -122,7 +122,7 @@ const useQuery$ = <TData, TKey = unknown>({
 
   return {
     /** @internal [INTERNAL ONLY – DO NOT USE] Observable query state */
-    _: queryCacheEntry[0],
+    _: useSnapshot(queryCacheEntry)[0],
 
     refetch: refetch as Refetch<TData>
   };

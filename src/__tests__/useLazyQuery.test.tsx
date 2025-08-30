@@ -164,13 +164,8 @@ describe('useLazyQuery$', () => {
 
       fireEvent.click(screen.getByTestId('trigger-a'));
       await delayFor(50);
-      // TODO: Fix later — caused by React's setState
-      expect(mockRender).toHaveBeenCalledTimes(4);
-
-      fireEvent.click(screen.getByTestId('trigger-a'));
-      await delayFor(50);
       // No rendering as data has not changed
-      expect(mockRender).toHaveBeenCalledTimes(4);
+      expect(mockRender).toHaveBeenCalledTimes(3);
 
       fireEvent.click(screen.getByTestId('plus-a'));
       fireEvent.click(screen.getByTestId('trigger-a'));
@@ -178,7 +173,7 @@ describe('useLazyQuery$', () => {
         expect(screen.getByTestId('data-a')).toHaveTextContent('2');
       });
       // Update id; resolve cache entry; fetch resolved
-      expect(mockRender).toHaveBeenCalledTimes(7);
+      expect(mockRender).toHaveBeenCalledTimes(6);
 
       mockPromise.mockImplementationOnce(() => {
         throw new Error('Network Error');
@@ -186,8 +181,7 @@ describe('useLazyQuery$', () => {
       fireEvent.click(screen.getByTestId('trigger-a'));
       await delayFor(50);
       expect(screen.getByTestId('data-a')).toHaveTextContent('2');
-      // TODO: Fix later — caused by React's setState
-      expect(mockRender).toHaveBeenCalledTimes(8);
+      expect(mockRender).toHaveBeenCalledTimes(6);
     });
 
     it('renders correct times in multiple queries', async () => {
@@ -213,8 +207,7 @@ describe('useLazyQuery$', () => {
       fireEvent.click(screen.getByTestId('trigger-a'));
       fireEvent.click(screen.getByTestId('trigger-b'));
       await delayFor(50);
-      // TODO: Fix later — caused by React's setState
-      expect(mockRender).toHaveBeenCalledTimes(7);
+      expect(mockRender).toHaveBeenCalledTimes(6);
     });
   });
 });

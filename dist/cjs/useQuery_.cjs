@@ -40,7 +40,7 @@ const useQuery$ = ({
   const queryCache = getCache();
   const state = getState();
   const stringKey = utils.stringify(queryKey) || '';
-  const [queryCacheEntry, setQueryCacheEntry] = react.useState(() => getDefaultQueryCacheEntry(reactishState.state));
+  const [queryCacheEntry] = react.useState(() => reactishState.state(getDefaultQueryCacheEntry(reactishState.state)));
   const refetch = react.useCallback(async (args, declarative) => {
     let cacheEntry;
     const strKey = args !== utils.UNDEFINED ? `${stringKey}|${utils.stringify(args)}` : stringKey;
@@ -59,7 +59,7 @@ const useQuery$ = ({
     } else {
       cacheEntry = getDefaultQueryCacheEntry(state, queryStateMeta);
     }
-    setQueryCacheEntry(cacheEntry);
+    queryCacheEntry.set(cacheEntry);
     const [{
       d: data$,
       p: isPending$,
@@ -104,7 +104,7 @@ const useQuery$ = ({
   }, [enabled, refetch]);
   return {
     /** @internal [INTERNAL ONLY – DO NOT USE] Observable query state */
-    _: queryCacheEntry[0],
+    _: reactishState.useSnapshot(queryCacheEntry)[0],
     refetch: refetch
   };
 };
