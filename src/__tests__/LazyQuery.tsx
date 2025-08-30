@@ -1,6 +1,6 @@
 import { type ReactNode, useState, useRef } from 'react';
-import type { FetchResult, QueryHookOptions } from '../types';
-import { useLazyQuery } from '../index';
+import type { FetchResult, QueryHookOptions, LazyQueryHookOptions } from '../index';
+import { useLazyQuery, useData, useLazyQuery$ } from '../index';
 import { fakeRequest } from './fakeRequest';
 
 const LazyQuery = ({
@@ -69,4 +69,61 @@ const LazyQuery = ({
   );
 };
 
-export { LazyQuery };
+const useLazyQueryData = <TData, TArgs, TKey = unknown>(
+  options: LazyQueryHookOptions<TData, TKey, TArgs>
+) => useData(useLazyQuery$(options));
+
+const LazyQueryData = ({
+  queryName,
+  defaultId = 1,
+  children,
+  render,
+  ...queryOptions
+}: {
+  queryName: string;
+  defaultId?: number;
+  children?: ReactNode;
+  render?: (queryName: string, id: number) => void;
+} & Pick<QueryHookOptions<unknown, unknown>, 'cacheMode'>) => {
+  const [id, setId] = useState(defaultId);
+  const { isPending, data, trigger } = useLazyQueryData<
+    number,
+    { paramId: number },
+    { keyId: number }
+  >({
+    ...queryOptions,
+    queryKey: { keyId: id },
+    queryFn: (arg) => fakeRequest((id + arg.queryKey!.keyId + arg.args.paramId) / 3)
+  });
+
+  if (isPending) {
+    if (data !== undefined) throw new Error('Data should not have value when pending');
+  } else {
+    if (typeof data.toFixed() !== 'string')
+      throw new Error('Data should have value when not pending');
+  }
+
+  render?.(queryName, id);
+
+  return (
+    <section>
+      <div data-testid={`query-${queryName}`}>Query {queryName}</div>
+      <div data-testid={`data-${queryName}`}>{data}</div>
+      <button data-testid={`plus-${queryName}`} onClick={() => setId((s) => s + 1)}>
+        Plus
+      </button>
+      <button data-testid={`minus-${queryName}`} onClick={() => setId((s) => s - 1)}>
+        Minus
+      </button>
+      <button
+        data-testid={`trigger-${queryName}`}
+        onClick={() => trigger({ paramId: id })}
+      >
+        Trigger
+      </button>
+      {children}
+    </section>
+  );
+};
+
+export { LazyQuery, LazyQueryData };

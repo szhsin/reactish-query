@@ -1,21 +1,10 @@
-import type { QueryTrigger, LazyQueryHookOptions } from './types';
+import type { LazyQueryHookOptions } from './types';
 declare const useLazyQuery: <TData, TArgs, TKey = unknown>(options: LazyQueryHookOptions<TData, TKey, TArgs>) => {
-    trigger: QueryTrigger<TData, TArgs>;
-    isPending: true;
+    trigger: import("./types").QueryTrigger<TData, TArgs>;
+    _: import("./types-internal").CacheEntryState<TData>;
+} & {
     isFetching: boolean;
-    data?: undefined;
-    error?: undefined;
-} | {
-    trigger: QueryTrigger<TData, TArgs>;
-    isPending: false;
-    isFetching: boolean;
-    data?: undefined;
-    error: Error;
-} | {
-    trigger: QueryTrigger<TData, TArgs>;
-    isPending: false;
-    isFetching: boolean;
-    data: TData;
-    error?: undefined;
-};
+} & ({
+    error: Error | undefined;
+} & import("./types").QueryDataState<TData>);
 export { useLazyQuery };

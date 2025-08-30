@@ -1,24 +1,14 @@
 import type { State, Setter } from 'reactish-state';
-export interface QueryStatePending {
+export type QueryStateKey = 'data' | 'error' | 'isFetching' | 'isPending';
+export interface QueryDataPending {
     isPending: true;
-    isFetching: boolean;
-    data?: undefined;
-    error?: undefined;
+    data: undefined;
 }
-export interface QueryStateSuccess<TData> {
+export interface QueryDataSuccess<TData> {
     isPending: false;
-    isFetching: boolean;
     data: TData;
-    error?: undefined;
 }
-export interface QueryStateError {
-    isPending: false;
-    isFetching: boolean;
-    data?: undefined;
-    error: Error;
-}
-export type QueryResult<TData> = QueryStatePending | QueryStateSuccess<TData> | QueryStateError;
-export type QueryState<TData> = Omit<QueryResult<TData>, 'isPending'>;
+export type QueryDataState<TData> = QueryDataPending | QueryDataSuccess<TData>;
 export type QueryFn<TData, TKey> = (options: {
     queryKey: TKey;
 }) => Promise<TData>;
@@ -32,9 +22,6 @@ export interface FetchResult<TData> {
 }
 export type Refetch<TData> = () => Promise<FetchResult<TData>>;
 export type QueryTrigger<TData, TArgs> = (args: TArgs) => Promise<FetchResult<TData>>;
-export type QueryHookResult<TData> = QueryResult<TData> & {
-    refetch: Refetch<TData>;
-};
 export interface BaseQueryHookOptions {
     cacheMode?: 'auto' | 'persist' | 'off';
 }
@@ -50,7 +37,6 @@ export interface LazyQueryHookOptions<TData, TKey, TArgs> extends BaseQueryHookO
 }
 export type MutationHookOptions<TData, TKey, TArgs> = Omit<LazyQueryHookOptions<TData, TKey, TArgs>, 'cacheMode'>;
 export type DefaultableOptions = Pick<QueryHookOptions<unknown, unknown>, 'cacheMode' | 'staleTime'>;
-export type QueryStateKey = keyof QueryState<unknown>;
 export interface QueryStateMeta<TKey = unknown, TArgs = unknown> {
     strKey: string;
     queryKey?: TKey;

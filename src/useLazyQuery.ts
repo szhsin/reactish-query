@@ -1,15 +1,9 @@
-import type { QueryTrigger, LazyQueryHookOptions, QueryHookOptions } from './types';
-import { useQuery } from './useQuery';
+import type { LazyQueryHookOptions } from './types';
+import { useLazyQuery$ } from './useLazyQuery$';
+import { useObservable } from './useObservable';
 
 const useLazyQuery = <TData, TArgs, TKey = unknown>(
   options: LazyQueryHookOptions<TData, TKey, TArgs>
-) => {
-  const { refetch, ...rest } = useQuery<TData, TKey>({
-    ...(options as QueryHookOptions<TData, TKey>),
-    enabled: false
-  });
-
-  return { ...rest, trigger: refetch as QueryTrigger<TData, TArgs> };
-};
+) => useObservable(useLazyQuery$(options));
 
 export { useLazyQuery };

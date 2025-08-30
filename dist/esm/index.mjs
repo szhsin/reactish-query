@@ -7,5 +7,6 @@ export { useQuery } from './useQuery.mjs';
 export { useQuery$ } from './useQuery_.mjs';
 export { useQueryData } from './useQueryData.mjs';
 export { useLazyQuery } from './useLazyQuery.mjs';
+export { useLazyQuery$ } from './useLazyQuery_.mjs';
 export { useMutation } from './useMutation.mjs';
 export { useData, useError, useIsFetching } from './useObservable.mjs';

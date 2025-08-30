@@ -9,6 +9,7 @@ var useQuery = require('./useQuery.cjs');
 var useQuery$ = require('./useQuery_.cjs');
 var useQueryData = require('./useQueryData.cjs');
 var useLazyQuery = require('./useLazyQuery.cjs');
+var useLazyQuery$ = require('./useLazyQuery_.cjs');
 var useMutation = require('./useMutation.cjs');
 var useObservable = require('./useObservable.cjs');
 
@@ -22,6 +23,7 @@ exports.useQuery = useQuery.useQuery;
 exports.useQuery$ = useQuery$.useQuery$;
 exports.useQueryData = useQueryData.useQueryData;
 exports.useLazyQuery = useLazyQuery.useLazyQuery;
+exports.useLazyQuery$ = useLazyQuery$.useLazyQuery$;
 exports.useMutation = useMutation.useMutation;
 exports.useData = useObservable.useData;
 exports.useError = useObservable.useError;

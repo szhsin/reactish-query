@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from 'react';
-import type { FetchResult, QueryHookOptions } from '../types';
+import type { FetchResult, QueryHookOptions } from '../index';
 import { useQuery, QueryProvider } from '../index';
 import { fakeRequest } from './fakeRequest';
 
@@ -34,11 +34,10 @@ const Query = ({
   render?.(queryName, id);
 
   if (isPending) {
-    if (data !== undefined || error)
-      throw new Error('Data and error should not have value when pending');
+    if (data !== undefined) throw new Error('Data should not have value when pending');
   } else {
-    if (data === undefined && !error)
-      throw new Error('Data or error should have value when not pending');
+    if (typeof data.result !== 'number')
+      throw new Error('Data should have value when not pending');
   }
 
   return (

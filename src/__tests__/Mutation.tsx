@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from 'react';
-import type { FetchResult, QueryHookOptions } from '../types';
+import type { FetchResult, QueryHookOptions } from '../index';
 import { useMutation } from '../index';
 import { fakeRequest } from './fakeRequest';
 

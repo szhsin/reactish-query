@@ -6,6 +6,7 @@ export * from './useQuery';
 export * from './useQuery$';
 export * from './useQueryData';
 export * from './useLazyQuery';
+export * from './useLazyQuery$';
 export * from './useMutation';
 export { useData, useError, useIsFetching } from './useObservable';
 export { type QueryContextType } from './QueryContext';

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { state } from 'reactish-state';
-import { stringify, UNDEFINED, QueryStateMapper } from './utils.mjs';
+import { stringify, UNDEFINED } from './utils.mjs';
 import { useQueryContext } from './useQueryContext.mjs';
 
 const createInitialState = (state, meta, stateKey, initialValue) => state(initialValue, UNDEFINED, {
@@ -8,9 +8,10 @@ const createInitialState = (state, meta, stateKey, initialValue) => state(initia
   stateKey
 });
 const getDefaultQueryCacheEntry = (state, meta) => [{
-  d: createInitialState(state, meta, QueryStateMapper.d),
-  e: createInitialState(state, meta, QueryStateMapper.e),
-  p: createInitialState(state, meta, QueryStateMapper.p, false)
+  d: createInitialState(state, meta, 'data'),
+  e: createInitialState(state, meta, 'error'),
+  f: createInitialState(state, meta, 'isFetching', false),
+  p: createInitialState(state, meta, 'isPending', true)
 }, {
   i: 0
 }];
@@ -59,10 +60,11 @@ const useQuery$ = ({
     setQueryCacheEntry(cacheEntry);
     const [{
       d: data$,
+      p: isPending$,
       e: {
         set: setError
       },
-      p: {
+      f: {
         set: setIsFetching,
         get: getIsFetching
       }
@@ -84,6 +86,7 @@ const useQuery$ = ({
         setError(error);
       } else {
         data$.set(data);
+        isPending$.set(false);
         setError(UNDEFINED);
         cacheMeta.t = Date.now();
       }
@@ -98,7 +101,7 @@ const useQuery$ = ({
     if (enabled) refetch(UNDEFINED, true);
   }, [enabled, refetch]);
   return {
-    /** @internal Observable query state */
+    /** @internal [INTERNAL ONLY – DO NOT USE] Observable query state */
     _: queryCacheEntry[0],
     refetch: refetch
   };

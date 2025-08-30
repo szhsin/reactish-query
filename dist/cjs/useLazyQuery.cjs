@@ -1,19 +1,8 @@
 'use strict';
 
-var useQuery = require('./useQuery.cjs');
+var useLazyQuery$ = require('./useLazyQuery_.cjs');
+var useObservable = require('./useObservable.cjs');
 
-const useLazyQuery = options => {
-  const {
-    refetch,
-    ...rest
-  } = useQuery.useQuery({
-    ...options,
-    enabled: false
-  });
-  return {
-    ...rest,
-    trigger: refetch
-  };
-};
+const useLazyQuery = options => useObservable.useObservable(useLazyQuery$.useLazyQuery$(options));
 
 exports.useLazyQuery = useLazyQuery;

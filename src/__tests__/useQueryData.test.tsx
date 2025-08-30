@@ -75,6 +75,7 @@ describe('useQueryData', () => {
       expect(mockRender).toHaveBeenCalledTimes(6);
 
       fireEvent.click(screen.getByTestId('refetch-a'));
+      fireEvent.click(screen.getByTestId('refetch-b'));
       await delayFor(50);
       // TODO: Fix later — caused by React's setState
       expect(mockRender).toHaveBeenCalledTimes(7);
