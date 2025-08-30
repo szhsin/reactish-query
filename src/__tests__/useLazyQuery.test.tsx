@@ -2,7 +2,7 @@ import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import { createQueryClient, defaultQueryClient, QueryProvider } from '../index';
 import { applyMiddleware, eventListener } from '../middleware';
 import { mockRequest, mockPromise, delayFor } from './fakeRequest';
-import { LazyQuery } from './LazyQuery';
+import { LazyQuery, LazyQueryData } from './LazyQuery';
 
 const onSuccess = vi.fn();
 const onError = vi.fn();
@@ -140,5 +140,81 @@ describe('useLazyQuery', () => {
     expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
     expect(screen.getByTestId('data-a')).toHaveTextContent(/^1.3$/);
     expect(screen.getByTestId('data-b')).toHaveTextContent(/^1.3$/);
+  });
+});
+
+describe('useLazyQuery$', () => {
+  afterEach(() => {
+    defaultQueryClient.getCache().clear();
+  });
+
+  describe('Render behaviour', () => {
+    const mockRender = vi.fn();
+    it('renders correct times in a single query', async () => {
+      render(<LazyQueryData queryName="a" render={mockRender} />);
+      // Initial render
+      expect(mockRender).toHaveBeenCalledTimes(1);
+
+      fireEvent.click(screen.getByTestId('trigger-a'));
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+      });
+      // Resolve cache entry/start fetching; fetch resolved
+      expect(mockRender).toHaveBeenCalledTimes(3);
+
+      fireEvent.click(screen.getByTestId('trigger-a'));
+      await delayFor(50);
+      // TODO: Fix later — caused by React's setState
+      expect(mockRender).toHaveBeenCalledTimes(4);
+
+      fireEvent.click(screen.getByTestId('trigger-a'));
+      await delayFor(50);
+      // No rendering as data has not changed
+      expect(mockRender).toHaveBeenCalledTimes(4);
+
+      fireEvent.click(screen.getByTestId('plus-a'));
+      fireEvent.click(screen.getByTestId('trigger-a'));
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('2');
+      });
+      // Update id; resolve cache entry; fetch resolved
+      expect(mockRender).toHaveBeenCalledTimes(7);
+
+      mockPromise.mockImplementationOnce(() => {
+        throw new Error('Network Error');
+      });
+      fireEvent.click(screen.getByTestId('trigger-a'));
+      await delayFor(50);
+      expect(screen.getByTestId('data-a')).toHaveTextContent('2');
+      // TODO: Fix later — caused by React's setState
+      expect(mockRender).toHaveBeenCalledTimes(8);
+    });
+
+    it('renders correct times in multiple queries', async () => {
+      render(
+        <QueryProvider defaultOptions={{ staleTime: Infinity }}>
+          <LazyQueryData queryName="a" render={mockRender} />
+          <LazyQueryData queryName="b" render={mockRender} />
+        </QueryProvider>
+      );
+      // Initial render
+      expect(mockRequest).toHaveBeenCalledTimes(0);
+      expect(mockRender).toHaveBeenCalledTimes(2);
+
+      fireEvent.click(screen.getByTestId('trigger-a'));
+      fireEvent.click(screen.getByTestId('trigger-b'));
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-b')).toHaveTextContent('1');
+      });
+      expect(mockRequest).toHaveBeenCalledTimes(2);
+      expect(mockRender).toHaveBeenCalledTimes(6);
+
+      fireEvent.click(screen.getByTestId('trigger-a'));
+      fireEvent.click(screen.getByTestId('trigger-b'));
+      await delayFor(50);
+      // TODO: Fix later — caused by React's setState
+      expect(mockRender).toHaveBeenCalledTimes(7);
+    });
   });
 });

@@ -1,16 +1,21 @@
 import { useSnapshot } from 'reactish-state';
-import { QueryStateMapper } from './utils.mjs';
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 
-const createObservable = code => input => ({
+const useData = input => ({
   ...input,
   /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
-  [QueryStateMapper[code]]: useSnapshot(input._[code])
+  data: useSnapshot(input._.d),
+  isPending: useSnapshot(input._.p)
 });
-const useData = /*#__PURE__*/createObservable('d');
-const useError = /*#__PURE__*/createObservable('e');
-const useIsFetching = /*#__PURE__*/createObservable('p');
+const useError = input => ({
+  ...input,
+  error: useSnapshot(input._.e)
+});
+const useIsFetching = input => ({
+  ...input,
+  isFetching: useSnapshot(input._.f)
+});
 const useObservable = input => useData(useError(useIsFetching(input)));
 
 export { useData, useError, useIsFetching, useObservable };

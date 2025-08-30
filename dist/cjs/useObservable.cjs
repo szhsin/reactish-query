@@ -1,18 +1,23 @@
 'use strict';
 
 var reactishState = require('reactish-state');
-var utils = require('./utils.cjs');
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 
-const createObservable = code => input => ({
+const useData = input => ({
   ...input,
   /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
-  [utils.QueryStateMapper[code]]: reactishState.useSnapshot(input._[code])
+  data: reactishState.useSnapshot(input._.d),
+  isPending: reactishState.useSnapshot(input._.p)
 });
-const useData = /*#__PURE__*/createObservable('d');
-const useError = /*#__PURE__*/createObservable('e');
-const useIsFetching = /*#__PURE__*/createObservable('p');
+const useError = input => ({
+  ...input,
+  error: reactishState.useSnapshot(input._.e)
+});
+const useIsFetching = input => ({
+  ...input,
+  isFetching: reactishState.useSnapshot(input._.f)
+});
 const useObservable = input => useData(useError(useIsFetching(input)));
 
 exports.useData = useData;

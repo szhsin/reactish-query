@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from 'react';
-import type { QueryHookOptions } from '../types';
+import type { QueryHookOptions } from '../index';
 import { useQueryData } from '../index';
 import { fakeRequest } from './fakeRequest';
 
@@ -18,7 +18,7 @@ const QueryData = ({
   render?: (queryName: string, id: number) => void;
 } & Pick<QueryHookOptions<unknown, unknown>, 'cacheMode' | 'enabled' | 'staleTime'>) => {
   const [id, setId] = useState(defaultId);
-  const { data, refetch } = useQueryData({
+  const { data, isPending, refetch } = useQueryData({
     ...queryOptions,
     queryKey: { requestId: id },
     ...(!noFetcher && {
@@ -27,6 +27,13 @@ const QueryData = ({
         fakeRequest((arg.queryKey.requestId + id) / 2)
     })
   });
+
+  if (isPending) {
+    if (data !== undefined) throw new Error('Data should not have value when pending');
+  } else {
+    if (typeof data.toFixed() !== 'string')
+      throw new Error('Data should have value when not pending');
+  }
 
   render?.(queryName, id);
 

@@ -5,12 +5,14 @@ export interface CacheEntryState<TData> {
     /** @internal Observable query error */
     e: State<Error | undefined>;
     /** @internal Observable for isFetching */
+    f: State<boolean>;
+    /** @internal Observable for isPending */
     p: State<boolean>;
 }
 export interface CacheEntryMeta {
     /** @internal Request sequence number */
     i: number;
-    /** @internal Timestamp of the response */
+    /** @internal Data timestamp */
     t?: number;
 }
 export type QueryCacheEntry<TData> = readonly [CacheEntryState<TData>, CacheEntryMeta];

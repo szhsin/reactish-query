@@ -1,17 +1,6 @@
-import { useQuery } from './useQuery.mjs';
+import { useLazyQuery$ } from './useLazyQuery_.mjs';
+import { useObservable } from './useObservable.mjs';
 
-const useLazyQuery = options => {
-  const {
-    refetch,
-    ...rest
-  } = useQuery({
-    ...options,
-    enabled: false
-  });
-  return {
-    ...rest,
-    trigger: refetch
-  };
-};
+const useLazyQuery = options => useObservable(useLazyQuery$(options));
 
 export { useLazyQuery };

@@ -10,7 +10,7 @@ import type {
   QueryHookOptions
 } from './types';
 import type { QueryCacheEntry } from './types-internal';
-import { UNDEFINED, stringify, QueryStateMapper } from './utils';
+import { UNDEFINED, stringify } from './utils';
 import { useQueryContext } from './useQueryContext';
 
 const createInitialState = <TValue>(
@@ -26,9 +26,10 @@ const getDefaultQueryCacheEntry = <TData>(
 ) =>
   [
     {
-      d: createInitialState(state, meta, QueryStateMapper.d),
-      e: createInitialState(state, meta, QueryStateMapper.e),
-      p: createInitialState(state, meta, QueryStateMapper.p, false)
+      d: createInitialState(state, meta, 'data'),
+      e: createInitialState(state, meta, 'error'),
+      f: createInitialState(state, meta, 'isFetching', false),
+      p: createInitialState(state, meta, 'isPending', true)
     },
     { i: 0 }
   ] as QueryCacheEntry<TData>;
@@ -72,8 +73,9 @@ const useQuery$ = <TData, TKey = unknown>({
       const [
         {
           d: data$,
+          p: isPending$,
           e: { set: setError },
-          p: { set: setIsFetching, get: getIsFetching }
+          f: { set: setIsFetching, get: getIsFetching }
         },
         cacheMeta
       ] = cacheEntry;
@@ -103,6 +105,7 @@ const useQuery$ = <TData, TKey = unknown>({
           setError(error);
         } else {
           data$.set(data);
+          isPending$.set(false);
           setError(UNDEFINED);
           cacheMeta.t = Date.now();
         }
@@ -118,7 +121,7 @@ const useQuery$ = <TData, TKey = unknown>({
   }, [enabled, refetch]);
 
   return {
-    /** @internal Observable query state */
+    /** @internal [INTERNAL ONLY – DO NOT USE] Observable query state */
     _: queryCacheEntry[0],
 
     refetch: refetch as Refetch<TData>

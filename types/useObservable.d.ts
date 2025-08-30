@@ -1,12 +1,25 @@
-import type { QueryStateCode, CacheEntryState } from './types-internal';
+import type { QueryDataState } from './types';
+import type { CacheEntryState } from './types-internal';
 type InputState = {
     _: CacheEntryState<any>;
 };
-type StateType<TInput, TCode extends QueryStateCode> = TInput extends {
+type ExtractDataType<TInput> = TInput extends {
     _: CacheEntryState<infer TData>;
-} ? TCode extends 'd' ? TData | undefined : TCode extends 'e' ? Error | undefined : boolean : never;
-declare const useData: <TInput extends InputState>(input: TInput) => TInput & Record<"data", StateType<TInput, "d">>;
-declare const useError: <TInput extends InputState>(input: TInput) => TInput & Record<"error", StateType<TInput, "e">>;
-declare const useIsFetching: <TInput extends InputState>(input: TInput) => TInput & Record<"isFetching", StateType<TInput, "p">>;
-declare const useObservable: <TInput extends InputState>(input: TInput) => TInput & Record<"isFetching", StateType<TInput, "p">> & Record<"error", StateType<TInput & Record<"isFetching", StateType<TInput, "p">>, "e">> & Record<"data", StateType<TInput & Record<"isFetching", StateType<TInput, "p">> & Record<"error", StateType<TInput & Record<"isFetching", StateType<TInput, "p">>, "e">>, "d">>;
+} ? TData : never;
+declare const useData: <TInput extends InputState>(input: TInput) => TInput & QueryDataState<ExtractDataType<TInput>>;
+declare const useError: <TInput extends InputState>(input: TInput) => TInput & {
+    error: Error | undefined;
+};
+declare const useIsFetching: <TInput extends InputState>(input: TInput) => TInput & {
+    isFetching: boolean;
+};
+declare const useObservable: <TInput extends InputState>(input: TInput) => TInput & {
+    isFetching: boolean;
+} & {
+    error: Error | undefined;
+} & QueryDataState<ExtractDataType<TInput & {
+    isFetching: boolean;
+} & {
+    error: Error | undefined;
+}>>;
 export { useData, useError, useIsFetching, useObservable };
