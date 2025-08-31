@@ -37,22 +37,23 @@ const useQuery$ = ({
   };
   const queryCache = getCache();
   const state$1 = getState();
-  const stringKey = stringify(queryKey) || '';
-  const [queryCacheEntry] = useState(() => state(getDefaultQueryCacheEntry(state)));
+  const strQueryKey = stringify(queryKey) || '';
+  const [queryCacheEntry] = useState(() => state(getDefaultQueryCacheEntry(state$1, {
+    queryKey
+  })));
   const refetch = useCallback(async (args, declarative) => {
-    let cacheEntry;
-    const strKey = args !== UNDEFINED ? `${stringKey}|${stringify(args)}` : stringKey;
+    const cacheKey = args !== UNDEFINED ? `${strQueryKey}|${stringify(args)}` : strQueryKey;
     const queryStateMeta = {
-      strKey,
       queryKey,
       args
     };
+    let cacheEntry;
     if (cacheMode !== 'off') {
       const shouldPersist = cacheMode === 'persist';
-      cacheEntry = queryCache.get(strKey, shouldPersist);
+      cacheEntry = queryCache.get(cacheKey, shouldPersist);
       if (!cacheEntry) {
         cacheEntry = getDefaultQueryCacheEntry(state$1, queryStateMeta);
-        queryCache.set(strKey, cacheEntry, shouldPersist);
+        queryCache.set(cacheKey, cacheEntry, shouldPersist);
       }
     } else {
       cacheEntry = getDefaultQueryCacheEntry(state$1, queryStateMeta);
@@ -96,7 +97,7 @@ const useQuery$ = ({
       error
     };
   }, /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  [stringKey, cacheMode, staleTime]);
+  [strQueryKey, cacheMode, staleTime]);
   useEffect(() => {
     if (enabled) refetch(UNDEFINED, true);
   }, [enabled, refetch]);

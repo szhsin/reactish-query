@@ -38,7 +38,6 @@ export interface LazyQueryHookOptions<TData, TKey, TArgs> extends BaseQueryHookO
 export type MutationHookOptions<TData, TKey, TArgs> = Omit<LazyQueryHookOptions<TData, TKey, TArgs>, 'cacheMode'>;
 export type DefaultableOptions = Pick<QueryHookOptions<unknown, unknown>, 'cacheMode' | 'staleTime'>;
 export interface QueryStateMeta<TKey = unknown, TArgs = unknown> {
-    strKey: string;
     queryKey?: TKey;
     args?: TArgs;
 }

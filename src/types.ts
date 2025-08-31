@@ -56,7 +56,6 @@ export type DefaultableOptions = Pick<
 >;
 
 export interface QueryStateMeta<TKey = unknown, TArgs = unknown> {
-  strKey: string;
   queryKey?: TKey;
   args?: TArgs;
 }
