@@ -25,3 +25,11 @@ export interface CacheEntryMeta {
 export type QueryCacheEntry<TData> = readonly [CacheEntryState<TData>, CacheEntryMeta];
 
 export type QueryStateCode = keyof CacheEntryState<unknown>;
+
+export interface InternalHookApi<TData> {
+  /** @internal Query state snapshot - safe for rendering */
+  s: CacheEntryState<TData>;
+
+  /** @internal Observable query cache entry - do not render directly */
+  $: State<QueryCacheEntry<TData>>;
+}

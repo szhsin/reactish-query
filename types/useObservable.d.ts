@@ -1,10 +1,10 @@
 import type { QueryDataState } from './types';
-import type { CacheEntryState } from './types-internal';
+import type { InternalHookApi } from './types-internal';
 type InputState = {
-    _: CacheEntryState<any>;
+    _: InternalHookApi<any>;
 };
 type ExtractDataType<TInput> = TInput extends {
-    _: CacheEntryState<infer TData>;
+    _: InternalHookApi<infer TData>;
 } ? TData : never;
 declare const useData: <TInput extends InputState>(input: TInput) => TInput & QueryDataState<ExtractDataType<TInput>>;
 declare const useError: <TInput extends InputState>(input: TInput) => TInput & {

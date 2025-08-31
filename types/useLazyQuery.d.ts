@@ -1,7 +1,7 @@
 import type { LazyQueryHookOptions } from './types';
 declare const useLazyQuery: <TData, TArgs, TKey = unknown>(options: LazyQueryHookOptions<TData, TKey, TArgs>) => {
     trigger: import("./types").QueryTrigger<TData, TArgs>;
-    _: import("./types-internal").CacheEntryState<TData>;
+    _: import("./types-internal").InternalHookApi<TData>;
 } & {
     isFetching: boolean;
 } & ({
