@@ -15,14 +15,14 @@ import { useQueryContext } from './useQueryContext';
 
 const createInitialState = <TValue>(
   state: StateBuilder<MiddlewareMeta>,
-  meta: QueryStateMeta | undefined,
+  meta: QueryStateMeta,
   stateKey: QueryStateKey,
   initialValue?: TValue
-) => state(initialValue, UNDEFINED, { ...meta, stateKey } as MiddlewareMeta);
+) => state(initialValue, UNDEFINED, { ...meta, stateKey });
 
 const getDefaultQueryCacheEntry = <TData>(
   state: StateBuilder<MiddlewareMeta>,
-  meta?: QueryStateMeta
+  meta: QueryStateMeta
 ) =>
   [
     {
@@ -47,23 +47,24 @@ const useQuery$ = <TData, TKey = unknown>({
   const { cacheMode, staleTime = 0 } = { ...defaultOptions, ...options };
   const queryCache = getCache();
   const state = getState();
-  const stringKey = stringify(queryKey) || '';
+  const strQueryKey = stringify(queryKey) || '';
   const [queryCacheEntry] = useState(() =>
-    vanillaState(getDefaultQueryCacheEntry<TData>(vanillaState))
+    vanillaState(getDefaultQueryCacheEntry<TData>(state, { queryKey }))
   );
 
   const refetch = useCallback(
     async (args: unknown, declarative: boolean): Promise<FetchResult<TData>> => {
+      const cacheKey =
+        args !== UNDEFINED ? `${strQueryKey}|${stringify(args)}` : strQueryKey;
+      const queryStateMeta: QueryStateMeta = { queryKey, args };
       let cacheEntry: QueryCacheEntry<TData>;
-      const strKey = args !== UNDEFINED ? `${stringKey}|${stringify(args)}` : stringKey;
-      const queryStateMeta: QueryStateMeta = { strKey, queryKey, args };
 
       if (cacheMode !== 'off') {
         const shouldPersist = cacheMode === 'persist';
-        cacheEntry = queryCache.get(strKey, shouldPersist) as QueryCacheEntry<TData>;
+        cacheEntry = queryCache.get(cacheKey, shouldPersist) as QueryCacheEntry<TData>;
         if (!cacheEntry) {
           cacheEntry = getDefaultQueryCacheEntry(state, queryStateMeta);
-          queryCache.set(strKey, cacheEntry, shouldPersist);
+          queryCache.set(cacheKey, cacheEntry, shouldPersist);
         }
       } else {
         cacheEntry = getDefaultQueryCacheEntry(state, queryStateMeta);
@@ -113,7 +114,7 @@ const useQuery$ = <TData, TKey = unknown>({
       return { data, error };
     },
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [stringKey, cacheMode, staleTime]
+    [strQueryKey, cacheMode, staleTime]
   );
 
   useEffect(() => {
