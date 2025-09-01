@@ -16,7 +16,7 @@ const useQueryObserver = <TInput extends InputQueryResult>(
   }: {
     onData?: (data: ExtractInputDataType<TInput>) => void;
     onError?: (error: Error) => void;
-  } = {}
+  }
 ) => {
   type Data = ExtractInputDataType<TInput>;
   const queryCacheEntry$ = input._.$ as State<QueryCacheEntry<Data>>;

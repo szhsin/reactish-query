@@ -4,7 +4,7 @@ const useLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect$1 : useE
 const useQueryObserver = (input, {
   onData,
   onError
-} = {}) => {
+}) => {
   const queryCacheEntry$ = input._.$;
   const [context] = useState({});
   useLayoutEffect(() => {

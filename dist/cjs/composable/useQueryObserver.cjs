@@ -6,7 +6,7 @@ const useLayoutEffect = typeof window !== 'undefined' ? react.useLayoutEffect : 
 const useQueryObserver = (input, {
   onData,
   onError
-} = {}) => {
+}) => {
   const queryCacheEntry$ = input._.$;
   const [context] = react.useState({});
   useLayoutEffect(() => {
