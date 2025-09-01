@@ -17,3 +17,14 @@ export interface CacheEntryMeta {
 }
 export type QueryCacheEntry<TData> = readonly [CacheEntryState<TData>, CacheEntryMeta];
 export type QueryStateCode = keyof CacheEntryState<unknown>;
+export interface InternalHookApi<TData> {
+    /** @internal [INTERNAL ONLY – DO NOT USE] */
+    _: {
+        /** @internal Query state snapshot - safe for rendering */
+        s: CacheEntryState<TData>;
+        /** @internal Observable query cache entry - do not render directly */
+        $: State<QueryCacheEntry<TData>>;
+    };
+}
+export type InputQueryResult = InternalHookApi<any>;
+export type ExtractInputDataType<TInput> = TInput extends InternalHookApi<infer TData> ? TData : never;

@@ -1,35 +1,26 @@
 import { useSnapshot } from 'reactish-state';
 import type { QueryDataState } from './types';
-import type { CacheEntryState } from './types-internal';
+import type { InputQueryResult, ExtractInputDataType } from './types-internal';
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-type InputState = { _: CacheEntryState<any> };
-
-type ExtractDataType<TInput> = TInput extends {
-  _: CacheEntryState<infer TData>;
-}
-  ? TData
-  : never;
-
-const useData = <TInput extends InputState>(input: TInput) =>
+const useData = <TInput extends InputQueryResult>(input: TInput) =>
   ({
     ...input,
     /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
-    data: useSnapshot(input._.d),
-    isPending: useSnapshot(input._.p)
-  }) as TInput & QueryDataState<ExtractDataType<TInput>>;
+    data: useSnapshot(input._.s.d),
+    isPending: useSnapshot(input._.s.p)
+  }) as TInput & QueryDataState<ExtractInputDataType<TInput>>;
 
-const useError = <TInput extends InputState>(input: TInput) => ({
+const useError = <TInput extends InputQueryResult>(input: TInput) => ({
   ...input,
-  error: useSnapshot(input._.e)
+  error: useSnapshot(input._.s.e)
 });
 
-const useIsFetching = <TInput extends InputState>(input: TInput) => ({
+const useIsFetching = <TInput extends InputQueryResult>(input: TInput) => ({
   ...input,
-  isFetching: useSnapshot(input._.f)
+  isFetching: useSnapshot(input._.s.f)
 });
 
-const useObservable = <TInput extends InputState>(input: TInput) =>
+const useObservable = <TInput extends InputQueryResult>(input: TInput) =>
   useData(useError(useIsFetching(input)));
 
 export { useData, useError, useIsFetching, useObservable };

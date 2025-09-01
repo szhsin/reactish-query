@@ -1,6 +1,6 @@
 import type { QueryStateMiddleware, QueryStateMeta } from '../types';
 
-const eventListener =
+const queryListener =
   ({
     onSuccess,
     onError
@@ -17,9 +17,9 @@ const eventListener =
         break;
 
       case 'error':
-        value && onError?.(value as unknown as Error, meta);
+        if (value) onError?.(value as unknown as Error, meta);
         break;
     }
   };
 
-export { eventListener };
+export { queryListener };

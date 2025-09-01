@@ -2,21 +2,19 @@
 
 var reactishState = require('reactish-state');
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-
 const useData = input => ({
   ...input,
   /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
-  data: reactishState.useSnapshot(input._.d),
-  isPending: reactishState.useSnapshot(input._.p)
+  data: reactishState.useSnapshot(input._.s.d),
+  isPending: reactishState.useSnapshot(input._.s.p)
 });
 const useError = input => ({
   ...input,
-  error: reactishState.useSnapshot(input._.e)
+  error: reactishState.useSnapshot(input._.s.e)
 });
 const useIsFetching = input => ({
   ...input,
-  isFetching: reactishState.useSnapshot(input._.f)
+  isFetching: reactishState.useSnapshot(input._.s.f)
 });
 const useObservable = input => useData(useError(useIsFetching(input)));
 

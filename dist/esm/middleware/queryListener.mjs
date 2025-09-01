@@ -1,6 +1,4 @@
-'use strict';
-
-const eventListener = ({
+const queryListener = ({
   onSuccess,
   onError
 }) => ({
@@ -15,9 +13,9 @@ const eventListener = ({
       onSuccess?.(value, meta);
       break;
     case 'error':
-      value && onError?.(value, meta);
+      if (value) onError?.(value, meta);
       break;
   }
 };
 
-exports.eventListener = eventListener;
+export { queryListener };

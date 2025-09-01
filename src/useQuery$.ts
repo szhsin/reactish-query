@@ -9,7 +9,7 @@ import type {
   QueryStateMeta,
   QueryHookOptions
 } from './types';
-import type { QueryCacheEntry } from './types-internal';
+import type { QueryCacheEntry, InternalHookApi } from './types-internal';
 import { UNDEFINED, stringify } from './utils';
 import { useQueryContext } from './useQueryContext';
 
@@ -122,11 +122,13 @@ const useQuery$ = <TData, TKey = unknown>({
   }, [enabled, refetch]);
 
   return {
-    /** @internal [INTERNAL ONLY – DO NOT USE] Observable query state */
-    _: useSnapshot(queryCacheEntry)[0],
-
-    refetch: refetch as Refetch<TData>
-  };
+    refetch,
+    /** @internal [INTERNAL ONLY – DO NOT USE] */
+    _: {
+      s: useSnapshot(queryCacheEntry)[0],
+      $: queryCacheEntry
+    }
+  } as { refetch: Refetch<TData> } & InternalHookApi<TData>;
 };
 
 export { useQuery$ };

@@ -104,9 +104,12 @@ const useQuery$ = ({
     if (enabled) refetch(utils.UNDEFINED, true);
   }, [enabled, refetch]);
   return {
-    /** @internal [INTERNAL ONLY – DO NOT USE] Observable query state */
-    _: reactishState.useSnapshot(queryCacheEntry)[0],
-    refetch: refetch
+    refetch,
+    /** @internal [INTERNAL ONLY – DO NOT USE] */
+    _: {
+      s: reactishState.useSnapshot(queryCacheEntry)[0],
+      $: queryCacheEntry
+    }
   };
 };
 

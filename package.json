@@ -1,6 +1,6 @@
 {
   "name": "reactish-query",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "description": "Atomic state-powered, lightweight React query library",
   "author": "Zheng Song",
   "license": "MIT",
@@ -15,13 +15,20 @@
   "sideEffects": false,
   "files": [
     "dist/",
-    "types/"
+    "types/",
+    "composable/",
+    "middleware/"
   ],
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
       "require": "./dist/cjs/index.cjs",
       "default": "./dist/esm/index.mjs"
+    },
+    "./composable": {
+      "types": "./types/composable/index.d.ts",
+      "require": "./dist/cjs/composable/index.cjs",
+      "default": "./dist/esm/composable/index.mjs"
     },
     "./middleware": {
       "types": "./types/middleware/index.d.ts",

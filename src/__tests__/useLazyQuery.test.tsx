@@ -1,13 +1,13 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import { createQueryClient, defaultQueryClient, QueryProvider } from '../index';
-import { applyMiddleware, eventListener } from '../middleware';
+import { applyMiddleware, queryListener } from '../middleware';
 import { mockRequest, mockPromise, delayFor } from './fakeRequest';
 import { LazyQuery, LazyQueryData } from './LazyQuery';
 
 const onSuccess = vi.fn();
 const onError = vi.fn();
 const queryClient = createQueryClient({
-  middleware: applyMiddleware([eventListener({ onSuccess, onError })])
+  middleware: applyMiddleware([queryListener({ onSuccess, onError })])
 });
 
 describe('useLazyQuery', () => {
