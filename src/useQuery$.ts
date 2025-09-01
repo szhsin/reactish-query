@@ -122,14 +122,13 @@ const useQuery$ = <TData, TKey = unknown>({
   }, [enabled, refetch]);
 
   return {
+    refetch,
     /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: {
       s: useSnapshot(queryCacheEntry)[0],
       $: queryCacheEntry
-    } as InternalHookApi<TData>,
-
-    refetch: refetch as Refetch<TData>
-  };
+    }
+  } as { refetch: Refetch<TData> } & InternalHookApi<TData>;
 };
 
 export { useQuery$ };

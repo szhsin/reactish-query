@@ -13,7 +13,7 @@ const eventListener = ({
       onSuccess?.(value, meta);
       break;
     case 'error':
-      value && onError?.(value, meta);
+      if (value) onError?.(value, meta);
       break;
   }
 };

@@ -1,7 +1,5 @@
 import { useSnapshot } from 'reactish-state';
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-
 const useData = input => ({
   ...input,
   /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */

@@ -102,12 +102,12 @@ const useQuery$ = ({
     if (enabled) refetch(UNDEFINED, true);
   }, [enabled, refetch]);
   return {
+    refetch,
     /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: {
       s: useSnapshot(queryCacheEntry)[0],
       $: queryCacheEntry
-    },
-    refetch: refetch
+    }
   };
 };
 

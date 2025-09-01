@@ -1,23 +1,17 @@
 import type { QueryDataState } from './types';
-import type { InternalHookApi } from './types-internal';
-type InputState = {
-    _: InternalHookApi<any>;
-};
-type ExtractDataType<TInput> = TInput extends {
-    _: InternalHookApi<infer TData>;
-} ? TData : never;
-declare const useData: <TInput extends InputState>(input: TInput) => TInput & QueryDataState<ExtractDataType<TInput>>;
-declare const useError: <TInput extends InputState>(input: TInput) => TInput & {
+import type { InputQueryResult, ExtractInputDataType } from './types-internal';
+declare const useData: <TInput extends InputQueryResult>(input: TInput) => TInput & QueryDataState<ExtractInputDataType<TInput>>;
+declare const useError: <TInput extends InputQueryResult>(input: TInput) => TInput & {
     error: Error | undefined;
 };
-declare const useIsFetching: <TInput extends InputState>(input: TInput) => TInput & {
+declare const useIsFetching: <TInput extends InputQueryResult>(input: TInput) => TInput & {
     isFetching: boolean;
 };
-declare const useObservable: <TInput extends InputState>(input: TInput) => TInput & {
+declare const useObservable: <TInput extends InputQueryResult>(input: TInput) => TInput & {
     isFetching: boolean;
 } & {
     error: Error | undefined;
-} & QueryDataState<ExtractDataType<TInput & {
+} & QueryDataState<ExtractInputDataType<TInput & {
     isFetching: boolean;
 } & {
     error: Error | undefined;
