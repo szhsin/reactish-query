@@ -1,4 +1,4 @@
-const eventListener = ({
+const queryListener = ({
   onSuccess,
   onError
 }) => ({
@@ -18,4 +18,4 @@ const eventListener = ({
   }
 };
 
-export { eventListener };
+export { queryListener };

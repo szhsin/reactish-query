@@ -1,6 +1,6 @@
 import type { QueryStateMiddleware, QueryStateMeta } from '../types';
 
-const eventListener =
+const queryListener =
   ({
     onSuccess,
     onError
@@ -22,4 +22,4 @@ const eventListener =
     }
   };
 
-export { eventListener };
+export { queryListener };
