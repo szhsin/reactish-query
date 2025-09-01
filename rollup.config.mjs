@@ -47,6 +47,10 @@ const createBuild = ({ inPath = '', outPath = inPath, inFile = 'index.ts' } = {}
 /**
  * @type {import('rollup').RollupOptions[]}
  */
-const config = [createBuild(), createBuild({ inPath: 'middleware/' })];
+const config = [
+  createBuild(),
+  createBuild({ inPath: 'middleware/' }),
+  createBuild({ inPath: 'composable/' })
+];
 
 export default config;
