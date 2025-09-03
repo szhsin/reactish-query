@@ -47,3 +47,7 @@ export interface MiddlewareMeta<TKey = unknown, TArgs = unknown> extends QuerySt
 export interface QueryStateMiddleware {
     <TValue>(state: State<TValue>, meta: MiddlewareMeta): Setter<TValue>;
 }
+export interface QueryObserverOptions<TData> {
+    onData?: (data: TData) => void;
+    onError?: (error: Error) => void;
+}

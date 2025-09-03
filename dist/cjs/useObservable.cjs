@@ -4,7 +4,6 @@ var reactishState = require('reactish-state');
 
 const useData = input => ({
   ...input,
-  /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
   data: reactishState.useSnapshot(input._.s.d),
   isPending: reactishState.useSnapshot(input._.s.p)
 });
