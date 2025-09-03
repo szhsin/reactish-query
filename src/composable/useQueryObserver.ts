@@ -1,5 +1,6 @@
 import { useLayoutEffect as _useLayoutEffect, useEffect, useState } from 'react';
 import type { State } from 'reactish-state';
+import type { QueryObserverOptions } from '../types';
 import type {
   InputQueryResult,
   ExtractInputDataType,
@@ -10,13 +11,7 @@ const useLayoutEffect = typeof window !== 'undefined' ? _useLayoutEffect : useEf
 
 const useQueryObserver = <TInput extends InputQueryResult>(
   input: TInput,
-  {
-    onData,
-    onError
-  }: {
-    onData?: (data: ExtractInputDataType<TInput>) => void;
-    onError?: (error: Error) => void;
-  }
+  { onData, onError }: QueryObserverOptions<ExtractInputDataType<TInput>>
 ) => {
   type Data = ExtractInputDataType<TInput>;
   const queryCacheEntry$ = input._.$ as State<QueryCacheEntry<Data>>;

@@ -5,8 +5,7 @@ import type { InputQueryResult, ExtractInputDataType } from './types-internal';
 const useData = <TInput extends InputQueryResult>(input: TInput) =>
   ({
     ...input,
-    /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
-    data: useSnapshot(input._.s.d),
+    data: useSnapshot(input._.s.d) as unknown,
     isPending: useSnapshot(input._.s.p)
   }) as TInput & QueryDataState<ExtractInputDataType<TInput>>;
 
