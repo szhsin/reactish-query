@@ -1,2 +1,2 @@
 export * from './applyMiddleware';
-export * from './queryListener';
+export * from './queryObserver';

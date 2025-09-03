@@ -3,9 +3,9 @@
 'use strict';
 
 var applyMiddleware = require('./applyMiddleware.cjs');
-var queryListener = require('./queryListener.cjs');
+var queryObserver = require('./queryObserver.cjs');
 
 
 
 exports.applyMiddleware = applyMiddleware.applyMiddleware;
-exports.queryListener = queryListener.queryListener;
+exports.queryObserver = queryObserver.queryObserver;
