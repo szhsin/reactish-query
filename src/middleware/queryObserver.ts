@@ -1,11 +1,11 @@
 import type { QueryStateMiddleware, QueryStateMeta } from '../types';
 
-const queryListener =
+const queryObserver =
   ({
-    onSuccess,
+    onData,
     onError
   }: {
-    onSuccess?: (data: unknown, meta: QueryStateMeta) => void;
+    onData?: (data: unknown, meta: QueryStateMeta) => void;
     onError?: (error: Error, meta: QueryStateMeta) => void;
   }): QueryStateMiddleware =>
   ({ set }, { stateKey, ...meta }) =>
@@ -13,7 +13,7 @@ const queryListener =
     set(value);
     switch (stateKey) {
       case 'data':
-        onSuccess?.(value, meta);
+        onData?.(value, meta);
         break;
 
       case 'error':
@@ -22,4 +22,4 @@ const queryListener =
     }
   };
 
-export { queryListener };
+export { queryObserver };

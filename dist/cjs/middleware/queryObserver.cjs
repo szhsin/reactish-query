@@ -1,5 +1,7 @@
-const queryListener = ({
-  onSuccess,
+'use strict';
+
+const queryObserver = ({
+  onData,
   onError
 }) => ({
   set
@@ -10,7 +12,7 @@ const queryListener = ({
   set(value);
   switch (stateKey) {
     case 'data':
-      onSuccess?.(value, meta);
+      onData?.(value, meta);
       break;
     case 'error':
       if (value) onError?.(value, meta);
@@ -18,4 +20,4 @@ const queryListener = ({
   }
 };
 
-export { queryListener };
+exports.queryObserver = queryObserver;

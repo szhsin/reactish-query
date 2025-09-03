@@ -1,13 +1,13 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import { createQueryClient, defaultQueryClient, QueryProvider } from '../index';
-import { applyMiddleware, queryListener } from '../middleware';
+import { applyMiddleware, queryObserver } from '../middleware';
 import { mockRequest, mockPromise, delayFor } from './fakeRequest';
 import { LazyQuery, LazyQueryData } from './LazyQuery';
 
-const onSuccess = vi.fn();
+const onData = vi.fn();
 const onError = vi.fn();
 const queryClient = createQueryClient({
-  middleware: applyMiddleware([queryListener({ onSuccess, onError })])
+  middleware: applyMiddleware([queryObserver({ onData, onError })])
 });
 
 describe('useLazyQuery', () => {
@@ -36,7 +36,7 @@ describe('useLazyQuery', () => {
     expect(screen.getByTestId('status-a')).toHaveTextContent('fetching');
     expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
     await waitFor(() => {
-      expect(onSuccess).toHaveBeenLastCalledWith(
+      expect(onData).toHaveBeenLastCalledWith(
         {
           result: 1
         },
@@ -58,7 +58,7 @@ describe('useLazyQuery', () => {
     expect(screen.getByTestId('status-a')).toHaveTextContent('fetching');
     expect(screen.getByTestId('status-b')).toHaveTextContent('fetching');
     await waitFor(() => {
-      expect(onSuccess).toHaveBeenLastCalledWith(
+      expect(onData).toHaveBeenLastCalledWith(
         {
           result: 1
         },
@@ -75,7 +75,7 @@ describe('useLazyQuery', () => {
     expect(mockRequest).toHaveBeenCalledTimes(3);
     expect(screen.getByTestId('data-a')).toBeEmptyDOMElement();
     await waitFor(() => {
-      expect(onSuccess).toHaveBeenLastCalledWith(
+      expect(onData).toHaveBeenLastCalledWith(
         {
           result: 2
         },
@@ -84,7 +84,7 @@ describe('useLazyQuery', () => {
       expect(screen.getByTestId('data-a')).toHaveTextContent('2');
     });
     expect(screen.getByTestId('data-b')).toHaveTextContent('1');
-    expect(onSuccess).toHaveBeenCalledTimes(3);
+    expect(onData).toHaveBeenCalledTimes(3);
     expect(onError).not.toHaveBeenCalled();
   });
 
@@ -118,7 +118,7 @@ describe('useLazyQuery', () => {
     });
 
     expect(onError).toHaveBeenCalledTimes(1);
-    expect(onSuccess).not.toHaveBeenCalled();
+    expect(onData).not.toHaveBeenCalled();
   });
 
   it('resolves only the most recent response', async () => {

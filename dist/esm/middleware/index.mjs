@@ -1,4 +1,4 @@
 
 'use client';
 export { applyMiddleware } from './applyMiddleware.mjs';
-export { queryListener } from './queryListener.mjs';
+export { queryObserver } from './queryObserver.mjs';
