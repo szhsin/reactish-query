@@ -1,11 +1,11 @@
-type QueryCache = {
+type QueryCache<TValue extends object = object> = {
   clear: () => void;
-  get: (key: string, strong?: boolean) => object | undefined;
-  set: (key: string, value: object, strong?: boolean) => void;
+  get: (key: string, strong?: boolean) => TValue | undefined;
+  set: (key: string, value: TValue, strong?: boolean) => void;
 };
 
-const weakCache = (): QueryCache => {
-  const cacheMap = new Map<string, WeakRef<object> | { deref?: () => undefined }>();
+const weakCache = <TValue extends object>(): QueryCache<TValue> => {
+  const cacheMap = new Map<string, WeakRef<TValue> | { deref?: () => undefined }>();
   const registry = new FinalizationRegistry<string>((heldValue) => {
     const ref = cacheMap.get(heldValue);
     if (ref?.deref && !ref.deref()) {
@@ -21,7 +21,7 @@ const weakCache = (): QueryCache => {
 
     get: (key, strong) => {
       const weakOrStrong = cacheMap.get(key);
-      if (!weakOrStrong?.deref) return weakOrStrong;
+      if (!weakOrStrong?.deref) return weakOrStrong as TValue | undefined;
 
       const value = weakOrStrong.deref();
       if (strong && value) {
@@ -42,7 +42,7 @@ const weakCache = (): QueryCache => {
   };
 };
 
-const createQueryCache = (): QueryCache =>
-  typeof WeakRef === 'function' ? weakCache() : new Map<string, object>();
+const createQueryCache = <TValue extends object>(): QueryCache<TValue> =>
+  typeof WeakRef === 'function' ? weakCache() : new Map<string, TValue>();
 
 export { createQueryCache, type QueryCache };
