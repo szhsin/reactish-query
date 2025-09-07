@@ -9,13 +9,22 @@ export interface QueryDataSuccess<TData> {
     data: TData;
 }
 export type QueryDataState<TData> = QueryDataPending | QueryDataSuccess<TData>;
-export type QueryFn<TData, TKey> = (options: {
+export type QueryMeta<TKey = unknown, TArgs = unknown> = {
     queryKey: TKey;
-}) => Promise<TData>;
-export type LazyQueryFn<TData, TKey, TArgs> = (options: {
+    args?: TArgs;
+} | {
     queryKey?: TKey;
     args: TArgs;
-}) => Promise<TData>;
+};
+export type QueryFn<TData, TKey> = (options: {
+    queryKey: TKey;
+    args: undefined;
+}) => TData | Promise<TData>;
+export type LazyQueryFn<TData, TKey, TArgs> = (options: {
+    queryKey: TKey | undefined;
+    args: TArgs;
+}) => TData | Promise<TData>;
+export type CacheQueryFn<TData, TKey = unknown, TArgs = unknown> = (queryMeta: QueryMeta<TKey, TArgs>) => TData | Promise<TData>;
 export interface FetchResult<TData> {
     data?: TData;
     error?: Error;
@@ -37,13 +46,9 @@ export interface LazyQueryHookOptions<TData, TKey, TArgs> extends BaseQueryHookO
 }
 export type MutationHookOptions<TData, TKey, TArgs> = Omit<LazyQueryHookOptions<TData, TKey, TArgs>, 'cacheMode'>;
 export type DefaultableOptions = Pick<QueryHookOptions<unknown, unknown>, 'cacheMode' | 'staleTime'>;
-export interface QueryStateMeta<TKey = unknown, TArgs = unknown> {
-    queryKey?: TKey;
-    args?: TArgs;
-}
-export interface MiddlewareMeta<TKey = unknown, TArgs = unknown> extends QueryStateMeta<TKey, TArgs> {
+export type MiddlewareMeta<TKey = unknown, TArgs = unknown> = QueryMeta<TKey, TArgs> & {
     stateKey: QueryStateKey;
-}
+};
 export interface QueryStateMiddleware {
     <TValue>(state: State<TValue>, meta: MiddlewareMeta): Setter<TValue>;
 }

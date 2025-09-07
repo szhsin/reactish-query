@@ -16,7 +16,7 @@ const Queries = () => (
 
 describe('useQueryObserver', () => {
   afterEach(() => {
-    defaultQueryClient.getCache().clear();
+    defaultQueryClient.clearCache();
   });
 
   it('calls onData with primitive data type', async () => {

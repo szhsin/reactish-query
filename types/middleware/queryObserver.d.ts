@@ -1,6 +1,6 @@
-import type { QueryStateMiddleware, QueryStateMeta } from '../types';
+import type { QueryStateMiddleware, QueryMeta } from '../types';
 declare const queryObserver: ({ onData, onError }: {
-    onData?: (data: unknown, meta: QueryStateMeta) => void;
-    onError?: (error: Error, meta: QueryStateMeta) => void;
+    onData?: (data: unknown, meta: QueryMeta) => void;
+    onError?: (error: Error, meta: QueryMeta) => void;
 }) => QueryStateMiddleware;
 export { queryObserver };

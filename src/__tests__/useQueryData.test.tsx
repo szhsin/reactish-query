@@ -5,7 +5,7 @@ import { QueryData } from './QueryData';
 
 describe('useQueryData', () => {
   afterEach(() => {
-    defaultQueryClient.getCache().clear();
+    defaultQueryClient.clearCache();
   });
 
   it('requests and loads data', async () => {

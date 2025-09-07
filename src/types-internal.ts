@@ -1,4 +1,5 @@
 import type { State } from 'reactish-state';
+import type { CacheQueryFn } from './types';
 
 export interface CacheEntryState<TData> {
   /** @internal Observable query data */
@@ -14,15 +15,21 @@ export interface CacheEntryState<TData> {
   p: State<boolean>;
 }
 
-export interface CacheEntryMeta {
+export interface CacheEntryMeta<TData> {
   /** @internal Request sequence number */
   i: number;
 
   /** @internal Data timestamp */
   t?: number;
+
+  /** @internal Query function */
+  fn?: CacheQueryFn<TData>;
 }
 
-export type QueryCacheEntry<TData> = readonly [CacheEntryState<TData>, CacheEntryMeta];
+export type QueryCacheEntry<TData> = readonly [
+  CacheEntryState<TData>,
+  CacheEntryMeta<TData>
+];
 
 export type QueryStateCode = keyof CacheEntryState<unknown>;
 

@@ -1,20 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
 import { state, useSnapshot } from 'reactish-state';
 import { stringify, UNDEFINED } from './utils.mjs';
+import { fetchCacheEntry } from './queryCacheUtils.mjs';
 import { useQueryContext } from './useQueryContext.mjs';
 
-const createInitialState = (state, meta, stateKey, initialValue) => state(initialValue, UNDEFINED, {
-  ...meta,
-  stateKey
-});
-const getDefaultQueryCacheEntry = (state, meta) => [{
-  d: createInitialState(state, meta, 'data'),
-  e: createInitialState(state, meta, 'error'),
-  f: createInitialState(state, meta, 'isFetching', false),
-  p: createInitialState(state, meta, 'isPending', true)
-}, {
-  i: 0
-}];
 const useQuery$ = ({
   queryKey,
   queryFn,
@@ -23,8 +12,7 @@ const useQuery$ = ({
 }) => {
   const {
     client: {
-      getCache,
-      getState
+      _: [createDefaultCacheEntry, resovleCacheEntry]
     },
     defaultOptions
   } = useQueryContext();
@@ -35,67 +23,21 @@ const useQuery$ = ({
     ...defaultOptions,
     ...options
   };
-  const queryCache = getCache();
-  const state$1 = getState();
-  const strQueryKey = stringify(queryKey) || '';
-  const [queryCacheEntry] = useState(() => state(getDefaultQueryCacheEntry(state$1, {
-    queryKey
-  })));
+  const strQueryKey = stringify(queryKey);
+  const [queryCacheEntry] = useState(() => state(createDefaultCacheEntry()));
   const refetch = useCallback(async (args, declarative) => {
-    const cacheKey = args !== UNDEFINED ? `${strQueryKey}|${stringify(args)}` : strQueryKey;
-    const queryStateMeta = {
+    const queryMeta = {
       queryKey,
       args
     };
-    let cacheEntry;
-    if (cacheMode !== 'off') {
-      const shouldPersist = cacheMode === 'persist';
-      cacheEntry = queryCache.get(cacheKey, shouldPersist);
-      if (!cacheEntry) {
-        cacheEntry = getDefaultQueryCacheEntry(state$1, queryStateMeta);
-        queryCache.set(cacheKey, cacheEntry, shouldPersist);
-      }
-    } else {
-      cacheEntry = getDefaultQueryCacheEntry(state$1, queryStateMeta);
-    }
+    const cacheEntry = cacheMode !== 'off' ? resovleCacheEntry(queryMeta, queryFn, cacheMode === 'persist', strQueryKey) : createDefaultCacheEntry(queryMeta, queryFn);
     queryCacheEntry.set(cacheEntry);
-    const [{
-      d: data$,
-      p: isPending$,
-      e: {
-        set: setError
-      },
-      f: {
-        set: setIsFetching,
-        get: getIsFetching
-      }
-    }, cacheMeta] = cacheEntry;
-    if (!queryFn || declarative && (getIsFetching() || Date.now() - staleTime < cacheMeta.t)) {
-      return Promise.resolve({});
+    const [queryState, cacheMeta] = cacheEntry;
+    if (declarative && (queryState.f.get() || Date.now() - staleTime < cacheMeta.t)) {
+      // No return value needed since this is only called inside this query hook when declarative
+      return;
     }
-    setIsFetching(true);
-    const requestSeq = ++cacheMeta.i;
-    let data, error;
-    try {
-      data = await queryFn(queryStateMeta);
-    } catch (err) {
-      error = err;
-    }
-    if (requestSeq === cacheMeta.i) {
-      setIsFetching(false);
-      if (error) {
-        setError(error);
-      } else {
-        data$.set(data);
-        isPending$.set(false);
-        setError(UNDEFINED);
-        cacheMeta.t = Date.now();
-      }
-    }
-    return {
-      data,
-      error
-    };
+    return fetchCacheEntry(queryMeta, cacheEntry);
   }, /* eslint-disable-next-line react-hooks/exhaustive-deps */
   [strQueryKey, cacheMode, staleTime]);
   useEffect(() => {

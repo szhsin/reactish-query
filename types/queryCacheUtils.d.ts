@@ -1,0 +1,4 @@
+import type { FetchResult, QueryMeta } from './types';
+import type { QueryCacheEntry } from './types-internal';
+export declare const getStrCacheKey: ({ queryKey, args }: QueryMeta, strQueryKey?: string) => string;
+export declare const fetchCacheEntry: <TData>(queryMeta: QueryMeta, [{ d: { set: setData }, e: { set: setError }, p: { set: setIsPending }, f: { set: setIsFetching } }, cacheMeta]: QueryCacheEntry<TData>) => Promise<FetchResult<TData>>;
