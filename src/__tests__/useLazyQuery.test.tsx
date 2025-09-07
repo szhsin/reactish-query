@@ -12,8 +12,8 @@ const queryClient = createQueryClient({
 
 describe('useLazyQuery', () => {
   afterEach(() => {
-    queryClient.getCache().clear();
-    defaultQueryClient.getCache().clear();
+    queryClient.clearCache();
+    defaultQueryClient.clearCache();
   });
 
   it('loads data when triggered', async () => {
@@ -145,7 +145,7 @@ describe('useLazyQuery', () => {
 
 describe('useLazyQuery$', () => {
   afterEach(() => {
-    defaultQueryClient.getCache().clear();
+    defaultQueryClient.clearCache();
   });
 
   describe('Render behaviour', () => {

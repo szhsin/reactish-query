@@ -1,3 +1,5 @@
+'use strict';
+
 const weakCache = () => {
   const cacheMap = new Map();
   const registry = new FinalizationRegistry(heldValue => {
@@ -31,6 +33,6 @@ const weakCache = () => {
     }
   };
 };
-const createQueryCache = () => typeof WeakRef === 'function' ? weakCache() : new Map();
+const createCache = () => typeof WeakRef === 'function' ? weakCache() : new Map();
 
-export { createQueryCache };
+exports.createCache = createCache;
