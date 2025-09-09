@@ -5,9 +5,9 @@ declare const createQueryClient: ({ middleware }?: {
 }) => {
     /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: readonly [<TData>(queryMeta: QueryMeta, queryFn: CacheQueryFn<TData> | undefined) => QueryCacheEntry<TData>, <TData>(queryMeta: QueryMeta, queryFn: CacheQueryFn<TData> | undefined, shouldPersist: boolean, strQueryKey?: string) => QueryCacheEntry<TData>];
-    clearCache: () => void;
+    clear: () => void;
     getData: <TData, TKey = unknown, TArgs = unknown>(queryMeta: QueryMeta<TKey, TArgs>) => TData | undefined;
-    setData: <TData, TKey = unknown, TArgs = unknown>(queryMeta: QueryMeta<TKey, TArgs>, data: TData) => void;
+    setData: <TData, TKey = unknown, TArgs = unknown>(queryMeta: QueryMeta<TKey, TArgs>, data: TData | ((prevData: TData) => TData)) => void;
     cancel: <TKey = unknown, TArgs = unknown>(queryMeta: QueryMeta<TKey, TArgs>) => void;
     fetch: <TData, TKey = unknown, TArgs = unknown>({ queryFn, ...queryMeta }: QueryMeta<TKey, TArgs> & {
         queryFn: CacheQueryFn<TData, TKey, TArgs>;
@@ -17,9 +17,9 @@ declare const createQueryClient: ({ middleware }?: {
 declare const defaultQueryClient: {
     /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: readonly [<TData>(queryMeta: QueryMeta, queryFn: CacheQueryFn<TData> | undefined) => QueryCacheEntry<TData>, <TData>(queryMeta: QueryMeta, queryFn: CacheQueryFn<TData> | undefined, shouldPersist: boolean, strQueryKey?: string) => QueryCacheEntry<TData>];
-    clearCache: () => void;
+    clear: () => void;
     getData: <TData, TKey = unknown, TArgs = unknown>(queryMeta: QueryMeta<TKey, TArgs>) => TData | undefined;
-    setData: <TData, TKey = unknown, TArgs = unknown>(queryMeta: QueryMeta<TKey, TArgs>, data: TData) => void;
+    setData: <TData, TKey = unknown, TArgs = unknown>(queryMeta: QueryMeta<TKey, TArgs>, data: TData | ((prevData: TData) => TData)) => void;
     cancel: <TKey = unknown, TArgs = unknown>(queryMeta: QueryMeta<TKey, TArgs>) => void;
     fetch: <TData, TKey = unknown, TArgs = unknown>({ queryFn, ...queryMeta }: QueryMeta<TKey, TArgs> & {
         queryFn: CacheQueryFn<TData, TKey, TArgs>;
