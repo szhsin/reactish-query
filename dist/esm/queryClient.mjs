@@ -39,7 +39,7 @@ const createQueryClient = ({
   return {
     /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: [createDefaultCacheEntry, resovleCacheEntry],
-    clearCache: () => cache.clear(),
+    clear: () => cache.clear(),
     getData: queryMeta => getCacheEntry(queryMeta)?.[0].d.get(),
     setData: (queryMeta, data) => getCacheEntry(queryMeta)?.[0].d.set(data),
     cancel: queryMeta => {

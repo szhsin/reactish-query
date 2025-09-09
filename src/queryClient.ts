@@ -72,15 +72,17 @@ const createQueryClient = ({
     /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: [createDefaultCacheEntry, resovleCacheEntry] as const,
 
-    clearCache: () => cache.clear(),
+    clear: () => cache.clear(),
 
     getData: <TData, TKey = unknown, TArgs = unknown>(
       queryMeta: QueryMeta<TKey, TArgs>
-    ) => getCacheEntry(queryMeta)?.[0].d.get() as TData | undefined,
+    ): TData | undefined => getCacheEntry<TData>(queryMeta)?.[0].d.get(),
 
     setData: <TData, TKey = unknown, TArgs = unknown>(
       queryMeta: QueryMeta<TKey, TArgs>,
-      data: TData
+      // This function does not support setting data to undefined, as that represents the initial state with isPending = true.
+      // If your data can be undefined, add `undefined` to the TData type parameter.
+      data: TData | ((prevData: TData) => TData)
     ): void => getCacheEntry(queryMeta)?.[0].d.set(data),
 
     cancel: <TKey = unknown, TArgs = unknown>(queryMeta: QueryMeta<TKey, TArgs>) => {
