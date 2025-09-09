@@ -5,7 +5,7 @@ import { Queries, Query } from './Query';
 
 describe('useQuery', () => {
   afterEach(() => {
-    defaultQueryClient.clearCache();
+    defaultQueryClient.clear();
   });
 
   it('requests and loads data', async () => {
@@ -153,6 +153,52 @@ describe('useQuery', () => {
       expect(screen.getByTestId('error-b')).toHaveTextContent('Refetch Error');
       expect(screen.getByTestId('error-c')).toBeEmptyDOMElement();
       expect(screen.getByTestId('error-d')).toHaveTextContent('Refetch Error');
+    });
+  });
+
+  describe('Request deduplication', () => {
+    it('dedups when the earlier mounted query has no queryFn', async () => {
+      render(
+        <Query queryName="a">
+          <Query queryName="b" noFetcher />
+        </Query>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-b')).toHaveTextContent('1');
+      });
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+    });
+
+    it('dedups when the later mounted query has no queryFn', async () => {
+      render(
+        <Query queryName="a" noFetcher>
+          <Query queryName="b" />
+        </Query>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-b')).toHaveTextContent('1');
+      });
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+    });
+
+    it('dedups when staleTime is 0', async () => {
+      render(
+        <Query queryName="a">
+          <Query queryName="b" />
+          <Query queryName="c" />
+        </Query>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-b')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-c')).toHaveTextContent('1');
+      });
+      expect(mockRequest).toHaveBeenCalledTimes(1);
     });
   });
 
