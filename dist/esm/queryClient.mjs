@@ -24,7 +24,7 @@ const createQueryClient = ({
     i: 0,
     fn: queryFn
   }];
-  const resovleCacheEntry = (queryMeta, queryFn, shouldPersist, strQueryKey) => {
+  const resolveCacheEntry = (queryMeta, queryFn, shouldPersist, strQueryKey) => {
     const strCacheKey = getStrCacheKey(queryMeta, strQueryKey);
     let cacheEntry = cache.get(strCacheKey, shouldPersist);
     if (!cacheEntry) {
@@ -35,7 +35,7 @@ const createQueryClient = ({
     return cacheEntry;
   };
   return {
-    _: [createDefaultCacheEntry, resovleCacheEntry],
+    _: [createDefaultCacheEntry, resolveCacheEntry],
     clear: () => cache.clear(),
     getData: queryMeta => getCacheEntry(queryMeta)?.[0].d.get(),
     setData: (queryMeta, data) => getCacheEntry(queryMeta)?.[0].d.set(data),
@@ -49,7 +49,7 @@ const createQueryClient = ({
     fetch: ({
       queryFn,
       ...queryMeta
-    }) => fetchCacheEntry(queryMeta, resovleCacheEntry(queryMeta, queryFn, true)),
+    }) => fetchCacheEntry(queryMeta, resolveCacheEntry(queryMeta, queryFn, true)),
     invalidate: queryMeta => {
       const cacheEntry = getCacheEntry(queryMeta);
       if (cacheEntry) return fetchCacheEntry(queryMeta, cacheEntry);
