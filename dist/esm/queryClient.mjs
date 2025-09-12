@@ -9,8 +9,6 @@ const createQueryClient = ({
   const state = createState({
     middleware: middleware
   });
-
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const cache = createCache();
   const getCacheEntry = queryMeta => cache.get(getStrCacheKey(queryMeta));
   const createInitialState = (queryMeta, stateKey, initialValue) => state(initialValue, UNDEFINED, {
@@ -37,7 +35,6 @@ const createQueryClient = ({
     return cacheEntry;
   };
   return {
-    /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: [createDefaultCacheEntry, resovleCacheEntry],
     clear: () => cache.clear(),
     getData: queryMeta => getCacheEntry(queryMeta)?.[0].d.get(),

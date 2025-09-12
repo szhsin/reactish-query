@@ -36,18 +36,15 @@ const useQuery$ = ({
     queryCacheEntry.set(cacheEntry);
     const [queryState, cacheMeta] = cacheEntry;
     if (declarative && (queryState.f.get() || Date.now() - staleTime < cacheMeta.t)) {
-      // No return value needed since this is only called inside this query hook when declarative
       return;
     }
     return queryCacheUtils.fetchCacheEntry(queryMeta, cacheEntry);
-  }, /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  [strQueryKey, cacheMode, staleTime]);
+  }, [strQueryKey, cacheMode, staleTime]);
   react.useEffect(() => {
     if (enabled) refetch(utils.UNDEFINED, true);
   }, [enabled, refetch]);
   return {
     refetch,
-    /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: {
       s: reactishState.useSnapshot(queryCacheEntry)[0],
       $: queryCacheEntry

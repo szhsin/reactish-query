@@ -19,11 +19,7 @@ const useQueryObserver = (input, {
       p: isPending$
     }]) => {
       unsubscribeState();
-      context.a = [
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-      data$.subscribe(data => context.d?.(data)), error$.subscribe(error => error && context.e?.(error))];
-
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      context.a = [data$.subscribe(data => context.d?.(data)), error$.subscribe(error => error && context.e?.(error))];
       if (!isPending$.get()) context.d?.(data$.get());
       if (error$.get()) context.e?.(error$.get());
     });

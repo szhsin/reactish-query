@@ -14,6 +14,7 @@ module.exports = {
     setSpreadProperties: true,
     skipForOfIteratorClosing: true
   },
+  shouldPrintComment: (val) => /[@#]__PURE__/.test(val),
   plugins: ['pure-annotations'],
   presets: [
     [
