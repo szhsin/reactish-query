@@ -1,4 +1,9 @@
 import type { LazyQueryHookOptions } from './types';
+/**
+ * Hook for lazy queries. Returns the same observable API as `useQuery`, but
+ * does not trigger an initial fetch. Use the returned `trigger` to execute the
+ * query with arguments.
+ */
 declare const useLazyQuery: <TData, TArgs, TKey = unknown>(options: LazyQueryHookOptions<TData, TArgs, TKey>) => {
     trigger: import("./types").QueryTrigger<TData, TArgs>;
     _: {

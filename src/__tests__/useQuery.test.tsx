@@ -169,6 +169,15 @@ describe('useQuery', () => {
         expect(screen.getByTestId('data-b')).toHaveTextContent('1');
       });
       expect(mockRequest).toHaveBeenCalledTimes(1);
+
+      fireEvent.click(screen.getByTestId('refetch-b'));
+      expect(screen.getByTestId('status-a')).toHaveTextContent('fetching');
+      expect(screen.getByTestId('status-b')).toHaveTextContent('fetching');
+      await waitFor(() => {
+        expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+        expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
+      });
+      expect(mockRequest).toHaveBeenCalledTimes(2);
     });
 
     it('dedups when the later mounted query has no queryFn', async () => {
@@ -183,6 +192,15 @@ describe('useQuery', () => {
         expect(screen.getByTestId('data-b')).toHaveTextContent('1');
       });
       expect(mockRequest).toHaveBeenCalledTimes(1);
+
+      fireEvent.click(screen.getByTestId('refetch-a'));
+      expect(screen.getByTestId('status-a')).toHaveTextContent('fetching');
+      expect(screen.getByTestId('status-b')).toHaveTextContent('fetching');
+      await waitFor(() => {
+        expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
+        expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
+      });
+      expect(mockRequest).toHaveBeenCalledTimes(2);
     });
 
     it('dedups when staleTime is 0', async () => {

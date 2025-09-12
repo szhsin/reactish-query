@@ -11,8 +11,6 @@ const createQueryClient = ({
   const state = reactishState.createState({
     middleware: middleware
   });
-
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const cache$1 = cache.createCache();
   const getCacheEntry = queryMeta => cache$1.get(queryCacheUtils.getStrCacheKey(queryMeta));
   const createInitialState = (queryMeta, stateKey, initialValue) => state(initialValue, utils.UNDEFINED, {
@@ -39,7 +37,6 @@ const createQueryClient = ({
     return cacheEntry;
   };
   return {
-    /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: [createDefaultCacheEntry, resovleCacheEntry],
     clear: () => cache$1.clear(),
     getData: queryMeta => getCacheEntry(queryMeta)?.[0].d.get(),
