@@ -30,7 +30,7 @@ const useQuery$ = <TData, TKey = unknown>({
 }: QueryHookOptions<TData, TKey>) => {
   const {
     client: {
-      _: [createDefaultCacheEntry, resovleCacheEntry]
+      _: [createDefaultCacheEntry, resolveCacheEntry]
     },
     defaultOptions
   } = useQueryContext();
@@ -46,7 +46,7 @@ const useQuery$ = <TData, TKey = unknown>({
 
       const cacheEntry =
         cacheMode !== 'off'
-          ? resovleCacheEntry(
+          ? resolveCacheEntry(
               queryMeta,
               queryFn as CacheQueryFn<TData>,
               cacheMode === 'persist',

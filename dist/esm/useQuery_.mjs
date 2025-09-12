@@ -12,7 +12,7 @@ const useQuery$ = ({
 }) => {
   const {
     client: {
-      _: [createDefaultCacheEntry, resovleCacheEntry]
+      _: [createDefaultCacheEntry, resolveCacheEntry]
     },
     defaultOptions
   } = useQueryContext();
@@ -30,7 +30,7 @@ const useQuery$ = ({
       queryKey,
       args
     };
-    const cacheEntry = cacheMode !== 'off' ? resovleCacheEntry(queryMeta, queryFn, cacheMode === 'persist', strQueryKey) : createDefaultCacheEntry(queryMeta, queryFn);
+    const cacheEntry = cacheMode !== 'off' ? resolveCacheEntry(queryMeta, queryFn, cacheMode === 'persist', strQueryKey) : createDefaultCacheEntry(queryMeta, queryFn);
     queryCacheEntry.set(cacheEntry);
     const [queryState, cacheMeta] = cacheEntry;
     if (declarative && (queryState.f.get() || Date.now() - staleTime < cacheMeta.t)) {
