@@ -25,9 +25,9 @@ const LazyQuery = ({
   >({
     ...queryOptions,
     queryKey: { keyId: id },
-    queryFn: (arg) => {
+    queryFn: (options) => {
       // testing fetcher use both local and variables from the arguments
-      let value = (id + arg.queryKey!.keyId + arg.args.paramId) / 3;
+      let value = (id + options.queryKey!.keyId + options.args.paramId) / 3;
       // Normally, everything used in the fetcher should be included in the query key.
       // Here, we deliberately leave some out to mimic variant fetch results using the same key.
       if (requestVariation) value += variation.current * 0.1;
@@ -70,7 +70,7 @@ const LazyQuery = ({
 };
 
 const useLazyQueryData = <TData, TArgs, TKey = unknown>(
-  options: LazyQueryHookOptions<TData, TKey, TArgs>
+  options: LazyQueryHookOptions<TData, TArgs, TKey>
 ) => useData(useLazyQuery$(options));
 
 const LazyQueryData = ({
@@ -93,7 +93,8 @@ const LazyQueryData = ({
   >({
     ...queryOptions,
     queryKey: { keyId: id },
-    queryFn: (arg) => fakeRequest((id + arg.queryKey!.keyId + arg.args.paramId) / 3)
+    queryFn: (options) =>
+      fakeRequest((id + options.queryKey!.keyId + options.args.paramId) / 3)
   });
 
   if (isPending) {
