@@ -2,7 +2,7 @@ import type { QueryTrigger, LazyQueryHookOptions, QueryHookOptions } from './typ
 import { useQuery$ } from './useQuery$';
 
 const useLazyQuery$ = <TData, TArgs, TKey = unknown>(
-  options: LazyQueryHookOptions<TData, TKey, TArgs>
+  options: LazyQueryHookOptions<TData, TArgs, TKey>
 ) => {
   const { refetch, ...rest } = useQuery$<TData, TKey>({
     ...(options as QueryHookOptions<TData, TKey>),

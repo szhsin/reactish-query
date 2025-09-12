@@ -3,7 +3,7 @@ import { useLazyQuery$ } from './useLazyQuery$';
 import { useObservable } from './useObservable';
 
 const useLazyQuery = <TData, TArgs, TKey = unknown>(
-  options: LazyQueryHookOptions<TData, TKey, TArgs>
+  options: LazyQueryHookOptions<TData, TArgs, TKey>
 ) => useObservable(useLazyQuery$(options));
 
 export { useLazyQuery };

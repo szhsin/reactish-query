@@ -2,10 +2,10 @@ import type { LazyQueryHookOptions, MutationHookOptions } from './types';
 import { useLazyQuery } from './useLazyQuery';
 
 const useMutation = <TData, TArgs, TKey = unknown>(
-  options: MutationHookOptions<TData, TKey, TArgs>
+  options: MutationHookOptions<TData, TArgs, TKey>
 ) =>
   useLazyQuery<TData, TArgs, TKey>({
-    ...(options as LazyQueryHookOptions<TData, TKey, TArgs>),
+    ...(options as LazyQueryHookOptions<TData, TArgs, TKey>),
     cacheMode: 'off'
   });
 
