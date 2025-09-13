@@ -5,13 +5,14 @@ var useQuery$ = require('./useQuery_.cjs');
 const useLazyQuery$ = options => {
   const {
     refetch,
-    ...rest
+    _
   } = useQuery$.useQuery$({
     ...options,
     enabled: false
   });
   return {
-    ...rest,
+    _,
+    args: _.s.a,
     trigger: refetch
   };
 };

@@ -2,29 +2,42 @@ import type { QueryTrigger, LazyQueryHookOptions, QueryHookOptions } from './typ
 import { useQuery$ } from './useQuery$';
 
 /**
- * Low-level, composable lazy-query hook.
+ * Low-level lazy-query hook for building custom abstractions.
  *
- * Purpose: provide observable slices (and a `trigger`) for lazy queries so
- * consumers can compose custom hooks. Use with helpers from `useObservable.ts`.
+ * Exposes observable slices of query state and a `trigger` function for running
+ * the query on demand. Pair with helpers from `useObservable.ts` (e.g. `useData`,
+ * `useError`, `useIsFetching`) to select specific slices.
  *
- * Enable fine-grained reactivity: composing with a single helper subscribes only to
- * that slice. Example: `useData(useLazyQuery$(opts))` rerenders only when
- * `data` changes.
+ * Enables fine-grained reactivity: combining with a single helper subscribes
+ * only to that slice. For example,
+ * `useData(useLazyQuery$(options))` rerenders only when `data` changes (not when
+ * `isFetching` or `error` updates).
+ *
+ * @returns An object containing:
+ *  - `trigger` — function to manually execute the query
+ *  - `args` — last arguments passed to `trigger`
  *
  * @example
- *  const useDataAndTrigger = <TData, TArgs, TKey = unknown>(
- *    options: LazyQueryHookOptions<TData, TArgs, TKey>
- *  ) => useData(useLazyQuery$(options));
+ * const { data, trigger } = useData(useLazyQuery$({ queryFn }));
+ * const { data, error, trigger } = useData(useError(useLazyQuery$({ queryFn })));
+ * // or make it reusable
+ * const useDataAndTrigger = <TData, TArgs, TKey = unknown>(
+ *   options: LazyQueryHookOptions<TData, TArgs, TKey>
+ * ) => useData(useLazyQuery$(options));
  */
 const useLazyQuery$ = <TData, TArgs, TKey = unknown>(
   options: LazyQueryHookOptions<TData, TArgs, TKey>
 ) => {
-  const { refetch, ...rest } = useQuery$<TData, TKey>({
+  const { refetch, _ } = useQuery$<TData, TKey>({
     ...(options as QueryHookOptions<TData, TKey>),
     enabled: false
   });
 
-  return { ...rest, trigger: refetch as QueryTrigger<TData, TArgs> };
+  return {
+    _,
+    args: _.s.a as TArgs | undefined,
+    trigger: refetch as QueryTrigger<TData, TArgs>
+  };
 };
 
 export { useLazyQuery$ };

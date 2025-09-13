@@ -3,13 +3,14 @@ import { useQuery$ } from './useQuery_.mjs';
 const useLazyQuery$ = options => {
   const {
     refetch,
-    ...rest
+    _
   } = useQuery$({
     ...options,
     enabled: false
   });
   return {
-    ...rest,
+    _,
+    args: _.s.a,
     trigger: refetch
   };
 };

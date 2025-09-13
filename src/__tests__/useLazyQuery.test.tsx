@@ -27,12 +27,16 @@ describe('useLazyQuery', () => {
     expect(mockRequest).toHaveBeenCalledTimes(0);
     expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
     expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
+    expect(screen.getByTestId('args-a')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('args-b')).toBeEmptyDOMElement();
     expect(screen.getByTestId('data-a')).toBeEmptyDOMElement();
-    expect(screen.getByTestId('refetch-data-a')).toBeEmptyDOMElement();
     expect(screen.getByTestId('data-b')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('refetch-data-a')).toBeEmptyDOMElement();
 
     fireEvent.click(screen.getByTestId('trigger-a'));
     expect(mockRequest).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId('args-a')).toHaveTextContent('1');
+    expect(screen.getByTestId('args-b')).toBeEmptyDOMElement();
     expect(screen.getByTestId('status-a')).toHaveTextContent('fetching');
     expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
     await waitFor(() => {
@@ -46,6 +50,8 @@ describe('useLazyQuery', () => {
       expect(screen.getByTestId('refetch-data-a')).toHaveTextContent('1');
     });
     expect(screen.getByTestId('data-b')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('args-a')).toHaveTextContent('1');
+    expect(screen.getByTestId('args-b')).toBeEmptyDOMElement();
     expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
     expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
     expect(screen.getByTestId('error-a')).toBeEmptyDOMElement();
@@ -53,6 +59,8 @@ describe('useLazyQuery', () => {
 
     fireEvent.click(screen.getByTestId('trigger-b'));
     expect(mockRequest).toHaveBeenCalledTimes(2);
+    expect(screen.getByTestId('args-a')).toHaveTextContent('1');
+    expect(screen.getByTestId('args-b')).toHaveTextContent('1');
     expect(screen.getByTestId('data-a')).toHaveTextContent('1');
     expect(screen.getByTestId('data-b')).toHaveTextContent('1');
     expect(screen.getByTestId('status-a')).toHaveTextContent('fetching');
@@ -70,9 +78,11 @@ describe('useLazyQuery', () => {
 
     fireEvent.click(screen.getByTestId('plus-a'));
     expect(mockRequest).toHaveBeenCalledTimes(2);
+    expect(screen.getByTestId('args-a')).toHaveTextContent('1');
     expect(screen.getByTestId('data-a')).toHaveTextContent('1');
     fireEvent.click(screen.getByTestId('trigger-a'));
     expect(mockRequest).toHaveBeenCalledTimes(3);
+    expect(screen.getByTestId('args-a')).toHaveTextContent('2');
     expect(screen.getByTestId('data-a')).toBeEmptyDOMElement();
     await waitFor(() => {
       expect(onData).toHaveBeenLastCalledWith(
@@ -81,6 +91,7 @@ describe('useLazyQuery', () => {
         },
         expect.objectContaining({ queryKey: { keyId: 2 }, args: { paramId: 2 } })
       );
+      expect(screen.getByTestId('args-a')).toHaveTextContent('2');
       expect(screen.getByTestId('data-a')).toHaveTextContent('2');
     });
     expect(screen.getByTestId('data-b')).toHaveTextContent('1');
@@ -101,6 +112,7 @@ describe('useLazyQuery', () => {
     });
 
     fireEvent.click(screen.getByTestId('trigger-a'));
+    expect(screen.getByTestId('args-a')).toHaveTextContent('1');
     expect(screen.getByTestId('data-a')).toBeEmptyDOMElement();
     expect(screen.getByTestId('error-a')).toBeEmptyDOMElement();
     expect(screen.getByTestId('refetch-error-a')).toBeEmptyDOMElement();
@@ -115,6 +127,7 @@ describe('useLazyQuery', () => {
       );
       expect(screen.getByTestId('error-a')).toHaveTextContent('Network Error');
       expect(screen.getByTestId('refetch-error-a')).toHaveTextContent('Network Error');
+      expect(screen.getByTestId('args-a')).toHaveTextContent('1');
     });
 
     expect(onError).toHaveBeenCalledTimes(1);
@@ -154,8 +167,10 @@ describe('useLazyQuery$', () => {
       render(<LazyQueryData queryName="a" render={mockRender} />);
       // Initial render
       expect(mockRender).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('args-a')).toBeEmptyDOMElement();
 
       fireEvent.click(screen.getByTestId('trigger-a'));
+      expect(screen.getByTestId('args-a')).toHaveTextContent('1');
       await waitFor(() => {
         expect(screen.getByTestId('data-a')).toHaveTextContent('1');
       });
@@ -163,12 +178,14 @@ describe('useLazyQuery$', () => {
       expect(mockRender).toHaveBeenCalledTimes(3);
 
       fireEvent.click(screen.getByTestId('trigger-a'));
+      expect(screen.getByTestId('args-a')).toHaveTextContent('1');
       await delayFor(50);
       // No rendering as data has not changed
       expect(mockRender).toHaveBeenCalledTimes(3);
 
       fireEvent.click(screen.getByTestId('plus-a'));
       fireEvent.click(screen.getByTestId('trigger-a'));
+      expect(screen.getByTestId('args-a')).toHaveTextContent('2');
       await waitFor(() => {
         expect(screen.getByTestId('data-a')).toHaveTextContent('2');
       });
@@ -180,6 +197,7 @@ describe('useLazyQuery$', () => {
       });
       fireEvent.click(screen.getByTestId('trigger-a'));
       await delayFor(50);
+      expect(screen.getByTestId('args-a')).toHaveTextContent('2');
       expect(screen.getByTestId('data-a')).toHaveTextContent('2');
       expect(mockRender).toHaveBeenCalledTimes(6);
     });

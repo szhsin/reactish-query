@@ -6,17 +6,19 @@ import type { LazyQueryHookOptions } from './types';
  *
  * @returns An object containing:
  *  - `trigger` — function to manually execute the query
+ *  - `args` — last arguments passed to `trigger`
  *  - `data` — current query result
  *  - `error` — current query error
  *  - `isFetching` — whether the query is in progress
  *  - `isPending` — whether the query is pending
  */
 declare const useLazyQuery: <TData, TArgs, TKey = unknown>(options: LazyQueryHookOptions<TData, TArgs, TKey>) => {
-    trigger: import("./types").QueryTrigger<TData, TArgs>;
     _: {
         s: import("./types-internal").CacheEntryState<TData>;
         $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown>;
     };
+    args: TArgs | undefined;
+    trigger: import("./types").QueryTrigger<TData, TArgs>;
 } & {
     isFetching: boolean;
 } & ({

@@ -5,12 +5,16 @@ import type { InputQueryResult, ExtractInputDataType } from './types-internal';
 /**
  * Small composable helpers for observable query hooks.
  *
- * Purpose: combine with low-level `$` hooks (e.g., `useQuery$`, `useLazyQuery$`)
- * to build custom hook shapes. These helpers enable fine-grained reactivity:
- * composing a `$` hook with a single helper subscribes only to that slice
- * (for example, `useData(useQuery$(opts))` rerenders only when `data` changes).
+ * Designed to be combined with low-level `$` hooks (e.g., `useQuery$`,
+ * `useLazyQuery$`) to build custom hook shapes. Each helper attaches one or
+ * more snapshots to the input, enabling fine-grained reactivity. For example,
+ * `useData(useQuery$(options))` rerenders only when `data` changes.
+ *
+ * Attach `data` and `isPending` snapshot to the observable input.
  *
  * @example
+ * const { data, refetch } = useData(useQuery$({ queryKey: 'todos', queryFn }));
+ * // or make it reusable
  * const useQueryData = <TData, TKey = unknown>(options: QueryHookOptions<TData, TKey>) =>
  *   useData(useQuery$(options));
  */
@@ -44,7 +48,8 @@ const useIsFetching = <TInput extends InputQueryResult>(input: TInput) => ({
 /**
  * Combine all helpers into the full observable API.
  *
- * Use for consumer-facing hooks that need `data`, `error`, and `isFetching/isPending` together.
+ * Use this for consumer-facing hooks that need `data`, `error`,
+ * `isFetching`, and `isPending` together.
  */
 const useObservable = <TInput extends InputQueryResult>(input: TInput) =>
   useData(useError(useIsFetching(input)));
