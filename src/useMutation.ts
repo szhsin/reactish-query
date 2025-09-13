@@ -7,6 +7,7 @@ import { useLazyQuery } from './useLazyQuery';
  *
  * @returns An object containing:
  *  - `trigger` — function to manually execute the mutation
+ *  - `args` — last arguments passed to `trigger`
  *  - `data` — current mutation result
  *  - `error` — current mutation error
  *  - `isFetching` — whether the mutation is in progress

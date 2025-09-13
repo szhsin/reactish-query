@@ -9,6 +9,11 @@ export interface CacheEntryState<TData> {
     f: State<boolean>;
     /** @internal Observable for isPending */
     p: State<boolean>;
+    /**
+     * @internal Lazy query/mutation arguments.
+     * Immutable per cache entry, so no observable needed.
+     */
+    a: unknown;
 }
 export interface CacheEntryMeta<TData> {
     /** @internal Request sequence number */
@@ -26,7 +31,7 @@ export type QueryStateCode = keyof CacheEntryState<unknown>;
 export interface InternalHookApi<TData> {
     /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: {
-        /** @internal Query state snapshot - safe for rendering */
+        /** @internal Query state snapshot - ready for rendering */
         s: CacheEntryState<TData>;
         /** @internal Observable query cache entry - do not render directly */
         $: State<QueryCacheEntry<TData>>;

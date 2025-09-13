@@ -1,20 +1,26 @@
 import type { Refetch, QueryHookOptions } from './types';
 import type { InternalHookApi } from './types-internal';
 /**
- * Low-level, composable query hook.
+ * Low-level query hook for building custom abstractions.
  *
- * Purpose: expose observable slices of a query so consumers can compose custom
- * hooks. Use with helpers from `useObservable.ts` (for example `useData`,
- * `useError`, `useIsFetching`, or `useObservable`).
+ * Exposes observable slices of query state so consumers can compose their own
+ * hooks. Pair with helpers from `useObservable.ts` (e.g. `useData`, `useError`,
+ * `useIsFetching`) to select specific slices.
  *
- * Enable fine-grained reactivity: composing a `$` hook with a single helper subscribes
- * only to that slice. For example, `useData(useQuery$(opts))` rerenders only
- * when `data` changes (not when `isFetching` or `error` update), enabling more
- * granular renders.
+ * Enables fine-grained reactivity: combining a `$` hook with a single helper
+ * subscribes only to that slice. For example,
+ * `useData(useQuery$(options))` rerenders only when `data` changes (not when
+ * `isFetching` or `error` updates).
+ *
+ * @returns An object containing:
+ *  - `refetch` — function to refetch the query
  *
  * @example
- *  const useQueryData = <TData, TKey = unknown>(options: QueryHookOptions<TData, TKey>) =>
- *    useData(useQuery$(options));
+ * const { data, refetch } = useData(useQuery$({ queryKey: 'todos', queryFn }));
+ * const { data, error, refetch } = useData(useError(useQuery$({ queryKey: 'todos', queryFn })));
+ * // or make it reusable
+ * const useQueryData = <TData, TKey = unknown>(options: QueryHookOptions<TData, TKey>) =>
+ *   useData(useQuery$(options));
  */
 declare const useQuery$: <TData, TKey = unknown>({ queryKey, queryFn, enabled, ...options }: QueryHookOptions<TData, TKey>) => {
     refetch: Refetch<TData>;

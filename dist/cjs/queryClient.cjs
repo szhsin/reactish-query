@@ -21,7 +21,8 @@ const createQueryClient = ({
     d: createInitialState(queryMeta, 'data'),
     e: createInitialState(queryMeta, 'error'),
     f: createInitialState(queryMeta, 'isFetching', false),
-    p: createInitialState(queryMeta, 'isPending', true)
+    p: createInitialState(queryMeta, 'isPending', true),
+    a: queryMeta?.args
   }, {
     i: 0,
     fn: queryFn
