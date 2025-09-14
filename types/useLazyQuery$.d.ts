@@ -24,6 +24,7 @@ import type { QueryTrigger, LazyQueryHookOptions } from './types';
  * ) => useData(useLazyQuery$(options));
  */
 declare const useLazyQuery$: <TData, TArgs, TKey = unknown>(options: LazyQueryHookOptions<TData, TArgs, TKey>) => {
+    /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: {
         s: import("./types-internal").CacheEntryState<TData>;
         $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown>;

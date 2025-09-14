@@ -34,7 +34,9 @@ const useLazyQuery$ = <TData, TArgs, TKey = unknown>(
   });
 
   return {
+    /** @internal [INTERNAL ONLY – DO NOT USE] */
     _,
+
     args: _.s.a as TArgs | undefined,
     trigger: refetch as QueryTrigger<TData, TArgs>
   };
