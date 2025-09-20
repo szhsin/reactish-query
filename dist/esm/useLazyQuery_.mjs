@@ -10,8 +10,8 @@ const useLazyQuery$ = options => {
   });
   return {
     _,
-    args: _.s.a,
-    trigger: refetch
+    trigger: refetch,
+    args: _.s.a
   };
 };
 

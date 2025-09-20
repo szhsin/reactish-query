@@ -5,7 +5,7 @@ import type { MutationHookOptions } from './types';
  *
  * @returns An object containing:
  *  - `trigger` — function to manually execute the mutation
- *  - `args` — last arguments passed to `trigger`
+ *  - `args` — the most recent arguments passed to `trigger`
  *  - `data` — current mutation result
  *  - `error` — current mutation error
  *  - `isFetching` — whether the mutation is in progress
@@ -16,8 +16,8 @@ declare const useMutation: <TData, TArgs, TKey = unknown>(options: MutationHookO
         s: import("./types-internal").CacheEntryState<TData>;
         $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown>;
     };
-    args: TArgs | undefined;
     trigger: import("./types").QueryTrigger<TData, TArgs>;
+    args: TArgs | undefined;
 } & ({
     isFetching: boolean;
 } & ({

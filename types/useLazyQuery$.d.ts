@@ -13,7 +13,7 @@ import type { QueryTrigger, LazyQueryHookOptions } from './types';
  *
  * @returns An object containing:
  *  - `trigger` — function to manually execute the query
- *  - `args` — last arguments passed to `trigger`
+ *  - `args` — the most recent arguments passed to `trigger`
  *
  * @example
  * const { data, trigger } = useData(useLazyQuery$({ queryFn }));
@@ -29,7 +29,12 @@ declare const useLazyQuery$: <TData, TArgs, TKey = unknown>(options: LazyQueryHo
         s: import("./types-internal").CacheEntryState<TData>;
         $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown>;
     };
-    args: TArgs | undefined;
+    /**
+     * Function to manually execute the query.
+     * Accepts an argument which will be passed to `queryFn`.
+     */
     trigger: QueryTrigger<TData, TArgs>;
+    /** The most recent arguments passed to `trigger`. */
+    args: TArgs | undefined;
 };
 export { useLazyQuery$ };

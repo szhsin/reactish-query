@@ -23,7 +23,10 @@ const useData = <TInput extends InputQueryResult>(input: TInput) =>
     ...input,
     /** Current snapshot of the query data */
     data: useSnapshot(input._.s.d) as unknown,
-    /** Whether the query is currently pending */
+    /**
+     * Whether the query is currently pending. This will be true initially
+     * and becomes false once the `data` field is ready for use.
+     */
     isPending: useSnapshot(input._.s.p)
   }) as TInput & QueryDataState<ExtractInputDataType<TInput>>;
 

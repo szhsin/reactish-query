@@ -30,7 +30,8 @@ export default tseslint.config(
       '**/static/',
       '**/.next/',
       '**/.docusaurus/',
-      '**/*.d.ts'
+      '**/*.d.ts',
+      './examples/'
     ]
   },
   {
