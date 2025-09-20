@@ -27,7 +27,7 @@ npm install reactish-query
 
 Cache management in large or long-running apps is tricky for query libraries. Many implementations, like TanStack Query, rely on a configurable timer (`gcTime`) to remove cache entries after all components using them have unmounted. While this works in some cases, choosing an ideal GC interval is difficult, and unused cache can still grow excessively depending on the device or runtime conditions.
 
-This library takes a different approach by leveraging the native JavaScript engine for garbage collection, which is more sophisticated and efficient out of the box. Thanks to an atomic state–based cache architecture, cache entries are weakly held, allowing the engine to automatically reclaim them when no components reference the data. Unused cache is cleaned up as needed based on runtime factors such as access patterns, hot paths, and generational collection, without requiring manual timers.
+This library takes a different approach by leveraging the native JavaScript engine for garbage collection, which is more sophisticated and efficient out of the box. Thanks to an atomic state–based cache architecture, cache entries are weakly held, allowing the engine to automatically reclaim them when no components reference the data. Unused cache is cleaned up **as needed based on runtime factors** such as access patterns, hot paths, and generational collection, without requiring manual timers.
 
 ![cache-comparison](https://github.com/user-attachments/assets/d8c639a3-19dc-4566-ad70-175abc7b7d74)
 
