@@ -15,7 +15,7 @@ import { useQuery$ } from './useQuery$';
  *
  * @returns An object containing:
  *  - `trigger` — function to manually execute the query
- *  - `args` — last arguments passed to `trigger`
+ *  - `args` — the most recent arguments passed to `trigger`
  *
  * @example
  * const { data, trigger } = useData(useLazyQuery$({ queryFn }));
@@ -37,8 +37,14 @@ const useLazyQuery$ = <TData, TArgs, TKey = unknown>(
     /** @internal [INTERNAL ONLY – DO NOT USE] */
     _,
 
-    args: _.s.a as TArgs | undefined,
-    trigger: refetch as QueryTrigger<TData, TArgs>
+    /**
+     * Function to manually execute the query.
+     * Accepts an argument which will be passed to `queryFn`.
+     */
+    trigger: refetch as QueryTrigger<TData, TArgs>,
+
+    /** The most recent arguments passed to `trigger`. */
+    args: _.s.a as TArgs | undefined
   };
 };
 

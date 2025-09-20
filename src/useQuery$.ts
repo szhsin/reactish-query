@@ -71,6 +71,10 @@ const useQuery$ = <TData, TKey = unknown>({
 
       return fetchCacheEntry(queryMeta, cacheEntry);
     },
+
+    // `queryKey` and `queryFn` can be safely omitted from the dependency array
+    // because they are correlated with `strQueryKey`.
+    // `queryCacheEntry` and other values like `createDefaultCacheEntry` are constants
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
     [strQueryKey, cacheMode, staleTime]
   );
@@ -80,7 +84,9 @@ const useQuery$ = <TData, TKey = unknown>({
   }, [enabled, refetch]);
 
   return {
+    /** Function to manually refetch the query */
     refetch,
+
     /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: {
       s: useSnapshot(queryCacheEntry)[0],

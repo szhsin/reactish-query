@@ -94,9 +94,11 @@ export type QueryTrigger<TData, TArgs> = (args: TArgs) => Promise<FetchResult<TD
 export type BaseQueryHookOptions = {
   /**
    * Controls caching behavior for the hook.
-   * - `auto`: can be reclaimed by the JS engine when the query is not referenced by any component
-   * - `persist`: keeps query cache entries across the query client's lifecycle
-   * - `off`: does not use the shared cache and disables request deduplication
+   *
+   * - `auto`: when a query is not referenced by any component, it becomes weakly held in the cache and the JS engine can reclaim it
+   * - `persist`: keeps the query strongly held in the cache even if no component is referencing it
+   * - `off`: disables the shared cache and request deduplication for this hook
+   *
    * @default 'auto'
    */
   cacheMode?: 'auto' | 'persist' | 'off';
@@ -124,8 +126,10 @@ export type QueryHookOptions<TData, TKey> = BaseQueryHookOptions & {
   enabled?: boolean;
 
   /**
-   * Time in milliseconds after a successful fetch during which the cached
-   * data is considered fresh. This only applies to the current query hook.
+   * Time in milliseconds after a successful fetch during which cached data is considered
+   * fresh for this hook instance.
+   * Can be configured for infrequently changing data to avoid refetches.
+   * @default 0
    */
   staleTime?: number;
 };
