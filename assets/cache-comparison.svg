@@ -1,0 +1,61 @@
+<svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="500" height="280" fill="transparent"/>
+  
+  <!-- Traditional Approach -->
+  <g id="traditional">
+    <rect x="25" y="20" width="190" height="105" fill="transparent" stroke="#e74c3c" stroke-width="2" rx="8"/>
+    <text x="120" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#e74c3c">Traditional Approach</text>
+    <text x="120" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#7f8c8d">Manual timer (gcTime)</text>
+    <text x="120" y="87" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#c0392b">❌ Hard to configure</text>
+    <text x="120" y="109" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#c0392b">❌ Cache can grow</text>
+  </g>
+  
+  <!-- This Library Approach -->
+  <g id="this-library">
+    <rect x="285" y="20" width="190" height="105" fill="transparent" stroke="#27ae60" stroke-width="2" rx="8"/>
+    <text x="380" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#27ae60">This Library</text>
+    <text x="380" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#7f8c8d">Native JavaScript GC</text>
+    <text x="380" y="87" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1e8449">✅ Automatic cleanup</text>
+    <text x="380" y="109" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#1e8449">✅ Runtime-aware</text>
+  </g>
+  
+  <!-- VS -->
+  <text x="250" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#95a5a6">VS</text>
+  
+  <!-- Cache visualization -->
+  <g id="cache-comparison">
+    <text x="120" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#7f8c8d">Cache State</text>
+    <rect x="50" y="160" width="140" height="30" fill="transparent" stroke="#666" rx="4"/>
+    <rect x="60" y="170" width="15" height="10" fill="#3498db"/>
+    <rect x="80" y="170" width="15" height="10" fill="#3498db"/>
+    <rect x="100" y="170" width="15" height="10" fill="#e74c3c"/>
+    <rect x="120" y="170" width="15" height="10" fill="#e74c3c"/>
+    <rect x="140" y="170" width="15" height="10" fill="#e74c3c"/>
+    <rect x="160" y="170" width="15" height="10" fill="#e74c3c"/>
+    <text x="120" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#c0392b">Unused entries waiting for GC timer</text>
+    <text x="120" y="217" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#c0392b">May pile up if wrong gcTime</text>
+
+    <text x="380" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#7f8c8d">Cache State</text>
+    <rect x="310" y="160" width="140" height="30" fill="transparent" stroke="#666" rx="4"/>
+    <rect x="320" y="170" width="15" height="10" fill="#3498db"/>
+    <rect x="340" y="170" width="15" height="10" fill="#3498db"/>
+    <rect x="360" y="170" width="15" height="10" fill="#ecf0f1" stroke="#bdc3c7" stroke-dasharray="2,2"/>
+    <rect x="380" y="170" width="15" height="10" fill="#ecf0f1" stroke="#bdc3c7" stroke-dasharray="2,2"/>
+    <rect x="400" y="170" width="15" height="10" fill="#ecf0f1" stroke="#bdc3c7" stroke-dasharray="2,2"/>
+    <rect x="420" y="170" width="15" height="10" fill="#ecf0f1" stroke="#bdc3c7" stroke-dasharray="2,2"/>
+    <text x="380" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#1e8449">Unused entries eligible for GC</text>
+    <text x="380" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#27ae60">May be kept if used frequently</text>
+    <text x="380" y="234" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#1e8449">Decided by runtime engine</text>
+  </g>
+  
+  <!-- Legend -->
+  <g id="legend">
+    <rect x="130" y="245" width="12" height="10" fill="#3498db"/>
+    <text x="147" y="253" font-family="Arial, sans-serif" font-size="10" fill="#7f8c8d">Active</text>
+    <rect x="194" y="245" width="12" height="10" fill="#e74c3c"/>
+    <text x="211" y="253" font-family="Arial, sans-serif" font-size="10" fill="#7f8c8d">Unused</text>
+    <rect x="263" y="245" width="12" height="10" fill="#ecf0f1" stroke="#bdc3c7" stroke-dasharray="1,1"/>
+    <text x="280" y="253" font-family="Arial, sans-serif" font-size="10" fill="#7f8c8d">Weakly held</text>
+  </g>
+</svg>
