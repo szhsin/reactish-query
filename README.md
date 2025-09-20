@@ -29,6 +29,8 @@ Cache management in large or long-running apps is tricky for query libraries. Ma
 
 This library takes a different approach by leveraging the native JavaScript engine for garbage collection, which is more sophisticated and efficient out of the box. Thanks to an atomic state–based cache architecture, cache entries are weakly held, allowing the engine to automatically reclaim them when no components reference the data. Unused cache is cleaned up as needed based on runtime factors such as access patterns, hot paths, and generational collection, without requiring manual timers.
 
+![cache-comparison](https://github.com/user-attachments/assets/d8c639a3-19dc-4566-ad70-175abc7b7d74)
+
 ## Bundle size
 
 Bundle size is a key consideration in the design of this library. Each line of code is carefully crafted in a strongly typed codebase to balance a simple, easy-to-use public API with minimal internal overhead. The API is also composable and semi-modular, letting consumers include only the features they need and keeping the final bundle lean.
