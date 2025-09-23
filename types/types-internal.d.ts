@@ -1,6 +1,6 @@
 import type { State } from 'reactish-state';
 import type { CacheQueryFn } from './types';
-export interface CacheEntryState<TData> {
+export interface CacheEntryImmutable<TData> {
     /** @internal Observable query data */
     d: State<TData | undefined>;
     /** @internal Observable query error */
@@ -11,11 +11,16 @@ export interface CacheEntryState<TData> {
     p: State<boolean>;
     /**
      * @internal Lazy query/mutation arguments.
-     * Immutable per cache entry, so no observable needed.
+     * Immutable per cache entry, so no observable is needed.
      */
     a: unknown;
+    /**
+     * @internal Indicates whether this is a resolved/real Cache Entry (as opposed to a placeholder).
+     * Immutable per cache entry, so no observable is needed.
+     */
+    r: boolean;
 }
-export interface CacheEntryMeta<TData> {
+export interface CacheEntryMutable<TData> {
     /** @internal Request sequence number */
     i: number;
     /** @internal Data timestamp */
@@ -24,15 +29,15 @@ export interface CacheEntryMeta<TData> {
     fn?: CacheQueryFn<TData>;
 }
 export type QueryCacheEntry<TData> = readonly [
-    CacheEntryState<TData>,
-    CacheEntryMeta<TData>
+    CacheEntryImmutable<TData>,
+    CacheEntryMutable<TData>
 ];
-export type QueryStateCode = keyof CacheEntryState<unknown>;
+export type QueryStateCode = keyof CacheEntryImmutable<unknown>;
 export interface InternalHookApi<TData> {
     /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: {
-        /** @internal Query state snapshot - ready for rendering */
-        s: CacheEntryState<TData>;
+        /** @internal Cache entry immutable snapshot - ready for rendering */
+        s: CacheEntryImmutable<TData>;
         /** @internal Observable query cache entry - do not render directly */
         $: State<QueryCacheEntry<TData>>;
     };

@@ -25,15 +25,15 @@ const useQuery$ = ({
   };
   const strQueryKey = stringify(queryKey);
   const [queryCacheEntry] = useState(() => state(createDefaultCacheEntry()));
-  const refetch = useCallback(async (args, declarative) => {
+  const refetch = useCallback((args, declarative) => {
     const queryMeta = {
       queryKey,
       args
     };
     const cacheEntry = cacheMode !== 'off' ? resolveCacheEntry(queryMeta, queryFn, cacheMode === 'persist', strQueryKey) : createDefaultCacheEntry(queryMeta, queryFn);
     queryCacheEntry.set(cacheEntry);
-    const [queryState, cacheMeta] = cacheEntry;
-    if (declarative && (queryState.f.get() || Date.now() - staleTime < cacheMeta.t)) {
+    const [cacheEntryImmutable, cacheEntryMutable] = cacheEntry;
+    if (declarative && (cacheEntryImmutable.f.get() || Date.now() - staleTime < cacheEntryMutable.t)) {
       return;
     }
     return fetchCacheEntry(queryMeta, cacheEntry);

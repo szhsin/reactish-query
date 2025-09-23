@@ -17,17 +17,17 @@ const fetchCacheEntry = async (queryMeta, [{
   f: {
     set: setIsFetching
   }
-}, cacheMeta]) => {
-  if (!cacheMeta.fn) return {};
+}, cacheEntryMutable]) => {
+  if (!cacheEntryMutable.fn) return {};
   setIsFetching(true);
-  const requestSeq = ++cacheMeta.i;
+  const requestSeq = ++cacheEntryMutable.i;
   let data, error;
   try {
-    data = await cacheMeta.fn(queryMeta);
+    data = await cacheEntryMutable.fn(queryMeta);
   } catch (err) {
     error = err;
   }
-  if (requestSeq === cacheMeta.i) {
+  if (requestSeq === cacheEntryMutable.i) {
     setIsFetching(false);
     if (error) {
       setError(error);
@@ -35,7 +35,7 @@ const fetchCacheEntry = async (queryMeta, [{
       setData(data);
       setError(UNDEFINED);
       setIsPending(false);
-      cacheMeta.t = Date.now();
+      cacheEntryMutable.t = Date.now();
     }
   }
   return {

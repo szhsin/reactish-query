@@ -47,7 +47,7 @@ const useQuery$ = <TData, TKey = unknown>({
   );
 
   const refetch = useCallback(
-    async (args: unknown, declarative: boolean) => {
+    (args: unknown, declarative: boolean) => {
       const queryMeta: QueryMeta = { queryKey, args };
 
       const cacheEntry =
@@ -62,9 +62,12 @@ const useQuery$ = <TData, TKey = unknown>({
 
       queryCacheEntry.set(cacheEntry);
 
-      const [queryState, cacheMeta] = cacheEntry;
+      const [cacheEntryImmutable, cacheEntryMutable] = cacheEntry;
 
-      if (declarative && (queryState.f.get() || Date.now() - staleTime < cacheMeta.t!)) {
+      if (
+        declarative &&
+        (cacheEntryImmutable.f.get() || Date.now() - staleTime < cacheEntryMutable.t!)
+      ) {
         // No return value needed since this is only called inside this query hook when declarative
         return;
       }

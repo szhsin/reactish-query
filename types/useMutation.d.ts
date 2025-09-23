@@ -13,7 +13,7 @@ import type { MutationHookOptions } from './types';
  */
 declare const useMutation: <TData, TArgs, TKey = unknown>(options: MutationHookOptions<TData, TArgs, TKey>) => {
     _: {
-        s: import("./types-internal").CacheEntryState<TData>;
+        s: import("./types-internal").CacheEntryImmutable<TData>;
         $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown>;
     };
     trigger: import("./types").QueryTrigger<TData, TArgs>;

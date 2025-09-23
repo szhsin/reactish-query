@@ -1,5 +1,5 @@
 import { useLayoutEffect as _useLayoutEffect, useEffect, useState } from 'react';
-import type { State } from 'reactish-state';
+import type { State, StateListener } from 'reactish-state';
 import type { QueryObserverOptions } from '../types';
 import type {
   InputQueryResult,
@@ -48,21 +48,27 @@ const useQueryObserver = <TInput extends InputQueryResult>(
 
   useLayoutEffect(() => {
     const unsubscribeState = () => context.a?.forEach((unsubscribe) => unsubscribe());
-    const unsubscribeCacheEntry = queryCacheEntry$.subscribe(
-      ([{ d: data$, e: error$, p: isPending$ }]) => {
-        unsubscribeState();
 
-        context.a = [
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          data$.subscribe((data) => context.d?.(data!)),
-          error$.subscribe((error) => error && context.e?.(error))
-        ];
+    const listener: StateListener<QueryCacheEntry<Data>> = ([
+      { d: data$, e: error$, p: isPending$ }
+    ]) => {
+      unsubscribeState();
 
+      context.a = [
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        if (!isPending$.get()) context.d?.(data$.get()!);
-        if (error$.get()) context.e?.(error$.get()!);
-      }
-    );
+        data$.subscribe((data) => context.d?.(data!)),
+        error$.subscribe((error) => error && context.e?.(error))
+      ];
+
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      if (!isPending$.get()) context.d?.(data$.get()!);
+      if (error$.get()) context.e?.(error$.get()!);
+    };
+
+    const queryCacheEntry = queryCacheEntry$.get();
+    if (queryCacheEntry[0].r) listener(queryCacheEntry, queryCacheEntry);
+    const unsubscribeCacheEntry = queryCacheEntry$.subscribe(listener);
+
     return () => {
       unsubscribeState();
       unsubscribeCacheEntry();

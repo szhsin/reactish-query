@@ -16,22 +16,22 @@ export const fetchCacheEntry = async <TData>(
       p: { set: setIsPending },
       f: { set: setIsFetching }
     },
-    cacheMeta
+    cacheEntryMutable
   ]: QueryCacheEntry<TData>
 ): Promise<FetchResult<TData>> => {
-  if (!cacheMeta.fn) return {};
+  if (!cacheEntryMutable.fn) return {};
 
   setIsFetching(true);
-  const requestSeq = ++cacheMeta.i;
+  const requestSeq = ++cacheEntryMutable.i;
   let data: TData | undefined, error: Error | undefined;
 
   try {
-    data = await cacheMeta.fn(queryMeta);
+    data = await cacheEntryMutable.fn(queryMeta);
   } catch (err) {
     error = err as Error;
   }
 
-  if (requestSeq === cacheMeta.i) {
+  if (requestSeq === cacheEntryMutable.i) {
     setIsFetching(false);
     if (error) {
       setError(error);
@@ -39,7 +39,7 @@ export const fetchCacheEntry = async <TData>(
       setData(data);
       setError(UNDEFINED);
       setIsPending(false);
-      cacheMeta.t = Date.now();
+      cacheEntryMutable.t = Date.now();
     }
   }
 
