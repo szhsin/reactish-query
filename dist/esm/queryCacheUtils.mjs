@@ -18,12 +18,12 @@ const fetchCacheEntry = async (queryMeta, [{
     set: setIsFetching
   }
 }, cacheEntryMutable]) => {
-  if (!cacheEntryMutable.fn) return {};
+  if (!cacheEntryMutable.f) return {};
   setIsFetching(true);
   const requestSeq = ++cacheEntryMutable.i;
   let data, error;
   try {
-    data = await cacheEntryMutable.fn(queryMeta);
+    data = await cacheEntryMutable.f(queryMeta);
   } catch (err) {
     error = err;
   }

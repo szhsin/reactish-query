@@ -1,17 +1,16 @@
-import { useQuery$ } from './useQuery_.mjs';
+import { useCallback } from 'react';
+import { useQueryCore } from './useQueryCore.mjs';
 
 const useLazyQuery$ = options => {
-  const {
-    refetch,
-    _
-  } = useQuery$({
+  const internalApi = useQueryCore({
     ...options,
     enabled: false
   });
+  const fetchFn = internalApi.f;
   return {
-    _,
-    trigger: refetch,
-    args: _.s.a
+    trigger: useCallback(args => fetchFn(args), [fetchFn]),
+    args: internalApi.s.a,
+    _: internalApi
   };
 };
 

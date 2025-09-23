@@ -47,12 +47,7 @@ const QueryData = ({
       <button data-testid={`minus-${queryName}`} onClick={() => setId((s) => s - 1)}>
         Minus
       </button>
-      <button
-        data-testid={`refetch-${queryName}`}
-        onClick={async () => {
-          await refetch();
-        }}
-      >
+      <button data-testid={`refetch-${queryName}`} onClick={refetch}>
         Refetch
       </button>
       {children}

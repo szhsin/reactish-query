@@ -4,6 +4,7 @@ import { babel } from '@rollup/plugin-babel';
 import { addDirective } from 'rollup-plugin-add-directive';
 
 /**
+ * @param {{ inPath?: string, outPath?: string, inFile?: string }=} [opts]
  * @returns {import('rollup').RollupOptions}
  */
 const createBuild = ({ inPath = '', outPath = inPath, inFile = 'index.ts' } = {}) => ({

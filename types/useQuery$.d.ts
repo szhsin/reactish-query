@@ -1,5 +1,4 @@
-import type { Refetch, QueryHookOptions } from './types';
-import type { InternalHookApi } from './types-internal';
+import type { QueryHookOptions } from './types';
 /**
  * Low-level query hook for building custom abstractions.
  *
@@ -22,7 +21,14 @@ import type { InternalHookApi } from './types-internal';
  * const useQueryData = <TData, TKey = unknown>(options: QueryHookOptions<TData, TKey>) =>
  *   useData(useQuery$(options));
  */
-declare const useQuery$: <TData, TKey = unknown>({ queryKey, queryFn, enabled, ...options }: QueryHookOptions<TData, TKey>) => {
-    refetch: Refetch<TData>;
-} & InternalHookApi<TData>;
+declare const useQuery$: <TData, TKey = unknown>(options: QueryHookOptions<TData, TKey>) => {
+    /** Function to manually refetch the query */
+    refetch: () => Promise<import("./types").FetchResult<TData>>;
+    /** @internal [INTERNAL ONLY – DO NOT USE] */
+    _: {
+        s: import("./types-internal").CacheEntryImmutable<TData>;
+        $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown>;
+        f: (args: unknown, declarative: boolean) => Promise<import("./types").FetchResult<TData>> | undefined;
+    };
+};
 export { useQuery$ };

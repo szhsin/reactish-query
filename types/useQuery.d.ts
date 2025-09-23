@@ -13,10 +13,15 @@ import type { QueryHookOptions } from './types';
  *  - `refetch` — function to manually refetch the query
  */
 declare const useQuery: <TData, TKey = unknown>(options: QueryHookOptions<TData, TKey>) => {
-    refetch: import("./types").Refetch<TData>;
-} & import("./types-internal").InternalHookApi<TData> & ({
+    refetch: () => Promise<import("./types").FetchResult<TData>>;
+    _: {
+        s: import("./types-internal").CacheEntryImmutable<TData>;
+        $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown>;
+        f: (args: unknown, declarative: boolean) => Promise<import("./types").FetchResult<TData>> | undefined;
+    };
+} & {
     isFetching: boolean;
 } & ({
     error: Error | undefined;
-} & import("./types").QueryDataState<TData>));
+} & import("./types").QueryDataState<TData>);
 export { useQuery };

@@ -1,5 +1,6 @@
+import { useCallback } from 'react';
 import type { QueryTrigger, LazyQueryHookOptions, QueryHookOptions } from './types';
-import { useQuery$ } from './useQuery$';
+import { useQueryCore } from './useQueryCore';
 
 /**
  * Low-level lazy-query hook for building custom abstractions.
@@ -28,23 +29,24 @@ import { useQuery$ } from './useQuery$';
 const useLazyQuery$ = <TData, TArgs, TKey = unknown>(
   options: LazyQueryHookOptions<TData, TArgs, TKey>
 ) => {
-  const { refetch, _ } = useQuery$<TData, TKey>({
+  const internalApi = useQueryCore<TData, TKey>({
     ...(options as QueryHookOptions<TData, TKey>),
     enabled: false
   });
+  const fetchFn = internalApi.f as QueryTrigger<TData, TArgs>;
 
   return {
-    /** @internal [INTERNAL ONLY – DO NOT USE] */
-    _,
-
     /**
      * Function to manually execute the query.
      * Accepts an argument which will be passed to `queryFn`.
      */
-    trigger: refetch as QueryTrigger<TData, TArgs>,
+    trigger: useCallback<QueryTrigger<TData, TArgs>>((args) => fetchFn(args), [fetchFn]),
 
     /** The most recent arguments passed to `trigger`. */
-    args: _.s.a as TArgs | undefined
+    args: internalApi.s.a as TArgs | undefined,
+
+    /** @internal [INTERNAL ONLY – DO NOT USE] */
+    _: internalApi
   };
 };
 

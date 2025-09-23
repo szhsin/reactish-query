@@ -1,5 +1,16 @@
+/**
+ * ⚠️ WARNING: INTERNAL TYPES
+ *
+ * These types are INTERNAL and NOT intended for public use.
+ * They may CHANGE WITHOUT NOTICE and do NOT follow semver rules.
+ *
+ * ❌ Do NOT extend or derive types from these.
+ *
+ * Single-character property names are used intentionally
+ * to MINIMIZE bundle size and reduce internal overhead.
+ */
 import type { State } from 'reactish-state';
-import type { CacheQueryFn } from './types';
+import type { CacheQueryFn, FetchResult } from './types';
 export interface CacheEntryImmutable<TData> {
     /** @internal Observable query data */
     d: State<TData | undefined>;
@@ -26,7 +37,7 @@ export interface CacheEntryMutable<TData> {
     /** @internal Data timestamp */
     t?: number;
     /** @internal Query function */
-    fn?: CacheQueryFn<TData>;
+    f?: CacheQueryFn<TData>;
 }
 export type QueryCacheEntry<TData> = readonly [
     CacheEntryImmutable<TData>,
@@ -40,6 +51,8 @@ export interface InternalHookApi<TData> {
         s: CacheEntryImmutable<TData>;
         /** @internal Observable query cache entry - do not render directly */
         $: State<QueryCacheEntry<TData>>;
+        /** @internal Low-level fetch function for building custom abstractions */
+        f: (args: unknown, declarative: boolean) => Promise<FetchResult<TData>> | undefined;
     };
 }
 export type InputQueryResult = InternalHookApi<any>;
