@@ -49,7 +49,8 @@ const createQueryClient = ({
         e: createInitialState(queryMeta, 'error'),
         f: createInitialState(queryMeta, 'isFetching', false),
         p: createInitialState(queryMeta, 'isPending', true),
-        a: queryMeta?.args
+        a: queryMeta?.args,
+        r: !!queryMeta
       },
       { i: 0, fn: queryFn }
     ] as QueryCacheEntry<TData>;

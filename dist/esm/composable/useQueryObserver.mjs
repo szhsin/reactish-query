@@ -13,7 +13,7 @@ const useQueryObserver = (input, {
   }, [context, onData, onError]);
   useLayoutEffect(() => {
     const unsubscribeState = () => context.a?.forEach(unsubscribe => unsubscribe());
-    const unsubscribeCacheEntry = queryCacheEntry$.subscribe(([{
+    const listener = ([{
       d: data$,
       e: error$,
       p: isPending$
@@ -22,7 +22,10 @@ const useQueryObserver = (input, {
       context.a = [data$.subscribe(data => context.d?.(data)), error$.subscribe(error => error && context.e?.(error))];
       if (!isPending$.get()) context.d?.(data$.get());
       if (error$.get()) context.e?.(error$.get());
-    });
+    };
+    const queryCacheEntry = queryCacheEntry$.get();
+    if (queryCacheEntry[0].r) listener(queryCacheEntry);
+    const unsubscribeCacheEntry = queryCacheEntry$.subscribe(listener);
     return () => {
       unsubscribeState();
       unsubscribeCacheEntry();
