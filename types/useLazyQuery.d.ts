@@ -13,12 +13,13 @@ import type { LazyQueryHookOptions } from './types';
  *  - `isPending` — whether the query is pending
  */
 declare const useLazyQuery: <TData, TArgs, TKey = unknown>(options: LazyQueryHookOptions<TData, TArgs, TKey>) => {
+    trigger: import("./types").QueryTrigger<TData, TArgs>;
+    args: TArgs | undefined;
     _: {
         s: import("./types-internal").CacheEntryImmutable<TData>;
         $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown>;
+        f: (args: unknown, declarative: boolean) => Promise<import("./types").FetchResult<TData>> | undefined;
     };
-    trigger: import("./types").QueryTrigger<TData, TArgs>;
-    args: TArgs | undefined;
 } & {
     isFetching: boolean;
 } & ({

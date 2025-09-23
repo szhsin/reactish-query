@@ -1,19 +1,18 @@
 'use strict';
 
-var useQuery$ = require('./useQuery_.cjs');
+var react = require('react');
+var useQueryCore = require('./useQueryCore.cjs');
 
 const useLazyQuery$ = options => {
-  const {
-    refetch,
-    _
-  } = useQuery$.useQuery$({
+  const internalApi = useQueryCore.useQueryCore({
     ...options,
     enabled: false
   });
+  const fetchFn = internalApi.f;
   return {
-    _,
-    trigger: refetch,
-    args: _.s.a
+    trigger: react.useCallback(args => fetchFn(args), [fetchFn]),
+    args: internalApi.s.a,
+    _: internalApi
   };
 };
 

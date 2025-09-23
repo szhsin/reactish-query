@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
 import { useContext, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
 import type { DefaultableOptions } from './types';
 import type { QueryClient } from './queryClient';
 import { QueryContext } from './QueryContext';

@@ -52,7 +52,7 @@ const createQueryClient = ({
         a: queryMeta?.args,
         r: !!queryMeta
       },
-      { i: 0, fn: queryFn }
+      { i: 0, f: queryFn }
     ] as QueryCacheEntry<TData>;
 
   const resolveCacheEntry = <TData>(
@@ -71,7 +71,7 @@ const createQueryClient = ({
       cacheEntry = createDefaultCacheEntry(queryMeta, queryFn);
       cache.set(strCacheKey, cacheEntry, shouldPersist);
     }
-    if (queryFn) cacheEntry[1].fn = queryFn;
+    if (queryFn) cacheEntry[1].f = queryFn;
 
     return cacheEntry;
   };

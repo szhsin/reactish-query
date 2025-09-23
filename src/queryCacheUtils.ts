@@ -19,14 +19,14 @@ export const fetchCacheEntry = async <TData>(
     cacheEntryMutable
   ]: QueryCacheEntry<TData>
 ): Promise<FetchResult<TData>> => {
-  if (!cacheEntryMutable.fn) return {};
+  if (!cacheEntryMutable.f) return {};
 
   setIsFetching(true);
   const requestSeq = ++cacheEntryMutable.i;
   let data: TData | undefined, error: Error | undefined;
 
   try {
-    data = await cacheEntryMutable.fn(queryMeta);
+    data = await cacheEntryMutable.f(queryMeta);
   } catch (err) {
     error = err as Error;
   }

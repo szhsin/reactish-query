@@ -24,7 +24,7 @@ const createQueryClient = ({
     r: !!queryMeta
   }, {
     i: 0,
-    fn: queryFn
+    f: queryFn
   }];
   const resolveCacheEntry = (queryMeta, queryFn, shouldPersist, strQueryKey) => {
     const strCacheKey = getStrCacheKey(queryMeta, strQueryKey);
@@ -33,7 +33,7 @@ const createQueryClient = ({
       cacheEntry = createDefaultCacheEntry(queryMeta, queryFn);
       cache.set(strCacheKey, cacheEntry, shouldPersist);
     }
-    if (queryFn) cacheEntry[1].fn = queryFn;
+    if (queryFn) cacheEntry[1].f = queryFn;
     return cacheEntry;
   };
   return {

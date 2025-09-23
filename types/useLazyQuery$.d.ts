@@ -24,11 +24,6 @@ import type { QueryTrigger, LazyQueryHookOptions } from './types';
  * ) => useData(useLazyQuery$(options));
  */
 declare const useLazyQuery$: <TData, TArgs, TKey = unknown>(options: LazyQueryHookOptions<TData, TArgs, TKey>) => {
-    /** @internal [INTERNAL ONLY – DO NOT USE] */
-    _: {
-        s: import("./types-internal").CacheEntryImmutable<TData>;
-        $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown>;
-    };
     /**
      * Function to manually execute the query.
      * Accepts an argument which will be passed to `queryFn`.
@@ -36,5 +31,11 @@ declare const useLazyQuery$: <TData, TArgs, TKey = unknown>(options: LazyQueryHo
     trigger: QueryTrigger<TData, TArgs>;
     /** The most recent arguments passed to `trigger`. */
     args: TArgs | undefined;
+    /** @internal [INTERNAL ONLY – DO NOT USE] */
+    _: {
+        s: import("./types-internal").CacheEntryImmutable<TData>;
+        $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown>;
+        f: (args: unknown, declarative: boolean) => Promise<import("./types").FetchResult<TData>> | undefined;
+    };
 };
 export { useLazyQuery$ };

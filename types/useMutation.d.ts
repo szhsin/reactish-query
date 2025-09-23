@@ -12,12 +12,13 @@ import type { MutationHookOptions } from './types';
  *  - `isPending` — whether the mutation is pending
  */
 declare const useMutation: <TData, TArgs, TKey = unknown>(options: MutationHookOptions<TData, TArgs, TKey>) => {
+    trigger: import("./types").QueryTrigger<TData, TArgs>;
+    args: TArgs | undefined;
     _: {
         s: import("./types-internal").CacheEntryImmutable<TData>;
         $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown>;
+        f: (args: unknown, declarative: boolean) => Promise<import("./types").FetchResult<TData>> | undefined;
     };
-    trigger: import("./types").QueryTrigger<TData, TArgs>;
-    args: TArgs | undefined;
 } & ({
     isFetching: boolean;
 } & ({

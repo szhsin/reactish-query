@@ -1,10 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { state as vanillaState, useSnapshot } from 'reactish-state';
-import type { Refetch, CacheQueryFn, QueryMeta, QueryHookOptions } from './types';
-import type { QueryCacheEntry, InternalHookApi } from './types-internal';
-import { UNDEFINED, stringify } from './utils';
-import { fetchCacheEntry } from './queryCacheUtils';
-import { useQueryContext } from './useQueryContext';
+import { useCallback } from 'react';
+import type { Refetch, QueryHookOptions } from './types';
+import { useQueryCore } from './useQueryCore';
 
 /**
  * Low-level query hook for building custom abstractions.
@@ -28,74 +24,17 @@ import { useQueryContext } from './useQueryContext';
  * const useQueryData = <TData, TKey = unknown>(options: QueryHookOptions<TData, TKey>) =>
  *   useData(useQuery$(options));
  */
-const useQuery$ = <TData, TKey = unknown>({
-  queryKey,
-  queryFn,
-  enabled = true,
-  ...options
-}: QueryHookOptions<TData, TKey>) => {
-  const {
-    client: {
-      _: [createDefaultCacheEntry, resolveCacheEntry]
-    },
-    defaultOptions
-  } = useQueryContext();
-  const { cacheMode, staleTime = 0 } = { ...defaultOptions, ...options };
-  const strQueryKey = stringify(queryKey);
-  const [queryCacheEntry] = useState(() =>
-    vanillaState((createDefaultCacheEntry as () => QueryCacheEntry<TData>)())
-  );
-
-  const refetch = useCallback(
-    (args: unknown, declarative: boolean) => {
-      const queryMeta: QueryMeta = { queryKey, args };
-
-      const cacheEntry =
-        cacheMode !== 'off'
-          ? resolveCacheEntry(
-              queryMeta,
-              queryFn as CacheQueryFn<TData>,
-              cacheMode === 'persist',
-              strQueryKey
-            )
-          : createDefaultCacheEntry(queryMeta, queryFn as CacheQueryFn<TData>);
-
-      queryCacheEntry.set(cacheEntry);
-
-      const [cacheEntryImmutable, cacheEntryMutable] = cacheEntry;
-
-      if (
-        declarative &&
-        (cacheEntryImmutable.f.get() || Date.now() - staleTime < cacheEntryMutable.t!)
-      ) {
-        // No return value needed since this is only called inside this query hook when declarative
-        return;
-      }
-
-      return fetchCacheEntry(queryMeta, cacheEntry);
-    },
-
-    // `queryKey` and `queryFn` can be safely omitted from the dependency array
-    // because they are correlated with `strQueryKey`.
-    // `queryCacheEntry` and other values like `createDefaultCacheEntry` are constants
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [strQueryKey, cacheMode, staleTime]
-  );
-
-  useEffect(() => {
-    if (enabled) refetch(UNDEFINED, true);
-  }, [enabled, refetch]);
+const useQuery$ = <TData, TKey = unknown>(options: QueryHookOptions<TData, TKey>) => {
+  const internalApi = useQueryCore(options);
+  const fetchFn = internalApi.f as Refetch<TData>;
 
   return {
     /** Function to manually refetch the query */
-    refetch,
+    refetch: useCallback(() => fetchFn(), [fetchFn]),
 
     /** @internal [INTERNAL ONLY – DO NOT USE] */
-    _: {
-      s: useSnapshot(queryCacheEntry)[0],
-      $: queryCacheEntry
-    }
-  } as { refetch: Refetch<TData> } & InternalHookApi<TData>;
+    _: internalApi
+  };
 };
 
 export { useQuery$ };
