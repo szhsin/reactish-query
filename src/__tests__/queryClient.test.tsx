@@ -1,4 +1,5 @@
-import { screen, render, fireEvent, waitFor, act } from '@testing-library/react';
+import { screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { testModes } from './testModes';
 import { QueryProvider, createQueryClient } from '../index';
 import { queryObserver } from '../middleware';
 import { mockRequest, delayFor } from './fakeRequest';
@@ -10,7 +11,7 @@ const queryClient = createQueryClient({
   middleware: queryObserver({ onData })
 });
 
-describe('queryClient', () => {
+describe.each(testModes)('queryClient (%s)', (_, render) => {
   afterEach(() => {
     queryClient.clear();
   });

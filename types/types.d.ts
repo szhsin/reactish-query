@@ -99,6 +99,7 @@ export type BaseQueryHookOptions = {
 export type QueryHookOptions<TData, TKey> = BaseQueryHookOptions & {
     /**
      * Identifier for the query. Used to look up or create cache entries.
+     * Can be anything that is serializable.
      */
     queryKey: TKey;
     /**
@@ -126,6 +127,7 @@ export type LazyQueryHookOptions<TData, TArgs, TKey> = BaseQueryHookOptions & {
     /**
      * Optional query key for the lazy query. If provided, it is used with `args` for cache
      * identity; otherwise only `args` will be used for cache identity.
+     * Can be anything that is serializable.
      */
     queryKey?: TKey;
     /**
@@ -158,7 +160,13 @@ export interface QueryStateMiddleware {
  * Observer options for receiving query state update callbacks from hooks.
  */
 export type QueryObserverOptions<TData> = {
+    /**
+     * Called when data is available on mount, or when the data changes later on.
+     */
     onData?: (data: TData) => void;
+    /**
+     * Called when there is an error on mount, or if another error occurs later on.
+     */
     onError?: (error: Error) => void;
 };
 export {};

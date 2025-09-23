@@ -1,4 +1,5 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
+import { testModes } from './testModes';
 import { QueryProvider, defaultQueryClient } from '../index';
 import { mockRequest, mockPromise, delayFor } from './fakeRequest';
 import { QueryData } from './QueryData';
@@ -8,7 +9,7 @@ describe('useQueryData', () => {
     defaultQueryClient.clear();
   });
 
-  it('requests and loads data', async () => {
+  it.each(testModes)('requests and loads data (%s)', async (_, render) => {
     render(
       <>
         <QueryData queryName="a" />

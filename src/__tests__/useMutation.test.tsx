@@ -1,9 +1,10 @@
-import { screen, render, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { testModes } from './testModes';
 import { QueryProvider } from '../index';
 import { mockRequest } from './fakeRequest';
 import { Mutation } from './Mutation';
 
-describe('useMutation', () => {
+describe.each(testModes)('useMutation (%s)', (_, render) => {
   it('loads data when triggered', async () => {
     render(
       // `cacheMode` should be ignored by useMutation

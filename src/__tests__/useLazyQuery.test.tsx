@@ -1,4 +1,5 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
+import { testModes } from './testModes';
 import { createQueryClient, defaultQueryClient, QueryProvider } from '../index';
 import { applyMiddleware, queryObserver } from '../middleware';
 import { mockRequest, mockPromise, delayFor } from './fakeRequest';
@@ -10,7 +11,7 @@ const queryClient = createQueryClient({
   middleware: applyMiddleware([queryObserver({ onData, onError })])
 });
 
-describe('useLazyQuery', () => {
+describe.each(testModes)('useLazyQuery (%s)', (_, render) => {
   afterEach(() => {
     queryClient.clear();
     defaultQueryClient.clear();
