@@ -1,4 +1,5 @@
-import { screen, render, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { testModes } from './testModes';
 import { QueryProvider, defaultQueryClient } from '../index';
 import { mockRequest, mockPromise } from './fakeRequest';
 import { QueryObserver } from './QueryObserver';
@@ -14,7 +15,7 @@ const Queries = () => (
   </QueryProvider>
 );
 
-describe('useQueryObserver', () => {
+describe.each(testModes)('useQueryObserver (%s)', (_, render) => {
   afterEach(() => {
     defaultQueryClient.clear();
   });

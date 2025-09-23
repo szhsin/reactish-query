@@ -16,7 +16,20 @@ const queryObserver =
     onData,
     onError
   }: {
+    /**
+     * Called when the data is updated.
+     *
+     * @param data The latest data from the query.
+     * @param meta Context information about the query.
+     */
     onData?: (data: unknown, meta: QueryMeta) => void;
+
+    /**
+     * Called when an error occurs.
+     *
+     * @param error The error that occurred.
+     * @param meta Context information about the query.
+     */
     onError?: (error: Error, meta: QueryMeta) => void;
   }): QueryStateMiddleware =>
   ({ set }, { stateKey, ...meta }) =>

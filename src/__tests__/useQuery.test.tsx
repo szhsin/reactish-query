@@ -1,9 +1,10 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
+import { testModes } from './testModes';
 import { QueryProvider, defaultQueryClient } from '../index';
 import { mockRequest, mockPromise, delayFor } from './fakeRequest';
 import { Queries, Query } from './Query';
 
-describe('useQuery', () => {
+describe.each(testModes)('useQuery (%s)', (_, render) => {
   afterEach(() => {
     defaultQueryClient.clear();
   });
@@ -240,94 +241,6 @@ describe('useQuery', () => {
     });
   });
 
-  describe('cacheMode option', () => {
-    it('sends individual requests when cacheMode is off', async () => {
-      render(
-        <div>
-          <Query queryName="cacheOn1" />
-          <Query queryName="cacheOff" cacheMode="off" />
-          <Query queryName="cacheOn2" />
-        </div>
-      );
-      expect(mockRequest).toHaveBeenCalledTimes(2);
-      await waitFor(() => {
-        expect(screen.getByTestId('data-cacheOn1')).toHaveTextContent('1');
-        expect(screen.getByTestId('data-cacheOn2')).toHaveTextContent('1');
-        expect(screen.getByTestId('data-cacheOff')).toHaveTextContent('1');
-      });
-
-      fireEvent.click(screen.getByTestId('refetch-cacheOff'));
-      expect(screen.getByTestId('data-cacheOff')).toBeEmptyDOMElement();
-      await waitFor(() => {
-        expect(screen.getByTestId('data-cacheOff')).toHaveTextContent('1');
-      });
-    });
-
-    it('deduplicates requests when different cache modes use the same key', async () => {
-      render(
-        <div>
-          <Query queryName="a" cacheMode="persist" />
-          <Query queryName="b" cacheMode="auto" />
-          <Query queryName="c" cacheMode="persist" />
-          <Query queryName="d" />
-        </div>
-      );
-      await waitFor(() => {
-        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
-      });
-
-      expect(screen.getByTestId('data-b')).toHaveTextContent('1');
-      expect(screen.getByTestId('data-c')).toHaveTextContent('1');
-      expect(screen.getByTestId('data-d')).toHaveTextContent('1');
-      expect(mockRequest).toHaveBeenCalledTimes(1);
-    });
-
-    it('respects prop update', async () => {
-      const { rerender } = render(<Query queryName="a" cacheMode="off" />);
-      expect(mockRequest).toHaveBeenCalledTimes(1);
-      await waitFor(() => {
-        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
-      });
-
-      rerender(<Query queryName="a" />);
-      expect(mockRequest).toHaveBeenCalledTimes(2);
-      expect(screen.getByTestId('data-a')).toBeEmptyDOMElement();
-      await waitFor(() => {
-        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
-      });
-
-      // weak -> strong
-      rerender(<Query queryName="a" cacheMode="persist" />);
-      expect(mockRequest).toHaveBeenCalledTimes(3);
-      expect(screen.getByTestId('data-a')).toHaveTextContent('1');
-
-      // strong -> weak
-      rerender(<Query queryName="a" cacheMode="auto" />);
-      expect(mockRequest).toHaveBeenCalledTimes(3);
-      expect(screen.getByTestId('data-a')).toHaveTextContent('1');
-    });
-
-    it('uses value from defaultOptions', async () => {
-      render(
-        <QueryProvider defaultOptions={{ cacheMode: 'off' }}>
-          <Query queryName="a" />
-          <Query queryName="b" cacheMode="auto" />
-          <Query queryName="c" cacheMode="persist" />
-          <Query queryName="d" />
-        </QueryProvider>
-      );
-
-      await waitFor(() => {
-        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
-        expect(screen.getByTestId('data-b')).toHaveTextContent('1');
-        expect(screen.getByTestId('data-c')).toHaveTextContent('1');
-        expect(screen.getByTestId('data-d')).toHaveTextContent('1');
-      });
-
-      expect(mockRequest).toHaveBeenCalledTimes(3);
-    });
-  });
-
   describe('staleTime option', () => {
     it('deduplicates requests when staleTime is 0', async () => {
       render(<Queries staleTime={0} />);
@@ -426,6 +339,12 @@ describe('useQuery', () => {
       expect(screen.getByTestId('data-d')).toHaveTextContent('1');
     });
   });
+});
+
+describe('useQuery (Single Mode)', () => {
+  afterEach(() => {
+    defaultQueryClient.clear();
+  });
 
   describe('Render behaviour', () => {
     const mockRender = vi.fn();
@@ -486,9 +405,101 @@ describe('useQuery', () => {
       expect(mockRender).toHaveBeenCalledTimes(10);
     });
   });
+
+  describe('cacheMode option', () => {
+    it('sends individual requests when cacheMode is off', async () => {
+      render(
+        <div>
+          <Query queryName="cacheOn1" />
+          <Query queryName="cacheOff" cacheMode="off" />
+          <Query queryName="cacheOn2" />
+        </div>
+      );
+      expect(mockRequest).toHaveBeenCalledTimes(2);
+      await waitFor(() => {
+        expect(screen.getByTestId('data-cacheOn1')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-cacheOn2')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-cacheOff')).toHaveTextContent('1');
+      });
+
+      fireEvent.click(screen.getByTestId('refetch-cacheOff'));
+      expect(screen.getByTestId('data-cacheOff')).toBeEmptyDOMElement();
+      await waitFor(() => {
+        expect(screen.getByTestId('data-cacheOff')).toHaveTextContent('1');
+      });
+    });
+
+    it('deduplicates requests when different cache modes use the same key', async () => {
+      render(
+        <div>
+          <Query queryName="a" cacheMode="persist" />
+          <Query queryName="b" cacheMode="auto" />
+          <Query queryName="c" cacheMode="persist" />
+          <Query queryName="d" />
+        </div>
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+      });
+
+      expect(screen.getByTestId('data-b')).toHaveTextContent('1');
+      expect(screen.getByTestId('data-c')).toHaveTextContent('1');
+      expect(screen.getByTestId('data-d')).toHaveTextContent('1');
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+    });
+
+    it('respects prop update', async () => {
+      const { rerender } = render(<Query queryName="a" cacheMode="off" />);
+      expect(mockRequest).toHaveBeenCalledTimes(1);
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+      });
+
+      rerender(<Query queryName="a" />);
+      expect(mockRequest).toHaveBeenCalledTimes(2);
+      expect(screen.getByTestId('data-a')).toBeEmptyDOMElement();
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+      });
+
+      // weak -> strong
+      rerender(<Query queryName="a" cacheMode="persist" />);
+      expect(mockRequest).toHaveBeenCalledTimes(3);
+      expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+
+      // strong -> weak
+      rerender(<Query queryName="a" cacheMode="auto" />);
+      expect(mockRequest).toHaveBeenCalledTimes(3);
+      expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+    });
+
+    it('uses value from defaultOptions', async () => {
+      render(
+        <QueryProvider defaultOptions={{ cacheMode: 'off' }}>
+          <Query queryName="a" />
+          <Query queryName="b" cacheMode="auto" />
+          <Query queryName="c" cacheMode="persist" />
+          <Query queryName="d" />
+        </QueryProvider>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('data-a')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-b')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-c')).toHaveTextContent('1');
+        expect(screen.getByTestId('data-d')).toHaveTextContent('1');
+      });
+
+      expect(mockRequest).toHaveBeenCalledTimes(3);
+    });
+  });
 });
 
-describe('Query cache', () => {
+describe.each(testModes)('Query cache (%s)', (_, render) => {
+  beforeAll(() => {
+    defaultQueryClient.clear();
+  });
+
   it('saves data in cache', async () => {
     render(<Queries />);
 
