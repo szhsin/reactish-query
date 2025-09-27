@@ -60,13 +60,18 @@ const useQueryObserver = <TInput extends InputQueryResult>(
         error$.subscribe((error) => error && context.e?.(error))
       ];
 
+      // Manually call the handlers if data or error are already available on mount
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       if (!isPending$.get()) context.d?.(data$.get()!);
       if (error$.get()) context.e?.(error$.get()!);
     };
 
+    // If the cache entry was already resolved before this useLayoutEffect runs,
+    // we need to manually call the listener once to subscribe to the data and error observable slices.
+    // This edge case has only been observed in React's Strict Mode.
     const queryCacheEntry = queryCacheEntry$.get();
     if (queryCacheEntry[0].r) listener(queryCacheEntry, queryCacheEntry);
+
     const unsubscribeCacheEntry = queryCacheEntry$.subscribe(listener);
 
     return () => {

@@ -16,7 +16,7 @@ declare const useMutation: <TData, TArgs, TKey = unknown>(options: MutationHookO
     args: TArgs | undefined;
     _: {
         s: import("./types-internal").CacheEntryImmutable<TData>;
-        $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown>;
+        $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown, unknown>;
         f: (args: unknown, declarative: boolean) => Promise<import("./types").FetchResult<TData>> | undefined;
     };
 } & ({

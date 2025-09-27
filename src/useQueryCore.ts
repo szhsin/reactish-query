@@ -29,7 +29,7 @@ const useQueryCore = <TData, TKey = unknown>({
   } = useQueryContext();
   const { cacheMode, staleTime = 0 } = { ...defaultOptions, ...options };
   const strQueryKey = stringify(queryKey);
-  const [queryCacheEntry] = useState(() =>
+  const [queryCacheEntry$] = useState(() =>
     vanillaState((createDefaultCacheEntry as () => QueryCacheEntry<TData>)())
   );
 
@@ -47,7 +47,7 @@ const useQueryCore = <TData, TKey = unknown>({
             )
           : createDefaultCacheEntry(queryMeta, queryFn as CacheQueryFn<TData>);
 
-      queryCacheEntry.set(cacheEntry);
+      queryCacheEntry$.set(cacheEntry);
 
       const [cacheEntryImmutable, cacheEntryMutable] = cacheEntry;
 
@@ -74,8 +74,8 @@ const useQueryCore = <TData, TKey = unknown>({
   }, [enabled, fetchFn]);
 
   return {
-    s: useSnapshot(queryCacheEntry)[0],
-    $: queryCacheEntry,
+    s: useSnapshot(queryCacheEntry$)[0],
+    $: queryCacheEntry$,
     f: fetchFn
   };
 };

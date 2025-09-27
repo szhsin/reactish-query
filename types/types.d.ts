@@ -1,4 +1,3 @@
-import type { State, Setter } from 'reactish-state';
 /**
  * Keys for reactive per-query state.
  */
@@ -150,12 +149,6 @@ export type DefaultableOptions = Pick<QueryHookOptions<unknown, unknown>, 'cache
 export type MiddlewareMeta<TKey = unknown, TArgs = unknown> = QueryMeta<TKey, TArgs> & {
     stateKey: QueryStateKey;
 };
-/**
- * Middleware signature for the state builder used by the query client.
- */
-export interface QueryStateMiddleware {
-    <TValue>(state: State<TValue>, meta: MiddlewareMeta): Setter<TValue>;
-}
 /**
  * Observer options for receiving query state update callbacks from hooks.
  */

@@ -8,9 +8,7 @@ var utils = require('./utils.cjs');
 const createQueryClient = ({
   middleware
 } = {}) => {
-  const state = reactishState.createState({
-    middleware: middleware
-  });
+  const state = reactishState.stateBuilder(middleware);
   const cache$1 = cache.createCache();
   const getCacheEntry = queryMeta => cache$1.get(queryCacheUtils.getStrCacheKey(queryMeta));
   const createInitialState = (queryMeta, stateKey, initialValue) => state(initialValue, utils.UNDEFINED, {
