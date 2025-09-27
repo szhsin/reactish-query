@@ -341,7 +341,7 @@ describe.each(testModes)('useQuery (%s)', (_, render) => {
   });
 });
 
-describe('useQuery (Single Mode)', () => {
+describe('useQuery (Normal Mode)', () => {
   afterEach(() => {
     defaultQueryClient.clear();
   });

@@ -1,11 +1,10 @@
-import { createState } from 'reactish-state';
-import type { StateBuilder, Middleware } from 'reactish-state';
+import { stateBuilder } from 'reactish-state';
+import type { Middleware } from 'reactish-state';
 import type {
   CacheQueryFn,
   FetchResult,
   QueryMeta,
   QueryStateKey,
-  QueryStateMiddleware,
   MiddlewareMeta
 } from './types';
 import type { QueryCacheEntry } from './types-internal';
@@ -21,10 +20,8 @@ import { UNDEFINED } from './utils';
  */
 const createQueryClient = ({
   middleware
-}: { middleware?: QueryStateMiddleware } = {}) => {
-  const state: StateBuilder<MiddlewareMeta> = createState({
-    middleware: middleware as Middleware<QueryMeta>
-  });
+}: { middleware?: Middleware<MiddlewareMeta> } = {}) => {
+  const state = stateBuilder(middleware);
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const cache = createCache<QueryCacheEntry<any>>();

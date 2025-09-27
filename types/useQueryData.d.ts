@@ -18,7 +18,7 @@ declare const useQueryData: <TData, TKey = unknown>(options: QueryHookOptions<TD
     refetch: () => Promise<import("./types").FetchResult<TData>>;
     _: {
         s: import("./types-internal").CacheEntryImmutable<TData>;
-        $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown>;
+        $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown, unknown>;
         f: (args: unknown, declarative: boolean) => Promise<import("./types").FetchResult<TData>> | undefined;
     };
 } & import("./types").QueryDataState<TData>;

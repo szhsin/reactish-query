@@ -61,7 +61,7 @@
     "react": "^16.14 || ^17 || ^18 || ^19"
   },
   "dependencies": {
-    "reactish-state": "^1.2.1"
+    "reactish-state": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",

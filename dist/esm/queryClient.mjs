@@ -1,4 +1,4 @@
-import { createState } from 'reactish-state';
+import { stateBuilder } from 'reactish-state';
 import { createCache } from './cache.mjs';
 import { fetchCacheEntry, getStrCacheKey } from './queryCacheUtils.mjs';
 import { UNDEFINED } from './utils.mjs';
@@ -6,9 +6,7 @@ import { UNDEFINED } from './utils.mjs';
 const createQueryClient = ({
   middleware
 } = {}) => {
-  const state = createState({
-    middleware: middleware
-  });
+  const state = stateBuilder(middleware);
   const cache = createCache();
   const getCacheEntry = queryMeta => cache.get(getStrCacheKey(queryMeta));
   const createInitialState = (queryMeta, stateKey, initialValue) => state(initialValue, UNDEFINED, {

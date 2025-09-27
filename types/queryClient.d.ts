@@ -1,4 +1,5 @@
-import type { CacheQueryFn, FetchResult, QueryMeta, QueryStateMiddleware } from './types';
+import type { Middleware } from 'reactish-state';
+import type { CacheQueryFn, FetchResult, QueryMeta, MiddlewareMeta } from './types';
 import type { QueryCacheEntry } from './types-internal';
 /**
  * Create a query client instance.
@@ -7,7 +8,7 @@ import type { QueryCacheEntry } from './types-internal';
  * @returns An object with methods to interact with the query cache and its lifecycle.
  */
 declare const createQueryClient: ({ middleware }?: {
-    middleware?: QueryStateMiddleware;
+    middleware?: Middleware<MiddlewareMeta>;
 }) => {
     /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: readonly [<TData>(queryMeta: QueryMeta, queryFn: CacheQueryFn<TData> | undefined) => QueryCacheEntry<TData>, <TData>(queryMeta: QueryMeta, queryFn: CacheQueryFn<TData> | undefined, shouldPersist: boolean, strQueryKey?: string) => QueryCacheEntry<TData>];

@@ -24,14 +24,14 @@ const useQueryCore = ({
     ...options
   };
   const strQueryKey = stringify(queryKey);
-  const [queryCacheEntry] = useState(() => state(createDefaultCacheEntry()));
+  const [queryCacheEntry$] = useState(() => state(createDefaultCacheEntry()));
   const fetchFn = useCallback((args, declarative) => {
     const queryMeta = {
       queryKey,
       args
     };
     const cacheEntry = cacheMode !== 'off' ? resolveCacheEntry(queryMeta, queryFn, cacheMode === 'persist', strQueryKey) : createDefaultCacheEntry(queryMeta, queryFn);
-    queryCacheEntry.set(cacheEntry);
+    queryCacheEntry$.set(cacheEntry);
     const [cacheEntryImmutable, cacheEntryMutable] = cacheEntry;
     if (declarative && (cacheEntryImmutable.f.get() || Date.now() - staleTime < cacheEntryMutable.t)) {
       return;
@@ -42,8 +42,8 @@ const useQueryCore = ({
     if (enabled) fetchFn(UNDEFINED, true);
   }, [enabled, fetchFn]);
   return {
-    s: useSnapshot(queryCacheEntry)[0],
-    $: queryCacheEntry,
+    s: useSnapshot(queryCacheEntry$)[0],
+    $: queryCacheEntry$,
     f: fetchFn
   };
 };

@@ -1,7 +1,8 @@
+import { applyMiddleware } from 'reactish-state/middleware';
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import { testModes } from './testModes';
 import { createQueryClient, defaultQueryClient, QueryProvider } from '../index';
-import { applyMiddleware, queryObserver } from '../middleware';
+import { queryObserver } from '../middleware';
 import { mockRequest, mockPromise, delayFor } from './fakeRequest';
 import { LazyQuery, LazyQueryData } from './LazyQuery';
 

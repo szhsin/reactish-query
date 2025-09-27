@@ -1,4 +1,5 @@
-import type { QueryStateMiddleware, QueryMeta } from '../types';
+import type { Middleware } from 'reactish-state';
+import type { QueryMeta, MiddlewareMeta } from '../types';
 /**
  * Middleware that notifies callbacks when query data or error updates.
  *
@@ -15,15 +16,15 @@ declare const queryObserver: ({ onData, onError }: {
      * Called when the data is updated.
      *
      * @param data The latest data from the query.
-     * @param meta Context information about the query.
+     * @param metadata Context information about the query.
      */
-    onData?: (data: unknown, meta: QueryMeta) => void;
+    onData?: (data: unknown, metadata: QueryMeta) => void;
     /**
      * Called when an error occurs.
      *
      * @param error The error that occurred.
-     * @param meta Context information about the query.
+     * @param metadata Context information about the query.
      */
-    onError?: (error: Error, meta: QueryMeta) => void;
-}) => QueryStateMiddleware;
+    onError?: (error: Error, metadata: QueryMeta) => void;
+}) => Middleware<MiddlewareMeta>;
 export { queryObserver };
