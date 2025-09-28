@@ -22,7 +22,8 @@
   "keywords": [
     "react",
     "query",
-    "state"
+    "state",
+    "data fetching"
   ],
   "exports": {
     ".": {

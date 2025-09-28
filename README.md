@@ -60,18 +60,19 @@ With the React Compiler in mind, the library is built for maximum compatibility.
 
 ## Query
 
-The declarative **useQuery** hook requires a `queryKey` to identify the query, and optionally a `queryFn` that defines how the data should be fetched.
+The declarative **useQuery** hook requires a `queryKey` to identify the query, which can be any serializable value, and a `queryFn` that defines how the data should be fetched.
 
 ```tsx
 import { useQuery } from "reactish-query";
 
 const Profile = ({ userName }: { userName: string }) => {
-  const { isPending, error, data } = useQuery<{ name: string }>({
+  const { isPending, data, error } = useQuery<{ name: string }>({
     queryKey: ["users", userName],
-    queryFn: () =>
-      fetch(`https://api.github.com/users/${userName}`).then((res) =>
-        res.json()
-      )
+    queryFn: async () => {
+      const res = await fetch(`https://api.github.com/users/${userName}`);
+      if (!res.ok) throw new Error(res.status.toString());
+      return res.json();
+    }
   });
 
   if (error) return <div>Failed to load: {error.message}</div>;
@@ -80,7 +81,13 @@ const Profile = ({ userName }: { userName: string }) => {
 };
 ```
 
+[Open in StackBlitz ↗](https://stackblitz.com/edit/reactish-query?file=src%2Fexamples%2FQuery.tsx)
+
 You don’t always need to provide a `queryFn` to **useQuery**. This is useful when you only want your UI to subscribe to data in the shared query cache, letting other query hooks with the same `queryKey` handle the fetching.
+
+```ts
+const { isPending, data, error } = useQuery({ queryKey: ["users", userName] });
+```
 
 ## Lazy Query
 
@@ -100,10 +107,13 @@ const Example = () => {
     string
   >({
     queryKey: "search-repos",
-    queryFn: ({ args }) =>
-      fetch(`https://api.github.com/search/repositories?q=${args}`).then(
-        (res) => res.json()
-      )
+    queryFn: async ({ args }) => {
+      const res = await fetch(
+        `https://api.github.com/search/repositories?q=${args}`
+      );
+      if (!res.ok) throw new Error(res.status.toString());
+      return res.json();
+    }
   });
   const [value, setValue] = useState("");
 
@@ -131,6 +141,8 @@ const Example = () => {
   );
 };
 ```
+
+[Open in StackBlitz ↗](https://stackblitz.com/edit/reactish-query?file=src%2Fexamples%2FLazyQuery.tsx)
 
 ## Mutation
 
@@ -249,7 +261,7 @@ const queryClient = createQueryClient({
 
     // Log when an error occurs during fetching
     onError: (error, metadata) =>
-      console.error("Error fetching data:", error, metadata.queryKey)
+      console.log("Error:", error.message, metadata.queryKey)
   })
 });
 
@@ -262,6 +274,8 @@ const Example = () => (
   </QueryProvider>
 );
 ```
+
+[Open in StackBlitz ↗](https://stackblitz.com/edit/reactish-query?file=src%2Fexamples%2FQueryObserver.tsx)
 
 ## Composable
 
@@ -280,7 +294,7 @@ const Example = () => {
       // Called when data is available
       onData: (data) => console.log("Data received:", data),
       // Called when there is an error
-      onError: (error) => console.error("Error fetching data:", error)
+      onError: (error) => console.log("Error:", error.message)
     }
   );
 
@@ -289,6 +303,8 @@ const Example = () => {
   // Render the list of todos
 };
 ```
+
+[Open in StackBlitz ↗](https://stackblitz.com/edit/reactish-query?file=src%2Fexamples%2FComposable.tsx)
 
 You can even create a reusable hook combining a query with an observer for convenience:
 
@@ -313,7 +329,7 @@ const { isPending, data } = useQueryWithObserver({
   queryKey: "todos",
   queryFn,
   onData: (data) => console.log("Data received:", data), // on success
-  onError: (error) => console.error("Error:", error) // on error
+  onError: (error) => console.log("Error:", error.message) // on error
 });
 ```
 
@@ -324,7 +340,7 @@ You can prefetch a query when it might take a long time to fetch and you expect 
 ```ts
 queryClient.fetch({
   queryKey: "todos",
-  queryFn: () => fetch("api/todos").then((res) => res.json())
+  queryFn: () => axios.get("/api/todos")
 });
 ```
 
@@ -380,7 +396,7 @@ For example, imagine a component that renders a user’s profile data. You care 
 const Profile = () => {
   const { data } = useQuery({
     queryKey: "profile",
-    queryFn: () => fetch("api/profile").then((res) => res.json())
+    queryFn: () => axios.get("/api/profile")
   });
 
   return <h1>Hi, {data?.firstName}</h1>;
@@ -432,7 +448,7 @@ const Profile = () => {
   const { data } = useData(
     useQuery$({
       queryKey: "profile",
-      queryFn: () => fetch("api/profile").then((res) => res.json())
+      queryFn: () => axios.get("/api/profile")
     })
   );
   return <h1>Hi, {data?.firstName}</h1>;
@@ -449,7 +465,7 @@ const Profile = () => {
     useData(
       useQuery$({
         queryKey: "profile",
-        queryFn: () => fetch("api/profile").then((res) => res.json())
+        queryFn: () => axios.get("/api/profile")
       })
     )
   );
