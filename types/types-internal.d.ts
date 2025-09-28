@@ -43,7 +43,6 @@ export type QueryCacheEntry<TData> = readonly [
     CacheEntryImmutable<TData>,
     CacheEntryMutable<TData>
 ];
-export type QueryStateCode = keyof CacheEntryImmutable<unknown>;
 export interface InternalHookApi<TData> {
     /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: {
