@@ -10,7 +10,7 @@ export default defineConfig({
       enabled: true,
       provider: 'istanbul',
       include: ['src/'],
-      exclude: ['src/__tests__', 'src/index.ts']
+      exclude: ['src/__tests__', 'src/index.ts', '.DS_Store']
     },
     setupFiles: ['@testing-library/jest-dom']
   }
