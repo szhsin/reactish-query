@@ -9,8 +9,8 @@ export default defineConfig({
     coverage: {
       enabled: true,
       provider: 'istanbul',
-      include: ['src/'],
-      exclude: ['src/__tests__', 'src/index.ts', '.DS_Store']
+      include: ['src/**/*.ts?(x)'],
+      exclude: ['src/__tests__', 'index.ts']
     },
     setupFiles: ['@testing-library/jest-dom']
   }
