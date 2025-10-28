@@ -1,5 +1,5 @@
 import type { QueryObserverOptions } from '../types';
-import type { InputQueryResult, ExtractInputDataType } from '../types-internal';
+import type { InputQueryResult, ExtractInputType, ExtractInputArgsType } from '../types-internal';
 /**
  * Attach observers to a query observable.
  *
@@ -15,5 +15,7 @@ import type { InputQueryResult, ExtractInputDataType } from '../types-internal';
  *  }: QueryHookOptions<TData, TKey> & QueryObserverOptions<TData>) =>
  *    useQueryObserver(useQuery(options), { onData, onError });
  */
-declare const useQueryObserver: <TInput extends InputQueryResult>(input: TInput, { onData, onError }: QueryObserverOptions<ExtractInputDataType<TInput>>) => TInput;
+declare const useQueryObserver: <TInput extends InputQueryResult & {
+    args?: unknown;
+}>(input: TInput, { onData, onError }: QueryObserverOptions<ExtractInputType<TInput>["data"], ExtractInputType<TInput>["queryKey"], ExtractInputArgsType<TInput>>) => TInput;
 export { useQueryObserver };

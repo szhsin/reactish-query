@@ -36,6 +36,7 @@ declare const useLazyQuery$: <TData, TArgs, TKey = unknown>(options: LazyQueryHo
         s: import("./types-internal").CacheEntryImmutable<TData>;
         $: import("reactish-state").State<import("./types-internal").QueryCacheEntry<TData>, unknown, unknown>;
         f: (args: unknown, declarative: boolean) => Promise<import("./types").FetchResult<TData>> | undefined;
+        queryKeyForInferOnly?: TKey | undefined;
     };
 };
 export { useLazyQuery$ };

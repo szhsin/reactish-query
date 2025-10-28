@@ -1,10 +1,11 @@
 import { useLayoutEffect as _useLayoutEffect, useEffect, useState } from 'react';
 import type { State, StateListener } from 'reactish-state';
-import type { QueryObserverOptions } from '../types';
+import type { QueryObserverOptions, ObserverMeta, MiddlewareMeta } from '../types';
 import type {
+  QueryCacheEntry,
   InputQueryResult,
-  ExtractInputDataType,
-  QueryCacheEntry
+  ExtractInputType,
+  ExtractInputArgsType
 } from '../types-internal';
 
 const useLayoutEffect = typeof window !== 'undefined' ? _useLayoutEffect : useEffect;
@@ -24,21 +25,28 @@ const useLayoutEffect = typeof window !== 'undefined' ? _useLayoutEffect : useEf
  *  }: QueryHookOptions<TData, TKey> & QueryObserverOptions<TData>) =>
  *    useQueryObserver(useQuery(options), { onData, onError });
  */
-const useQueryObserver = <TInput extends InputQueryResult>(
+const useQueryObserver = <TInput extends InputQueryResult & { args?: unknown }>(
   input: TInput,
-  { onData, onError }: QueryObserverOptions<ExtractInputDataType<TInput>>
+  {
+    onData,
+    onError
+  }: QueryObserverOptions<
+    ExtractInputType<TInput>['data'],
+    ExtractInputType<TInput>['queryKey'],
+    ExtractInputArgsType<TInput>
+  >
 ) => {
-  type Data = ExtractInputDataType<TInput>;
+  type Data = ExtractInputType<TInput>['data'];
   const queryCacheEntry$ = input._.$ as State<QueryCacheEntry<Data>>;
   const [context] = useState<{
     /** @internal Array of unsubscribe functions for query state */
     a?: (() => void)[];
 
     /** @internal Stable reference to the onData handler */
-    d?: (data: Data) => void;
+    d?: typeof onData;
 
     /** @internal Stable reference to the onError handler */
-    e?: (error: Error) => void;
+    e?: typeof onError;
   }>({});
 
   useLayoutEffect(() => {
@@ -54,16 +62,24 @@ const useQueryObserver = <TInput extends InputQueryResult>(
     ]) => {
       unsubscribeState();
 
+      // Metadata is immutable per cache entry and identical across all state keys.
+      // Safe to extract once here and reuse later.
+      const { stateKey: _1, ...restData } = data$.meta() as MiddlewareMeta;
+      const metadata = restData as ObserverMeta<
+        ExtractInputType<TInput>['queryKey'],
+        ExtractInputArgsType<TInput>
+      >;
+
       context.a = [
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        data$.subscribe((data) => context.d?.(data!)),
-        error$.subscribe((error) => error && context.e?.(error))
+        data$.subscribe((data) => context.d?.(data!, metadata)),
+        error$.subscribe((error) => error && context.e?.(error, metadata))
       ];
 
       // Manually call the handlers if data or error are already available on mount
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-      if (!isPending$.get()) context.d?.(data$.get()!);
-      if (error$.get()) context.e?.(error$.get()!);
+      if (!isPending$.get()) context.d?.(data$.get()!, metadata);
+      if (error$.get()) context.e?.(error$.get()!, metadata);
     };
 
     // If the cache entry was already resolved before this useLayoutEffect runs,

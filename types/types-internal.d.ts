@@ -43,7 +43,7 @@ export type QueryCacheEntry<TData> = readonly [
     CacheEntryImmutable<TData>,
     CacheEntryMutable<TData>
 ];
-export interface InternalHookApi<TData> {
+export interface InternalHookApi<TData, TKey> {
     /** @internal [INTERNAL ONLY – DO NOT USE] */
     _: {
         /** @internal Cache entry immutable snapshot - ready for rendering */
@@ -52,7 +52,15 @@ export interface InternalHookApi<TData> {
         $: State<QueryCacheEntry<TData>>;
         /** @internal Low-level fetch function for building custom abstractions */
         f: (args: unknown, declarative: boolean) => Promise<FetchResult<TData>> | undefined;
+        /** @internal Used only for type inference; should remain UNSET at runtime */
+        queryKeyForInferOnly?: TKey;
     };
 }
-export type InputQueryResult = InternalHookApi<any>;
-export type ExtractInputDataType<TInput> = TInput extends InternalHookApi<infer TData> ? TData : never;
+export type InputQueryResult = InternalHookApi<any, any>;
+export type ExtractInputType<TInput> = TInput extends InternalHookApi<infer TData, infer TKey> ? {
+    data: TData;
+    queryKey: TKey;
+} : never;
+export type ExtractInputArgsType<TInput> = TInput extends {
+    args: infer TArgs | undefined;
+} ? TArgs : never;

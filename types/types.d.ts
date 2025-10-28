@@ -150,16 +150,25 @@ export type MiddlewareMeta<TKey = unknown, TArgs = unknown> = QueryMeta<TKey, TA
     stateKey: QueryStateKey;
 };
 /**
+ * Metadata provided to `useQueryObserver` callback events.
+ */
+export type ObserverMeta<TKey, TArgs = never> = [TArgs] extends [never] ? {
+    queryKey: TKey;
+} : {
+    queryKey?: TKey;
+    args: TArgs;
+};
+/**
  * Observer options for receiving query state update callbacks from hooks.
  */
-export type QueryObserverOptions<TData> = {
+export type QueryObserverOptions<TData, TKey = unknown, TArgs = never> = {
     /**
      * Called when data is available on mount, or when the data changes later on.
      */
-    onData?: (data: TData) => void;
+    onData?: (data: TData, metadata: ObserverMeta<TKey, TArgs>) => void;
     /**
      * Called when there is an error on mount, or if another error occurs later on.
      */
-    onError?: (error: Error) => void;
+    onError?: (error: Error, metadata: ObserverMeta<TKey, TArgs>) => void;
 };
 export {};

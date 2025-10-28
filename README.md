@@ -321,7 +321,7 @@ const useQueryWithObserver = <TData, TKey = unknown>({
   onData,
   onError,
   ...options
-}: QueryHookOptions<TData, TKey> & QueryObserverOptions<TData>) =>
+}: QueryHookOptions<TData, TKey> & QueryObserverOptions<TData, TKey>) =>
   useQueryObserver(useQuery(options), { onData, onError });
 
 // Example usage

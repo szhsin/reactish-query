@@ -21,9 +21,14 @@ const useQueryObserver = (input, {
       p: isPending$
     }]) => {
       unsubscribeState();
-      context.a = [data$.subscribe(data => context.d?.(data)), error$.subscribe(error => error && context.e?.(error))];
-      if (!isPending$.get()) context.d?.(data$.get());
-      if (error$.get()) context.e?.(error$.get());
+      const {
+        stateKey: _1,
+        ...restData
+      } = data$.meta();
+      const metadata = restData;
+      context.a = [data$.subscribe(data => context.d?.(data, metadata)), error$.subscribe(error => error && context.e?.(error, metadata))];
+      if (!isPending$.get()) context.d?.(data$.get(), metadata);
+      if (error$.get()) context.e?.(error$.get(), metadata);
     };
     const queryCacheEntry = queryCacheEntry$.get();
     if (queryCacheEntry[0].r) listener(queryCacheEntry);

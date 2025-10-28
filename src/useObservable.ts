@@ -1,6 +1,6 @@
 import { useSnapshot } from 'reactish-state';
 import type { QueryDataState } from './types';
-import type { InputQueryResult, ExtractInputDataType } from './types-internal';
+import type { InputQueryResult, ExtractInputType } from './types-internal';
 
 /**
  * Small composable helpers for observable query hooks.
@@ -22,13 +22,13 @@ const useData = <TInput extends InputQueryResult>(input: TInput) =>
   ({
     ...input,
     /** Current snapshot of the query data */
-    data: useSnapshot(input._.s.d) as unknown,
+    data: useSnapshot<unknown>(input._.s.d),
     /**
      * Whether the query is currently pending. This will be true initially
      * and becomes false once the `data` field is ready for use.
      */
     isPending: useSnapshot(input._.s.p)
-  }) as TInput & QueryDataState<ExtractInputDataType<TInput>>;
+  }) as TInput & QueryDataState<ExtractInputType<TInput>['data']>;
 
 /**
  * Attach `error` snapshot to the observable input.

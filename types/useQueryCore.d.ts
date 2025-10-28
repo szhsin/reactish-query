@@ -9,5 +9,5 @@ import type { InternalHookApi } from './types-internal';
  * Enables fine-grained reactivity: combining a `$` hook with a single helper
  * subscribes only to that slice.
  */
-declare const useQueryCore: <TData, TKey = unknown>({ queryKey, queryFn, enabled, ...options }: QueryHookOptions<TData, TKey>) => InternalHookApi<TData>["_"];
+declare const useQueryCore: <TData, TKey = unknown>({ queryKey, queryFn, enabled, ...options }: QueryHookOptions<TData, TKey>) => InternalHookApi<TData, TKey>["_"];
 export { useQueryCore };
