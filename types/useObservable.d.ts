@@ -1,5 +1,5 @@
 import type { QueryDataState } from './types';
-import type { InputQueryResult, ExtractInputDataType } from './types-internal';
+import type { InputQueryResult, ExtractInputType } from './types-internal';
 /**
  * Small composable helpers for observable query hooks.
  *
@@ -16,7 +16,7 @@ import type { InputQueryResult, ExtractInputDataType } from './types-internal';
  * const useQueryData = <TData, TKey = unknown>(options: QueryHookOptions<TData, TKey>) =>
  *   useData(useQuery$(options));
  */
-declare const useData: <TInput extends InputQueryResult>(input: TInput) => TInput & QueryDataState<ExtractInputDataType<TInput>>;
+declare const useData: <TInput extends InputQueryResult>(input: TInput) => TInput & QueryDataState<ExtractInputType<TInput>["data"]>;
 /**
  * Attach `error` snapshot to the observable input.
  */
@@ -43,11 +43,11 @@ declare const useObservable: <TInput extends InputQueryResult>(input: TInput) =>
 } & {
     /** Current snapshot of the query error */
     error: Error | undefined;
-} & QueryDataState<ExtractInputDataType<TInput & {
+} & QueryDataState<ExtractInputType<TInput & {
     /** Current snapshot of whether the query is fetching */
     isFetching: boolean;
 } & {
     /** Current snapshot of the query error */
     error: Error | undefined;
-}>>;
+}>["data"]>;
 export { useData, useError, useIsFetching, useObservable };

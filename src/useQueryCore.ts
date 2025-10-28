@@ -20,7 +20,7 @@ const useQueryCore = <TData, TKey = unknown>({
   queryFn,
   enabled = true,
   ...options
-}: QueryHookOptions<TData, TKey>): InternalHookApi<TData>['_'] => {
+}: QueryHookOptions<TData, TKey>): InternalHookApi<TData, TKey>['_'] => {
   const {
     client: {
       _: [createDefaultCacheEntry, resolveCacheEntry]
