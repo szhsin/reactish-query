@@ -51,7 +51,7 @@ describe.each(testModes)('queryClient (%s)', (_, render) => {
       {
         result: 9
       },
-      expect.objectContaining({ queryKey: { requestId: 1 }, args: undefined })
+      { queryKey: { requestId: 1 }, args: undefined }
     );
     expect(
       queryClient.getData<{ result: number }, { requestId: number }>({
@@ -81,7 +81,7 @@ describe.each(testModes)('queryClient (%s)', (_, render) => {
       {
         result: 1
       },
-      expect.objectContaining({ queryKey: { requestId: 1 }, args: undefined })
+      { queryKey: { requestId: 1 }, args: undefined }
     );
     expect(screen.getByTestId('data-a')).toHaveTextContent('1');
     expect(screen.getByTestId('data-b')).toHaveTextContent('1');
@@ -134,13 +134,29 @@ describe.each(testModes)('queryClient (%s)', (_, render) => {
       {
         result: 7
       },
-      expect.objectContaining({ queryKey: { requestId: 3 } })
+      { queryKey: { requestId: 3 } }
     );
     expect(
       queryClient.getData<{ result: number }, { requestId: number }>({
         queryKey: { requestId: 3 }
       })?.result
     ).toBe(7);
+
+    onData.mockClear();
+    await act(async () => {
+      // `fetch` will return the data from cache if it's still fresh
+      const result = await queryClient.fetch<{ result: number }, { requestId: number }>({
+        queryKey: { requestId: 3 },
+        queryFn: () => ({ result: 8 }),
+        staleTime: 100
+      });
+      expect(result).toEqual({
+        data: {
+          result: 7
+        }
+      });
+    });
+    expect(onData).not.toHaveBeenCalled();
 
     // Switch to entry 3 and wait for the data to be revalidated
     fireEvent.click(screen.getByTestId('plus-a'));
@@ -196,7 +212,7 @@ describe.each(testModes)('queryClient (%s)', (_, render) => {
       {
         result: 9
       },
-      expect.objectContaining({ queryKey: { keyId: 1 }, args: { paramId: 1 } })
+      { queryKey: { keyId: 1 }, args: { paramId: 1 } }
     );
     expect(screen.getByTestId('data-a')).toHaveTextContent('9');
     expect(
@@ -223,7 +239,7 @@ describe.each(testModes)('queryClient (%s)', (_, render) => {
       {
         result: 1
       },
-      expect.objectContaining({ queryKey: { keyId: 1 }, args: { paramId: 1 } })
+      { queryKey: { keyId: 1 }, args: { paramId: 1 } }
     );
     expect(screen.getByTestId('data-a')).toHaveTextContent('1');
     expect(

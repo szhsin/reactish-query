@@ -6,6 +6,7 @@ const getStrCacheKey = ({
   queryKey,
   args
 }, strQueryKey = utils.stringify(queryKey) || '') => args !== utils.UNDEFINED ? `${strQueryKey}|${utils.stringify(args)}` : strQueryKey;
+const isDataFresh = (cacheEntry, staleTime = 0) => Date.now() - staleTime < cacheEntry[1].t;
 const fetchCacheEntry = async (queryMeta, [{
   d: {
     set: setData
@@ -48,3 +49,4 @@ const fetchCacheEntry = async (queryMeta, [{
 
 exports.fetchCacheEntry = fetchCacheEntry;
 exports.getStrCacheKey = getStrCacheKey;
+exports.isDataFresh = isDataFresh;

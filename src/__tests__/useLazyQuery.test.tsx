@@ -46,7 +46,7 @@ describe.each(testModes)('useLazyQuery (%s)', (_, render) => {
         {
           result: 1
         },
-        expect.objectContaining({ queryKey: { keyId: 1 }, args: { paramId: 1 } })
+        { queryKey: { keyId: 1 }, args: { paramId: 1 } }
       );
       expect(screen.getByTestId('data-a')).toHaveTextContent('1');
       expect(screen.getByTestId('refetch-data-a')).toHaveTextContent('1');
@@ -72,7 +72,7 @@ describe.each(testModes)('useLazyQuery (%s)', (_, render) => {
         {
           result: 1
         },
-        expect.objectContaining({ queryKey: { keyId: 1 }, args: { paramId: 1 } })
+        { queryKey: { keyId: 1 }, args: { paramId: 1 } }
       );
       expect(screen.getByTestId('status-a')).toHaveTextContent('idle');
       expect(screen.getByTestId('status-b')).toHaveTextContent('idle');
@@ -91,7 +91,7 @@ describe.each(testModes)('useLazyQuery (%s)', (_, render) => {
         {
           result: 2
         },
-        expect.objectContaining({ queryKey: { keyId: 2 }, args: { paramId: 2 } })
+        { queryKey: { keyId: 2 }, args: { paramId: 2 } }
       );
       expect(screen.getByTestId('args-a')).toHaveTextContent('2');
       expect(screen.getByTestId('data-a')).toHaveTextContent('2');
@@ -120,13 +120,10 @@ describe.each(testModes)('useLazyQuery (%s)', (_, render) => {
     expect(screen.getByTestId('refetch-error-a')).toBeEmptyDOMElement();
 
     await waitFor(() => {
-      expect(onError).toHaveBeenLastCalledWith(
-        networkError,
-        expect.objectContaining({
-          queryKey: { keyId: 1 },
-          args: { paramId: 1 }
-        })
-      );
+      expect(onError).toHaveBeenLastCalledWith(networkError, {
+        queryKey: { keyId: 1 },
+        args: { paramId: 1 }
+      });
       expect(screen.getByTestId('error-a')).toHaveTextContent('Network Error');
       expect(screen.getByTestId('refetch-error-a')).toHaveTextContent('Network Error');
       expect(screen.getByTestId('args-a')).toHaveTextContent('1');

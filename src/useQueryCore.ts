@@ -3,7 +3,7 @@ import { state as vanillaState, useSnapshot } from 'reactish-state';
 import type { CacheQueryFn, QueryMeta, QueryHookOptions } from './types';
 import type { QueryCacheEntry, InternalHookApi } from './types-internal';
 import { UNDEFINED, stringify } from './utils';
-import { fetchCacheEntry } from './queryCacheUtils';
+import { fetchCacheEntry, isDataFresh } from './queryCacheUtils';
 import { useQueryContext } from './useQueryContext';
 
 /**
@@ -27,7 +27,7 @@ const useQueryCore = <TData, TKey = unknown>({
     },
     defaultOptions
   } = useQueryContext();
-  const { cacheMode, staleTime = 0 } = { ...defaultOptions, ...options };
+  const { cacheMode, staleTime } = { ...defaultOptions, ...options };
   const strQueryKey = stringify(queryKey);
   const [queryCacheEntry$] = useState(() =>
     vanillaState((createDefaultCacheEntry as () => QueryCacheEntry<TData>)())
@@ -49,12 +49,7 @@ const useQueryCore = <TData, TKey = unknown>({
 
       queryCacheEntry$.set(cacheEntry);
 
-      const [cacheEntryImmutable, cacheEntryMutable] = cacheEntry;
-
-      if (
-        declarative &&
-        (cacheEntryImmutable.f.get() || Date.now() - staleTime < cacheEntryMutable.t!)
-      ) {
+      if (declarative && (cacheEntry[0].f.get() || isDataFresh(cacheEntry, staleTime))) {
         // No return value needed since this is only called inside this query hook when declarative
         return;
       }

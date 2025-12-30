@@ -1,6 +1,6 @@
 import { stateBuilder } from 'reactish-state';
 import { createCache } from './cache.mjs';
-import { fetchCacheEntry, getStrCacheKey } from './queryCacheUtils.mjs';
+import { fetchCacheEntry, isDataFresh, getStrCacheKey } from './queryCacheUtils.mjs';
 import { UNDEFINED } from './utils.mjs';
 
 const createQueryClient = ({
@@ -48,8 +48,15 @@ const createQueryClient = ({
     },
     fetch: ({
       queryFn,
+      staleTime,
       ...queryMeta
-    }) => fetchCacheEntry(queryMeta, resolveCacheEntry(queryMeta, queryFn, true)),
+    }) => {
+      const cacheEntry = resolveCacheEntry(queryMeta, queryFn, true);
+      if (isDataFresh(cacheEntry, staleTime)) return {
+        data: cacheEntry[0].d.get()
+      };
+      return fetchCacheEntry(queryMeta, cacheEntry);
+    },
     invalidate: queryMeta => {
       const cacheEntry = getCacheEntry(queryMeta);
       if (cacheEntry) return fetchCacheEntry(queryMeta, cacheEntry);

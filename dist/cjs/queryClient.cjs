@@ -50,8 +50,15 @@ const createQueryClient = ({
     },
     fetch: ({
       queryFn,
+      staleTime,
       ...queryMeta
-    }) => queryCacheUtils.fetchCacheEntry(queryMeta, resolveCacheEntry(queryMeta, queryFn, true)),
+    }) => {
+      const cacheEntry = resolveCacheEntry(queryMeta, queryFn, true);
+      if (queryCacheUtils.isDataFresh(cacheEntry, staleTime)) return {
+        data: cacheEntry[0].d.get()
+      };
+      return queryCacheUtils.fetchCacheEntry(queryMeta, cacheEntry);
+    },
     invalidate: queryMeta => {
       const cacheEntry = getCacheEntry(queryMeta);
       if (cacheEntry) return queryCacheUtils.fetchCacheEntry(queryMeta, cacheEntry);

@@ -9,7 +9,7 @@ import type {
 } from './types';
 import type { QueryCacheEntry } from './types-internal';
 import { createCache } from './cache';
-import { getStrCacheKey, fetchCacheEntry } from './queryCacheUtils';
+import { getStrCacheKey, fetchCacheEntry, isDataFresh } from './queryCacheUtils';
 import { UNDEFINED } from './utils';
 
 /**
@@ -119,21 +119,32 @@ const createQueryClient = ({
     /**
      * Fetch data for a query and update the cache.
      *
-     * If a cache entry exists, it will be reused; otherwise a new entry is created
-     * and persisted when appropriate.
+     * If a matching cache entry exists, it is reused; otherwise a new entry is
+     * created and persisted when appropriate.
      *
-     * This can also be used to prefetch a query and warm up the cache in advance.
+     * When `staleTime` is provided, cached data is returned immediately if it is
+     * still considered fresh.
+     *
+     * This method can also be used to prefetch data and warm the cache ahead of time.
      */
     fetch: <TData, TKey = unknown, TArgs = unknown>({
       queryFn,
+      staleTime,
       ...queryMeta
-    }: QueryMeta<TKey, TArgs> & { queryFn: CacheQueryFn<TData, TKey, TArgs> }): Promise<
-      FetchResult<TData>
-    > =>
-      fetchCacheEntry(
+    }: QueryMeta<TKey, TArgs> & {
+      queryFn: CacheQueryFn<TData, TKey, TArgs>;
+      staleTime?: number;
+    }): FetchResult<TData> | Promise<FetchResult<TData>> => {
+      const cacheEntry = resolveCacheEntry(
         queryMeta,
-        resolveCacheEntry(queryMeta, queryFn as CacheQueryFn<TData>, true)
-      ),
+        queryFn as CacheQueryFn<TData>,
+        true
+      );
+
+      if (isDataFresh(cacheEntry, staleTime)) return { data: cacheEntry[0].d.get() };
+
+      return fetchCacheEntry(queryMeta, cacheEntry);
+    },
 
     /**
      * Invalidate a cached query, which triggers a refetch if a cache entry exists.

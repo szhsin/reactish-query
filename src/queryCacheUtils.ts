@@ -7,6 +7,9 @@ export const getStrCacheKey = (
   strQueryKey: string = stringify(queryKey) || ''
 ) => (args !== UNDEFINED ? `${strQueryKey}|${stringify(args)}` : strQueryKey);
 
+export const isDataFresh = <TData>(cacheEntry: QueryCacheEntry<TData>, staleTime = 0) =>
+  Date.now() - staleTime < cacheEntry[1].t!;
+
 export const fetchCacheEntry = async <TData>(
   queryMeta: QueryMeta,
   [

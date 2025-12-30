@@ -20,7 +20,7 @@ const useQueryCore = ({
   } = useQueryContext.useQueryContext();
   const {
     cacheMode,
-    staleTime = 0
+    staleTime
   } = {
     ...defaultOptions,
     ...options
@@ -34,8 +34,7 @@ const useQueryCore = ({
     };
     const cacheEntry = cacheMode !== 'off' ? resolveCacheEntry(queryMeta, queryFn, cacheMode === 'persist', strQueryKey) : createDefaultCacheEntry(queryMeta, queryFn);
     queryCacheEntry$.set(cacheEntry);
-    const [cacheEntryImmutable, cacheEntryMutable] = cacheEntry;
-    if (declarative && (cacheEntryImmutable.f.get() || Date.now() - staleTime < cacheEntryMutable.t)) {
+    if (declarative && (cacheEntry[0].f.get() || queryCacheUtils.isDataFresh(cacheEntry, staleTime))) {
       return;
     }
     return queryCacheUtils.fetchCacheEntry(queryMeta, cacheEntry);

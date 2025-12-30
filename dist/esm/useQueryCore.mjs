@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { state, useSnapshot } from 'reactish-state';
 import { stringify, UNDEFINED } from './utils.mjs';
-import { fetchCacheEntry } from './queryCacheUtils.mjs';
+import { isDataFresh, fetchCacheEntry } from './queryCacheUtils.mjs';
 import { useQueryContext } from './useQueryContext.mjs';
 
 const useQueryCore = ({
@@ -18,7 +18,7 @@ const useQueryCore = ({
   } = useQueryContext();
   const {
     cacheMode,
-    staleTime = 0
+    staleTime
   } = {
     ...defaultOptions,
     ...options
@@ -32,8 +32,7 @@ const useQueryCore = ({
     };
     const cacheEntry = cacheMode !== 'off' ? resolveCacheEntry(queryMeta, queryFn, cacheMode === 'persist', strQueryKey) : createDefaultCacheEntry(queryMeta, queryFn);
     queryCacheEntry$.set(cacheEntry);
-    const [cacheEntryImmutable, cacheEntryMutable] = cacheEntry;
-    if (declarative && (cacheEntryImmutable.f.get() || Date.now() - staleTime < cacheEntryMutable.t)) {
+    if (declarative && (cacheEntry[0].f.get() || isDataFresh(cacheEntry, staleTime))) {
       return;
     }
     return fetchCacheEntry(queryMeta, cacheEntry);
