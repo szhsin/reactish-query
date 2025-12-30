@@ -39,14 +39,18 @@ declare const createQueryClient: ({ middleware }?: {
     /**
      * Fetch data for a query and update the cache.
      *
-     * If a cache entry exists, it will be reused; otherwise a new entry is created
-     * and persisted when appropriate.
+     * If a matching cache entry exists, it is reused; otherwise a new entry is
+     * created and persisted when appropriate.
      *
-     * This can also be used to prefetch a query and warm up the cache in advance.
+     * When `staleTime` is provided, cached data is returned immediately if it is
+     * still considered fresh.
+     *
+     * This method can also be used to prefetch data and warm the cache ahead of time.
      */
-    fetch: <TData, TKey = unknown, TArgs = unknown>({ queryFn, ...queryMeta }: QueryMeta<TKey, TArgs> & {
+    fetch: <TData, TKey = unknown, TArgs = unknown>({ queryFn, staleTime, ...queryMeta }: QueryMeta<TKey, TArgs> & {
         queryFn: CacheQueryFn<TData, TKey, TArgs>;
-    }) => Promise<FetchResult<TData>>;
+        staleTime?: number;
+    }) => FetchResult<TData> | Promise<FetchResult<TData>>;
     /**
      * Invalidate a cached query, which triggers a refetch if a cache entry exists.
      * Returns the fetch result.
@@ -83,14 +87,18 @@ declare const defaultQueryClient: {
     /**
      * Fetch data for a query and update the cache.
      *
-     * If a cache entry exists, it will be reused; otherwise a new entry is created
-     * and persisted when appropriate.
+     * If a matching cache entry exists, it is reused; otherwise a new entry is
+     * created and persisted when appropriate.
      *
-     * This can also be used to prefetch a query and warm up the cache in advance.
+     * When `staleTime` is provided, cached data is returned immediately if it is
+     * still considered fresh.
+     *
+     * This method can also be used to prefetch data and warm the cache ahead of time.
      */
-    fetch: <TData, TKey = unknown, TArgs = unknown>({ queryFn, ...queryMeta }: QueryMeta<TKey, TArgs> & {
+    fetch: <TData, TKey = unknown, TArgs = unknown>({ queryFn, staleTime, ...queryMeta }: QueryMeta<TKey, TArgs> & {
         queryFn: CacheQueryFn<TData, TKey, TArgs>;
-    }) => Promise<FetchResult<TData>>;
+        staleTime?: number;
+    }) => FetchResult<TData> | Promise<FetchResult<TData>>;
     /**
      * Invalidate a cached query, which triggers a refetch if a cache entry exists.
      * Returns the fetch result.

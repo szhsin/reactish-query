@@ -1,6 +1,6 @@
 {
   "name": "reactish-query",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Atomic state-powered, lightweight React query library",
   "author": "Zheng Song",
   "license": "MIT",
@@ -62,7 +62,7 @@
     "react": "^16.14 || ^17 || ^18 || ^19"
   },
   "dependencies": {
-    "reactish-state": "^2.0.0"
+    "reactish-state": "^2.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
@@ -72,31 +72,31 @@
     "@rollup/plugin-babel": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.0",
+    "@testing-library/react": "^16.3.1",
     "@testing-library/user-event": "^14.6.1",
-    "@types/node": "^24.10.1",
+    "@types/node": "^25.0.3",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "@vitest/coverage-istanbul": "^4.0.15",
-    "@vitest/coverage-v8": "^4.0.15",
-    "@vitest/eslint-plugin": "^1.5.1",
+    "@vitest/coverage-istanbul": "^4.0.16",
+    "@vitest/coverage-v8": "^4.0.16",
+    "@vitest/eslint-plugin": "^1.6.4",
     "babel-plugin-pure-annotations": "^0.1.2",
     "deplift": "^1.0.1",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-hooks-addons": "^0.5.0",
     "globals": "^16.5.0",
-    "jsdom": "^27.2.0",
+    "jsdom": "^27.4.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.7.4",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
-    "rollup": "^4.53.3",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "rollup": "^4.54.0",
     "rollup-plugin-add-directive": "^1.0.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.48.1",
-    "vitest": "^4.0.15"
+    "typescript-eslint": "^8.50.1",
+    "vitest": "^4.0.16"
   }
 }
