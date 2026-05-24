@@ -11,7 +11,8 @@ const fakeRequest = <T>(value: T, delay = 0) => {
         mockPromise(value);
         resolve(value);
       } catch (error) {
-        reject(error as Error);
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+        reject(error);
       }
     }, delay);
   });
