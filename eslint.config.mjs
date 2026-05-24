@@ -5,7 +5,6 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
 import vitest from '@vitest/eslint-plugin';
-import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactHooksAddons from 'eslint-plugin-react-hooks-addons';
 
@@ -13,8 +12,6 @@ export default tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
   vitest.configs.recommended,
-  react.configs.flat.recommended,
-  react.configs.flat['jsx-runtime'],
   reactHooksAddons.configs.recommended,
   prettier,
   {
@@ -55,11 +52,6 @@ export default tseslint.config(
     },
     plugins: {
       'react-hooks': reactHooks
-    },
-    settings: {
-      react: {
-        version: 'detect'
-      }
     },
     rules: {
       'no-console': ['error', { allow: ['debug', 'warn', 'error'] }],
