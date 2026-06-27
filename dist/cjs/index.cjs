@@ -1,30 +1,26 @@
-
-'use client';
-'use strict';
-
-var queryClient = require('./queryClient.cjs');
-var QueryProvider = require('./QueryProvider.cjs');
-var useQueryContext = require('./useQueryContext.cjs');
-var useQuery = require('./useQuery.cjs');
-var useQuery$ = require('./useQuery_.cjs');
-var useQueryData = require('./useQueryData.cjs');
-var useLazyQuery = require('./useLazyQuery.cjs');
-var useLazyQuery$ = require('./useLazyQuery_.cjs');
-var useMutation = require('./useMutation.cjs');
-var useObservable = require('./useObservable.cjs');
-
-
-
-exports.createQueryClient = queryClient.createQueryClient;
-exports.defaultQueryClient = queryClient.defaultQueryClient;
-exports.QueryProvider = QueryProvider.QueryProvider;
-exports.useQueryContext = useQueryContext.useQueryContext;
-exports.useQuery = useQuery.useQuery;
-exports.useQuery$ = useQuery$.useQuery$;
-exports.useQueryData = useQueryData.useQueryData;
-exports.useLazyQuery = useLazyQuery.useLazyQuery;
-exports.useLazyQuery$ = useLazyQuery$.useLazyQuery$;
-exports.useMutation = useMutation.useMutation;
-exports.useData = useObservable.useData;
-exports.useError = useObservable.useError;
-exports.useIsFetching = useObservable.useIsFetching;
+"use client";
+"use strict";
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+const require_queryClient = require("./queryClient.cjs");
+const require_QueryProvider = require("./QueryProvider.cjs");
+const require_useQueryContext = require("./useQueryContext.cjs");
+const require_useQuery_ = require("./useQuery_.cjs");
+const require_useObservable = require("./useObservable.cjs");
+const require_useQuery = require("./useQuery.cjs");
+const require_useQueryData = require("./useQueryData.cjs");
+const require_useLazyQuery_ = require("./useLazyQuery_.cjs");
+const require_useLazyQuery = require("./useLazyQuery.cjs");
+const require_useMutation = require("./useMutation.cjs");
+exports.QueryProvider = require_QueryProvider.QueryProvider;
+exports.createQueryClient = require_queryClient.createQueryClient;
+exports.defaultQueryClient = require_queryClient.defaultQueryClient;
+exports.useData = require_useObservable.useData;
+exports.useError = require_useObservable.useError;
+exports.useIsFetching = require_useObservable.useIsFetching;
+exports.useLazyQuery = require_useLazyQuery.useLazyQuery;
+exports.useLazyQuery$ = require_useLazyQuery_.useLazyQuery$;
+exports.useMutation = require_useMutation.useMutation;
+exports.useQuery = require_useQuery.useQuery;
+exports.useQuery$ = require_useQuery_.useQuery$;
+exports.useQueryContext = require_useQueryContext.useQueryContext;
+exports.useQueryData = require_useQueryData.useQueryData;

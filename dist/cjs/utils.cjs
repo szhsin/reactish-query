@@ -1,7 +1,5 @@
-'use strict';
-
-const UNDEFINED = /*#__PURE__*/(() => {})();
+"use strict";
+//#region src/utils.ts
 const stringify = JSON.stringify;
-
-exports.UNDEFINED = UNDEFINED;
+//#endregion
 exports.stringify = stringify;

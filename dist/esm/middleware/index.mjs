@@ -1,3 +1,3 @@
-
-'use client';
-export { queryObserver } from './queryObserver.mjs';
+"use client";
+import { queryObserver } from "./queryObserver.mjs";
+export { queryObserver };

@@ -10,7 +10,6 @@ import type {
 import type { QueryCacheEntry } from './types-internal';
 import { createCache } from './cache';
 import { getStrCacheKey, fetchCacheEntry, isDataFresh } from './queryCacheUtils';
-import { UNDEFINED } from './utils';
 
 /**
  * Create a query client instance.
@@ -34,7 +33,7 @@ const createQueryClient = ({
     queryMeta: QueryMeta,
     stateKey: QueryStateKey,
     initialValue?: unknown
-  ) => state(initialValue, UNDEFINED, { ...queryMeta, stateKey });
+  ) => state(initialValue, undefined, { ...queryMeta, stateKey });
 
   const createDefaultCacheEntry = <TData>(
     queryMeta: QueryMeta,

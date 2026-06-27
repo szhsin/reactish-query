@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { state as vanillaState, useSnapshot } from 'reactish-state';
 import type { CacheQueryFn, QueryMeta, QueryHookOptions } from './types';
 import type { QueryCacheEntry, InternalHookApi } from './types-internal';
-import { UNDEFINED, stringify } from './utils';
+import { stringify } from './utils';
 import { fetchCacheEntry, isDataFresh } from './queryCacheUtils';
 import { useQueryContext } from './useQueryContext';
 
@@ -65,7 +65,7 @@ const useQueryCore = <TData, TKey = unknown>({
   );
 
   useEffect(() => {
-    if (enabled) fetchFn(UNDEFINED, true);
+    if (enabled) fetchFn(undefined, true);
   }, [enabled, fetchFn]);
 
   return {

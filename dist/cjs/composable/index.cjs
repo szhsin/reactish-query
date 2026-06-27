@@ -1,9 +1,5 @@
-
-'use client';
-'use strict';
-
-var useQueryObserver = require('./useQueryObserver.cjs');
-
-
-
-exports.useQueryObserver = useQueryObserver.useQueryObserver;
+"use client";
+"use strict";
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
+const require_useQueryObserver = require("./useQueryObserver.cjs");
+exports.useQueryObserver = require_useQueryObserver.useQueryObserver;
