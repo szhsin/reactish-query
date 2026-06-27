@@ -1,4 +1,4 @@
-const UNDEFINED = /*#__PURE__*/(() => {})();
+//#region src/utils.ts
 const stringify = JSON.stringify;
-
-export { UNDEFINED, stringify };
+//#endregion
+export { stringify };

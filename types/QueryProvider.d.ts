@@ -5,5 +5,5 @@ declare const QueryProvider: ({ children, client, defaultOptions }: {
     client?: QueryClient;
     defaultOptions?: DefaultableOptions;
     children: ReactNode;
-}) => import("react/jsx-runtime").JSX.Element;
+}) => import("react").JSX.Element;
 export { QueryProvider };

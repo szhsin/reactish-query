@@ -1,9 +1,9 @@
-import { createContext } from 'react';
-import { defaultQueryClient } from './queryClient.mjs';
-
-const QueryContext = /*#__PURE__*/createContext({
-  client: defaultQueryClient,
-  defaultOptions: {}
+import { defaultQueryClient } from "./queryClient.mjs";
+import { createContext } from "react";
+//#region src/QueryContext.ts
+const QueryContext = createContext({
+	client: defaultQueryClient,
+	defaultOptions: {}
 });
-
+//#endregion
 export { QueryContext };

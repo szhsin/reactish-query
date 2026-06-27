@@ -1,11 +1,11 @@
 import type { FetchResult, QueryMeta } from './types';
 import type { QueryCacheEntry } from './types-internal';
-import { UNDEFINED, stringify } from './utils';
+import { stringify } from './utils';
 
 export const getStrCacheKey = (
   { queryKey, args }: QueryMeta,
   strQueryKey: string = stringify(queryKey) || ''
-) => (args !== UNDEFINED ? `${strQueryKey}|${stringify(args)}` : strQueryKey);
+) => (args !== undefined ? `${strQueryKey}|${stringify(args)}` : strQueryKey);
 
 export const isDataFresh = <TData>(cacheEntry: QueryCacheEntry<TData>, staleTime = 0) =>
   Date.now() - staleTime < cacheEntry[1].t!;
@@ -40,7 +40,7 @@ export const fetchCacheEntry = async <TData>(
       setError(error);
     } else {
       setData(data);
-      setError(UNDEFINED);
+      setError(undefined);
       setIsPending(false);
       cacheEntryMutable.t = Date.now();
     }
