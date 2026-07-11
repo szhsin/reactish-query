@@ -34,8 +34,7 @@ export type QueryDataState<TData> = QueryDataPending | QueryDataSuccess<TData>;
  * to support declarative or lazy query variants.
  */
 export type QueryMeta<TKey = unknown, TArgs = unknown> =
-  | { queryKey: TKey; args?: TArgs }
-  | { queryKey?: TKey; args: TArgs };
+  { queryKey: TKey; args?: TArgs } | { queryKey?: TKey; args: TArgs };
 
 /**
  * Function signature for declarative (automatic/reactive) query fetchers.
