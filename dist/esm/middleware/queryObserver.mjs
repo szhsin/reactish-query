@@ -17,9 +17,7 @@ const queryObserver = ({ onData, onError }) => ({ set, meta }) => (value) => {
 		case "data":
 			onData?.(value, metadata);
 			break;
-		case "error":
-			if (value) onError?.(value, metadata);
-			break;
+		case "error": if (value) onError?.(value, metadata);
 	}
 };
 //#endregion
