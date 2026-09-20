@@ -1,7 +1,8 @@
 import { waitFor } from '@testing-library/react';
+import { vi, type Mock } from 'vitest';
 
-const mockRequest = vi.fn();
-const mockPromise = vi.fn();
+const mockRequest: Mock<(value: unknown) => void> = vi.fn();
+const mockPromise: Mock<(value: unknown) => void> = vi.fn();
 
 const fakeRequest = <T>(value: T, delay = 0) => {
   mockRequest(value);
