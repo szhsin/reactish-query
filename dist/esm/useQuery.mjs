@@ -1,6 +1,6 @@
 import { useQuery$ } from "./useQuery_.mjs";
 import { useObservable } from "./useObservable.mjs";
-//#region src/useQuery.ts
+// src/useQuery.ts
 /**
 * React hook that exposes the full query state for rendering.
 *
@@ -15,5 +15,4 @@ import { useObservable } from "./useObservable.mjs";
 *  - `refetch` — function to manually refetch the query
 */
 const useQuery = (options) => useObservable(useQuery$(options));
-//#endregion
 export { useQuery };

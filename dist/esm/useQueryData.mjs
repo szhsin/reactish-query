@@ -1,6 +1,6 @@
 import { useQuery$ } from "./useQuery_.mjs";
 import { useData } from "./useObservable.mjs";
-//#region src/useQueryData.ts
+// src/useQueryData.ts
 /**
 * Convenience hook that exposes only `data` and `isPending` from a query.
 *
@@ -17,5 +17,4 @@ import { useData } from "./useObservable.mjs";
 * const { data, isPending } = useQueryData({ queryKey: 'todos', queryFn });
 */
 const useQueryData = (options) => useData(useQuery$(options));
-//#endregion
 export { useQueryData };

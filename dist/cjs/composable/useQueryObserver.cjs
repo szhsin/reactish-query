@@ -1,6 +1,6 @@
 "use strict";
 let react = require("react");
-//#region src/composable/useQueryObserver.ts
+// src/composable/useQueryObserver.ts
 const useLayoutEffect = typeof window !== "undefined" ? react.useLayoutEffect : react.useEffect;
 /**
 * Attach observers to a query observable.
@@ -48,5 +48,4 @@ const useQueryObserver = (input, { onData, onError }) => {
 	}, [context, queryCacheEntry$]);
 	return input;
 };
-//#endregion
 exports.useQueryObserver = useQueryObserver;

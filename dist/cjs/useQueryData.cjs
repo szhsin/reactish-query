@@ -1,7 +1,7 @@
 "use strict";
 const require_useQuery_ = require("./useQuery_.cjs");
 const require_useObservable = require("./useObservable.cjs");
-//#region src/useQueryData.ts
+// src/useQueryData.ts
 /**
 * Convenience hook that exposes only `data` and `isPending` from a query.
 *
@@ -18,5 +18,4 @@ const require_useObservable = require("./useObservable.cjs");
 * const { data, isPending } = useQueryData({ queryKey: 'todos', queryFn });
 */
 const useQueryData = (options) => require_useObservable.useData(require_useQuery_.useQuery$(options));
-//#endregion
 exports.useQueryData = useQueryData;

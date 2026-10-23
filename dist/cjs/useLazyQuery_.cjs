@@ -1,7 +1,7 @@
 "use strict";
 const require_useQueryCore = require("./useQueryCore.cjs");
 let react = require("react");
-//#region src/useLazyQuery$.ts
+// src/useLazyQuery$.ts
 /**
 * Low-level lazy-query hook for building custom abstractions.
 *
@@ -44,5 +44,4 @@ const useLazyQuery$ = (options) => {
 		_: internalApi
 	};
 };
-//#endregion
 exports.useLazyQuery$ = useLazyQuery$;

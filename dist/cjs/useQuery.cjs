@@ -1,7 +1,7 @@
 "use strict";
 const require_useQuery_ = require("./useQuery_.cjs");
 const require_useObservable = require("./useObservable.cjs");
-//#region src/useQuery.ts
+// src/useQuery.ts
 /**
 * React hook that exposes the full query state for rendering.
 *
@@ -16,5 +16,4 @@ const require_useObservable = require("./useObservable.cjs");
 *  - `refetch` — function to manually refetch the query
 */
 const useQuery = (options) => require_useObservable.useObservable(require_useQuery_.useQuery$(options));
-//#endregion
 exports.useQuery = useQuery;

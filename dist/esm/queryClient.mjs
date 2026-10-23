@@ -1,7 +1,7 @@
 import { createCache } from "./cache.mjs";
 import { fetchCacheEntry, getStrCacheKey, isDataFresh } from "./queryCacheUtils.mjs";
 import { stateBuilder } from "reactish-state";
-//#region src/queryClient.ts
+// src/queryClient.ts
 /**
 * Create a query client instance.
 *
@@ -97,5 +97,4 @@ const createQueryClient = ({ middleware } = {}) => {
 	};
 };
 const defaultQueryClient = createQueryClient();
-//#endregion
 export { createQueryClient, defaultQueryClient };

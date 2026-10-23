@@ -1,4 +1,3 @@
-//#region src/utils.ts
+// src/utils.ts
 const stringify = JSON.stringify;
-//#endregion
 export { stringify };

@@ -1,6 +1,6 @@
 import { useQueryCore } from "./useQueryCore.mjs";
 import { useCallback } from "react";
-//#region src/useLazyQuery$.ts
+// src/useLazyQuery$.ts
 /**
 * Low-level lazy-query hook for building custom abstractions.
 *
@@ -43,5 +43,4 @@ const useLazyQuery$ = (options) => {
 		_: internalApi
 	};
 };
-//#endregion
 export { useLazyQuery$ };

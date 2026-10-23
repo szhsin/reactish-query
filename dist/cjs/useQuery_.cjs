@@ -1,7 +1,7 @@
 "use strict";
 const require_useQueryCore = require("./useQueryCore.cjs");
 let react = require("react");
-//#region src/useQuery$.ts
+// src/useQuery$.ts
 /**
 * Low-level query hook for building custom abstractions.
 *
@@ -34,5 +34,4 @@ const useQuery$ = (options) => {
 		_: internalApi
 	};
 };
-//#endregion
 exports.useQuery$ = useQuery$;

@@ -1,6 +1,6 @@
 "use strict";
 let reactish_state = require("reactish-state");
-//#region src/useObservable.ts
+// src/useObservable.ts
 /**
 * Small composable helpers for observable query hooks.
 *
@@ -50,7 +50,6 @@ const useIsFetching = (input) => ({
 * `isFetching`, and `isPending` together.
 */
 const useObservable = (input) => useData(useError(useIsFetching(input)));
-//#endregion
 exports.useData = useData;
 exports.useError = useError;
 exports.useIsFetching = useIsFetching;

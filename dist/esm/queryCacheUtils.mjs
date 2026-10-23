@@ -1,5 +1,5 @@
 import { stringify } from "./utils.mjs";
-//#region src/queryCacheUtils.ts
+// src/queryCacheUtils.ts
 const getStrCacheKey = ({ queryKey, args }, strQueryKey = stringify(queryKey) || "") => args !== void 0 ? `${strQueryKey}|${stringify(args)}` : strQueryKey;
 const isDataFresh = (cacheEntry, staleTime = 0) => Date.now() - staleTime < cacheEntry[1].t;
 const fetchCacheEntry = async (queryMeta, [{ d: { set: setData }, e: { set: setError }, p: { set: setIsPending }, f: { set: setIsFetching } }, cacheEntryMutable]) => {
@@ -27,5 +27,4 @@ const fetchCacheEntry = async (queryMeta, [{ d: { set: setData }, e: { set: setE
 		error
 	};
 };
-//#endregion
 export { fetchCacheEntry, getStrCacheKey, isDataFresh };

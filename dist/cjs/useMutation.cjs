@@ -1,6 +1,6 @@
 "use strict";
 const require_useLazyQuery = require("./useLazyQuery.cjs");
-//#region src/useMutation.ts
+// src/useMutation.ts
 /**
 * Hook for mutations. Internally implemented as a lazy query with cache
 * disabled. Returns the same API as `useLazyQuery` (trigger + render-ready state).
@@ -17,5 +17,4 @@ const useMutation = (options) => require_useLazyQuery.useLazyQuery({
 	...options,
 	cacheMode: "off"
 });
-//#endregion
 exports.useMutation = useMutation;

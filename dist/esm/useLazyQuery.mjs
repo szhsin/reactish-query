@@ -1,6 +1,6 @@
 import { useObservable } from "./useObservable.mjs";
 import { useLazyQuery$ } from "./useLazyQuery_.mjs";
-//#region src/useLazyQuery.ts
+// src/useLazyQuery.ts
 /**
 * Hook for lazy queries. Returns the same render-ready state as `useQuery`,
 * but does not trigger a declarative (auto) fetch. Use the returned `trigger`
@@ -15,5 +15,4 @@ import { useLazyQuery$ } from "./useLazyQuery_.mjs";
 *  - `isPending` — whether the query is pending
 */
 const useLazyQuery = (options) => useObservable(useLazyQuery$(options));
-//#endregion
 export { useLazyQuery };
