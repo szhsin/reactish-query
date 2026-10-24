@@ -1,5 +1,5 @@
 "use strict";
-//#region src/cache.ts
+// src/cache.ts
 const weakCache = () => {
 	const cacheMap = /* @__PURE__ */ new Map();
 	const registry = new FinalizationRegistry((heldValue) => {
@@ -31,5 +31,4 @@ const weakCache = () => {
 	};
 };
 const createCache = () => typeof WeakRef === "function" ? weakCache() : /* @__PURE__ */ new Map();
-//#endregion
 exports.createCache = createCache;

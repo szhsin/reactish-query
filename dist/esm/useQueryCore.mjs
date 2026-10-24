@@ -3,7 +3,7 @@ import { fetchCacheEntry, isDataFresh } from "./queryCacheUtils.mjs";
 import { useQueryContext } from "./useQueryContext.mjs";
 import { state, useSnapshot } from "reactish-state";
 import { useCallback, useEffect, useState } from "react";
-//#region src/useQueryCore.ts
+// src/useQueryCore.ts
 /**
 * Low-level core hook for building custom abstractions.
 *
@@ -44,5 +44,4 @@ const useQueryCore = ({ queryKey, queryFn, enabled = true, ...options }) => {
 		f: fetchFn
 	};
 };
-//#endregion
 export { useQueryCore };

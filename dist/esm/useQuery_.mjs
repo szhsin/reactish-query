@@ -1,6 +1,6 @@
 import { useQueryCore } from "./useQueryCore.mjs";
 import { useCallback } from "react";
-//#region src/useQuery$.ts
+// src/useQuery$.ts
 /**
 * Low-level query hook for building custom abstractions.
 *
@@ -33,5 +33,4 @@ const useQuery$ = (options) => {
 		_: internalApi
 	};
 };
-//#endregion
 export { useQuery$ };

@@ -2,7 +2,7 @@
 const require_cache = require("./cache.cjs");
 const require_queryCacheUtils = require("./queryCacheUtils.cjs");
 let reactish_state = require("reactish-state");
-//#region src/queryClient.ts
+// src/queryClient.ts
 /**
 * Create a query client instance.
 *
@@ -98,6 +98,5 @@ const createQueryClient = ({ middleware } = {}) => {
 	};
 };
 const defaultQueryClient = createQueryClient();
-//#endregion
 exports.createQueryClient = createQueryClient;
 exports.defaultQueryClient = defaultQueryClient;

@@ -1,5 +1,5 @@
 import { useLazyQuery } from "./useLazyQuery.mjs";
-//#region src/useMutation.ts
+// src/useMutation.ts
 /**
 * Hook for mutations. Internally implemented as a lazy query with cache
 * disabled. Returns the same API as `useLazyQuery` (trigger + render-ready state).
@@ -16,5 +16,4 @@ const useMutation = (options) => useLazyQuery({
 	...options,
 	cacheMode: "off"
 });
-//#endregion
 export { useMutation };

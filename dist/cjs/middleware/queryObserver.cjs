@@ -1,5 +1,5 @@
 "use strict";
-//#region src/middleware/queryObserver.ts
+// src/middleware/queryObserver.ts
 /**
 * Middleware that notifies callbacks when query data or error updates.
 *
@@ -21,5 +21,4 @@ const queryObserver = ({ onData, onError }) => ({ set, meta }) => (value) => {
 		case "error": if (value) onError?.(value, metadata);
 	}
 };
-//#endregion
 exports.queryObserver = queryObserver;

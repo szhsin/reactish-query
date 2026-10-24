@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useState } from "react";
-//#region src/composable/useQueryObserver.ts
+// src/composable/useQueryObserver.ts
 const useLayoutEffect$1 = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 /**
 * Attach observers to a query observable.
@@ -47,5 +47,4 @@ const useQueryObserver = (input, { onData, onError }) => {
 	}, [context, queryCacheEntry$]);
 	return input;
 };
-//#endregion
 export { useQueryObserver };

@@ -1,5 +1,5 @@
 import { useSnapshot } from "reactish-state";
-//#region src/useObservable.ts
+// src/useObservable.ts
 /**
 * Small composable helpers for observable query hooks.
 *
@@ -49,5 +49,4 @@ const useIsFetching = (input) => ({
 * `isFetching`, and `isPending` together.
 */
 const useObservable = (input) => useData(useError(useIsFetching(input)));
-//#endregion
 export { useData, useError, useIsFetching, useObservable };

@@ -4,7 +4,7 @@ const require_queryCacheUtils = require("./queryCacheUtils.cjs");
 const require_useQueryContext = require("./useQueryContext.cjs");
 let reactish_state = require("reactish-state");
 let react = require("react");
-//#region src/useQueryCore.ts
+// src/useQueryCore.ts
 /**
 * Low-level core hook for building custom abstractions.
 *
@@ -45,5 +45,4 @@ const useQueryCore = ({ queryKey, queryFn, enabled = true, ...options }) => {
 		f: fetchFn
 	};
 };
-//#endregion
 exports.useQueryCore = useQueryCore;

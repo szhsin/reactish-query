@@ -1,7 +1,7 @@
 "use strict";
 const require_useObservable = require("./useObservable.cjs");
 const require_useLazyQuery_ = require("./useLazyQuery_.cjs");
-//#region src/useLazyQuery.ts
+// src/useLazyQuery.ts
 /**
 * Hook for lazy queries. Returns the same render-ready state as `useQuery`,
 * but does not trigger a declarative (auto) fetch. Use the returned `trigger`
@@ -16,5 +16,4 @@ const require_useLazyQuery_ = require("./useLazyQuery_.cjs");
 *  - `isPending` — whether the query is pending
 */
 const useLazyQuery = (options) => require_useObservable.useObservable(require_useLazyQuery_.useLazyQuery$(options));
-//#endregion
 exports.useLazyQuery = useLazyQuery;
