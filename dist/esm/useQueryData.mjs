@@ -1,5 +1,5 @@
-import { useQuery$ } from "./useQuery_.mjs";
 import { useData } from "./useObservable.mjs";
+import { useQuery$ } from "./useQuery_.mjs";
 // src/useQueryData.ts
 /**
 * Convenience hook that exposes only `data` and `isPending` from a query.
