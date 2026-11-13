@@ -1,6 +1,6 @@
 "use strict";
-const require_useObservable = require("./useObservable.cjs");
 const require_useLazyQuery_ = require("./useLazyQuery_.cjs");
+const require_useObservable = require("./useObservable.cjs");
 // src/useLazyQuery.ts
 /**
 * Hook for lazy queries. Returns the same render-ready state as `useQuery`,

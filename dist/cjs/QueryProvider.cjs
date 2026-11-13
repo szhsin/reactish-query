@@ -1,6 +1,6 @@
 "use strict";
-const require_utils = require("./utils.cjs");
 const require_QueryContext = require("./QueryContext.cjs");
+const require_utils = require("./utils.cjs");
 let react = require("react");
 let react_jsx_runtime = require("react/jsx-runtime");
 // src/QueryProvider.tsx

@@ -1,5 +1,5 @@
-import { useObservable } from "./useObservable.mjs";
 import { useLazyQuery$ } from "./useLazyQuery_.mjs";
+import { useObservable } from "./useObservable.mjs";
 // src/useLazyQuery.ts
 /**
 * Hook for lazy queries. Returns the same render-ready state as `useQuery`,
