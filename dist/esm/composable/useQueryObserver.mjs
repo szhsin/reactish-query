@@ -1,6 +1,6 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect as useLayoutEffect$1, useState } from "react";
 // src/composable/useQueryObserver.ts
-const useLayoutEffect$1 = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+const useLayoutEffect = typeof window !== "undefined" ? useLayoutEffect$1 : useEffect;
 /**
 * Attach observers to a query observable.
 *
@@ -19,7 +19,7 @@ const useLayoutEffect$1 = typeof window !== "undefined" ? useLayoutEffect : useE
 const useQueryObserver = (input, { onData, onError }) => {
 	const queryCacheEntry$ = input._.$;
 	const [context] = useState({});
-	useLayoutEffect$1(() => {
+	useLayoutEffect(() => {
 		context.d = onData;
 		context.e = onError;
 	}, [
@@ -27,7 +27,7 @@ const useQueryObserver = (input, { onData, onError }) => {
 		onData,
 		onError
 	]);
-	useLayoutEffect$1(() => {
+	useLayoutEffect(() => {
 		const unsubscribeState = () => context.a?.forEach((unsubscribe) => unsubscribe());
 		const listener = ([{ d: data$, e: error$, p: isPending$ }]) => {
 			unsubscribeState();
