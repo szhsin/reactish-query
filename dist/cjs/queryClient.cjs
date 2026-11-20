@@ -1,7 +1,7 @@
 "use strict";
+let reactish_state = require("reactish-state");
 const require_cache = require("./cache.cjs");
 const require_queryCacheUtils = require("./queryCacheUtils.cjs");
-let reactish_state = require("reactish-state");
 // src/queryClient.ts
 /**
 * Create a query client instance.

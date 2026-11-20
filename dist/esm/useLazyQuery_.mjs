@@ -1,5 +1,5 @@
-import { useQueryCore } from "./useQueryCore.mjs";
 import { useCallback } from "react";
+import { useQueryCore } from "./useQueryCore.mjs";
 // src/useLazyQuery$.ts
 /**
 * Low-level lazy-query hook for building custom abstractions.

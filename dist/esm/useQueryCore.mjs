@@ -1,8 +1,8 @@
+import { useCallback, useEffect, useState } from "react";
+import { state, useSnapshot } from "reactish-state";
 import { stringify } from "./utils.mjs";
 import { fetchCacheEntry, isDataFresh } from "./queryCacheUtils.mjs";
 import { useQueryContext } from "./useQueryContext.mjs";
-import { state, useSnapshot } from "reactish-state";
-import { useCallback, useEffect, useState } from "react";
 // src/useQueryCore.ts
 /**
 * Low-level core hook for building custom abstractions.

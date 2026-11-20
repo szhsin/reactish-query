@@ -1,9 +1,9 @@
 "use strict";
+let react = require("react");
+let reactish_state = require("reactish-state");
 const require_utils = require("./utils.cjs");
 const require_queryCacheUtils = require("./queryCacheUtils.cjs");
 const require_useQueryContext = require("./useQueryContext.cjs");
-let reactish_state = require("reactish-state");
-let react = require("react");
 // src/useQueryCore.ts
 /**
 * Low-level core hook for building custom abstractions.

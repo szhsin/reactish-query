@@ -1,6 +1,6 @@
+import { stateBuilder } from "reactish-state";
 import { createCache } from "./cache.mjs";
 import { fetchCacheEntry, getStrCacheKey, isDataFresh } from "./queryCacheUtils.mjs";
-import { stateBuilder } from "reactish-state";
 // src/queryClient.ts
 /**
 * Create a query client instance.
