@@ -1,5 +1,5 @@
-import { QueryContext } from "./QueryContext.mjs";
 import { useContext } from "react";
+import { QueryContext } from "./QueryContext.mjs";
 // src/useQueryContext.ts
 /**
 * Access the current query client and default options from React context.

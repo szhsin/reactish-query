@@ -1,7 +1,8 @@
 "use strict";
+let react = require("react");
 const require_queryClient = require("./queryClient.cjs");
 // src/QueryContext.ts
-const QueryContext = (0, require("react").createContext)({
+const QueryContext = (0, react.createContext)({
 	client: require_queryClient.defaultQueryClient,
 	defaultOptions: {}
 });

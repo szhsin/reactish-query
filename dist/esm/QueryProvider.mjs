@@ -1,6 +1,6 @@
+import { useContext, useMemo, useState } from "react";
 import { QueryContext } from "./QueryContext.mjs";
 import { stringify } from "./utils.mjs";
-import { useContext, useMemo, useState } from "react";
 import { jsx } from "react/jsx-runtime";
 // src/QueryProvider.tsx
 const QueryProvider = ({ children, client, defaultOptions }) => {

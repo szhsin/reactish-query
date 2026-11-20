@@ -1,6 +1,6 @@
 "use strict";
-const require_useQueryCore = require("./useQueryCore.cjs");
 let react = require("react");
+const require_useQueryCore = require("./useQueryCore.cjs");
 // src/useLazyQuery$.ts
 /**
 * Low-level lazy-query hook for building custom abstractions.

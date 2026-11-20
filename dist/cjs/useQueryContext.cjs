@@ -1,6 +1,6 @@
 "use strict";
-const require_QueryContext = require("./QueryContext.cjs");
 let react = require("react");
+const require_QueryContext = require("./QueryContext.cjs");
 // src/useQueryContext.ts
 /**
 * Access the current query client and default options from React context.
